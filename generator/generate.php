@@ -24,7 +24,7 @@ require __DIR__ . '/../vendor/autoload.php';
 $root = dirname(__DIR__);
 $target = $root . '/src/Api';
 $lockFile = __DIR__ . '/api.lock.json';
-$allowBreaking = in_array('--allow-breaking', $argv, true);
+$allowBreaking = in_array('--allow-breaking', (array) ($_SERVER['argv'] ?? []), true);
 /** @var array<string, array{file: string, source: string, namespace: string, title: string, defaultResource?: string, resourceNames?: array<string, string>, methodNames?: array<string, string>, slashParams?: list<string>, preferOperationId?: bool, responseKinds?: array<string, 'json'|'text'|'stream'|'none'>, experimental?: bool}> $config */
 $config = require __DIR__ . '/config.php';
 $lock = is_file($lockFile) ? Json::decodeFile($lockFile) : null;

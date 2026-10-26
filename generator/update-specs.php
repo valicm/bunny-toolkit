@@ -33,7 +33,7 @@ foreach ($config as $name => $spec) {
     ]));
     // Decode to objects so empty objects stay {} when re-encoded.
     $data = $contents === false ? null : json_decode($contents);
-    if (!$data instanceof stdClass || !isset($data->paths)) {
+    if ($contents === false || !$data instanceof stdClass || !isset($data->paths)) {
         fwrite(\STDERR, sprintf("%-18s failed to download %s\n", $name, $spec['source']));
         $failed = true;
         continue;

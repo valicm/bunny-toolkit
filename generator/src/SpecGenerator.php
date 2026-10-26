@@ -719,7 +719,7 @@ final class SpecGenerator
         ksort($aliases);
         foreach ($aliases as $schemaName => $alias) {
             $definition = $this->types->aliasDefinition($schemaName);
-            if (isset($definition['fields'])) {
+            if (array_key_exists('fields', $definition)) {
                 $doc[] = sprintf('@phpstan-type %s array{', $alias);
                 foreach ($definition['fields'] as $field) {
                     $doc[] = sprintf('    %s%s: %s,', $field['key'], $field['optional'] ? '?' : '', $field['type']);
