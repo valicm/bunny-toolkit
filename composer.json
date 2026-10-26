@@ -1,0 +1,69 @@
+{
+    "name": "valicm/bunny-toolkit",
+    "description": "bunny.net API client generated from the official OpenAPI specs, with cache purging, CDN-Tag headers and Edge Script deployment.",
+    "type": "library",
+    "license": "MIT",
+    "keywords": [
+        "bunny",
+        "bunny.net",
+        "cdn",
+        "purge",
+        "cache-tags",
+        "edge-scripting"
+    ],
+    "homepage": "https://github.com/valicm/bunny-toolkit",
+    "authors": [
+        {
+            "name": "Valentino Međimorec",
+            "homepage": "https://github.com/valicm"
+        }
+    ],
+    "support": {
+        "issues": "https://github.com/valicm/bunny-toolkit/issues",
+        "source": "https://github.com/valicm/bunny-toolkit"
+    },
+    "require": {
+        "php": "^8.2",
+        "psr/http-client": "^1.0",
+        "psr/http-factory": "^1.0",
+        "psr/http-message": "^1.1 || ^2.0",
+        "psr/log": "^2.0 || ^3.0"
+    },
+    "require-dev": {
+        "friendsofphp/php-cs-fixer": "^3.64",
+        "nyholm/psr7": "^1.8",
+        "phpstan/phpstan": "^2.1",
+        "phpstan/phpstan-phpunit": "^2.0",
+        "phpunit/phpunit": "^11.5"
+    },
+    "autoload": {
+        "psr-4": {
+            "Valicm\\BunnyToolkit\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Valicm\\BunnyToolkit\\Generator\\": "generator/src/",
+            "Valicm\\BunnyToolkit\\Tests\\": "tests/"
+        }
+    },
+    "scripts": {
+        "cs": "php-cs-fixer fix --dry-run --diff",
+        "cs:fix": "php-cs-fixer fix",
+        "phpstan": "phpstan analyse --memory-limit=1G",
+        "test": "phpunit",
+        "generate": [
+            "@php generator/generate.php",
+            "php-cs-fixer fix --quiet src/Api"
+        ],
+        "update-specs": "@php generator/update-specs.php",
+        "check": [
+            "@cs",
+            "@phpstan",
+            "@test"
+        ]
+    },
+    "config": {
+        "sort-packages": true
+    }
+}
