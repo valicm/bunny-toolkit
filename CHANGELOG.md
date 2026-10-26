@@ -9,3 +9,5 @@
 - `InMemoryTokenBucket` rate limiter with Bunny's default limits, overridable.
 - `HashedTagList` and `SingleTag` formats for the `CDN-Tag` header.
 - `EdgeScriptDeployer`: upserts variables and secrets, uploads code, publishes a release.
+- Generated method names, parameter names and parameter order are pinned in `generator/api.lock.json`, so spec updates within a major version only add to the API. Operations and enum cases bunny.net removes stay available, marked `@deprecated`, until the next major version. The Database API is `@experimental`.
+- Requires PHP 8.3 or later; tested on 8.3, 8.4 and 8.5.

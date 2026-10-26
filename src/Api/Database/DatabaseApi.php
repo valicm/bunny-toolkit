@@ -10,6 +10,8 @@ use Valicm\BunnyToolkit\Http\ApiClient;
 
 /**
  * bunny.net Database API.
+ *
+ * @experimental Generated from a spec bunny.net does not publish as public; may change in any release.
  */
 final class DatabaseApi
 {

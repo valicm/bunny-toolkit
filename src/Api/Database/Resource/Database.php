@@ -13,6 +13,8 @@ use Valicm\BunnyToolkit\Http\ApiException;
 /**
  * A [Database] is part of a [DatabaseGroup].
  *
+ * @experimental Generated from a spec bunny.net does not publish as public; may change in any release.
+ *
  * @phpstan-import-type CreateDatabasePayload from \Valicm\BunnyToolkit\Api\Database\Types
  * @phpstan-import-type CreateDatabaseResponse from \Valicm\BunnyToolkit\Api\Database\Types
  * @phpstan-import-type DatabaseGroupId from \Valicm\BunnyToolkit\Api\Database\Types

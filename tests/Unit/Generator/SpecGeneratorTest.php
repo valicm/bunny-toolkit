@@ -107,6 +107,169 @@ final class SpecGeneratorTest extends TestCase
         (new SpecGenerator($spec, self::CONFIG, 'App\\Api'))->generate();
     }
 
+    public function testRecordsThePublicSurface(): void
+    {
+        $generator = new SpecGenerator(self::spec(), self::CONFIG, 'App\\Api');
+        $generator->generate();
+
+        self::assertSame([
+            'operations' => [
+                'GET /pullzone/{id}' => [
+                    'method' => 'PullZone::getPullZone',
+                    'params' => ['path:id' => 'int $id', 'query:includeCertificate' => '?bool $includeCertificate = null'],
+                    'returns' => 'mixed',
+                ],
+                'POST /pullzone/{id}' => [
+                    'method' => 'PullZone::updatePullZone',
+                    'params' => ['path:id' => 'int $id', 'body' => 'array $body'],
+                    'returns' => 'void',
+                ],
+                'PUT /files/{path}' => [
+                    'method' => 'Files::uploadFile',
+                    'params' => ['path:path' => 'string $path', 'body' => 'StreamInterface|string|null $body = null'],
+                    'returns' => 'void',
+                ],
+            ],
+            'enums' => [],
+        ], $generator->surface());
+    }
+
+    public function testLockedSurfaceSurvivesSpecChanges(): void
+    {
+        $locked = [
+            'operations' => [
+                'GET /pullzone/{id}' => [
+                    'method' => 'PullZone::getPullZone',
+                    'params' => ['path:id' => 'int $id', 'query:includeCertificate' => '?bool $includeCertificate = null'],
+                    'returns' => 'mixed',
+                ],
+                'POST /pullzone/{id}' => [
+                    'method' => 'PullZone::updatePullZone',
+                    'params' => ['path:id' => 'int $id', 'body' => 'array $body'],
+                    'returns' => 'void',
+                ],
+            ],
+            'enums' => [],
+        ];
+        // Bunny retags both operations, rewrites a summary, adds a parameter
+        // whose name clashes with a locked one, and makes the body optional.
+        $spec = [
+            'paths' => [
+                '/pullzone/{id}' => [
+                    'parameters' => [['name' => 'id', 'in' => 'path', 'required' => true, 'schema' => ['type' => 'integer']]],
+                    'get' => [
+                        'tags' => ['Zones'],
+                        'summary' => 'Get pull zone details',
+                        'parameters' => [
+                            ['name' => 'include-certificate', 'in' => 'header', 'schema' => ['type' => 'string']],
+                            ['name' => 'includeCertificate', 'in' => 'query', 'schema' => ['type' => 'boolean']],
+                        ],
+                        'responses' => ['200' => ['content' => ['application/json' => ['schema' => ['type' => 'object']]]]],
+                    ],
+                    'post' => [
+                        'tags' => ['Zones'],
+                        'summary' => 'Update Pull Zone',
+                        'requestBody' => ['content' => ['application/json' => ['schema' => ['type' => 'object']]]],
+                        'responses' => ['204' => ['description' => 'Updated']],
+                    ],
+                ],
+            ],
+        ];
+
+        $generator = new SpecGenerator($spec, self::CONFIG, 'App\\Api', $locked);
+        $files = $generator->generate();
+
+        self::assertArrayNotHasKey('Resource/Zones.php', $files);
+        $pullZone = $files['Resource/PullZone.php'];
+        self::assertStringContainsString('public function getPullZone(int $id, ?bool $includeCertificate = null, ?string $includeCertificate2 = null): mixed', $pullZone);
+        self::assertStringContainsString("query: ['includeCertificate' => \$includeCertificate], headers: ['include-certificate' => \$includeCertificate2]", $pullZone);
+        self::assertStringContainsString('public function updatePullZone(int $id, array $body): void', $pullZone, 'A parameter Bunny made optional stays required.');
+        self::assertStringContainsString('json: (object) $body', $pullZone);
+        self::assertSame(['path:id', 'query:includeCertificate', 'header:include-certificate'], array_keys($generator->surface()['operations']['GET /pullzone/{id}']['params']));
+    }
+
+    public function testDeprecatesOperationsKeptAfterBunnyRemovedThem(): void
+    {
+        $spec = self::spec();
+        $paths = is_array($spec['paths']) ? $spec['paths'] : [];
+        $paths['/legacy'] = ['get' => ['tags' => ['Pull Zone'], 'summary' => 'Get Legacy', 'x-removed-on' => '2026-10-26', 'responses' => []]];
+        $spec['paths'] = $paths;
+
+        $generator = new SpecGenerator($spec, self::CONFIG, 'App\\Api');
+        $files = $generator->generate();
+
+        self::assertStringContainsString(
+            "@deprecated Removed from the bunny.net spec on 2026-10-26; kept until the next major version.\n     */\n    public function getLegacy(): void",
+            $files['Resource/PullZone.php'],
+        );
+        $surface = $generator->surface();
+        self::assertTrue($surface['operations']['GET /legacy']['deprecated'] ?? false);
+        self::assertArrayNotHasKey('deprecated', $surface['operations']['GET /pullzone/{id}']);
+    }
+
+    public function testKeepsLockedEnumCasesBunnyRemoved(): void
+    {
+        $spec = [
+            'paths' => [],
+            'components' => ['schemas' => [
+                'Status' => ['type' => 'string', 'enum' => ['active', 'stopped']],
+            ]],
+        ];
+        $locked = [
+            'operations' => [],
+            'enums' => [
+                'Status' => ['Active' => 'active', 'Paused' => 'paused', 'Halted' => 'stopped'],
+                'Region' => ['Eu' => 1, 'Us' => 2],
+            ],
+        ];
+
+        $generator = new SpecGenerator($spec, self::CONFIG, 'App\\Api', $locked);
+        $files = $generator->generate();
+
+        $status = $files['Enum/Status.php'];
+        self::assertStringContainsString("    case Stopped = 'stopped';\n", $status);
+        self::assertStringContainsString("@deprecated Removed from the bunny.net spec; kept until the next major version.\n     */\n    case Paused = 'paused';", $status);
+        self::assertStringContainsString("@deprecated Removed from the bunny.net spec; use Stopped instead. Kept until the next major version.\n     */\n    public const Halted = self::Stopped;", $status);
+        self::assertStringContainsString(" * @deprecated Removed from the bunny.net spec; kept until the next major version.\n */\nenum Region: int\n{\n    case Eu = 1;\n    case Us = 2;\n}", $files['Enum/Region.php']);
+
+        $surface = $generator->surface();
+        self::assertSame(['Active' => 'active', 'Stopped' => 'stopped', 'Paused' => 'paused', 'Halted' => 'stopped'], $surface['enums']['Status']);
+        self::assertSame(['Region' => ['Eu', 'Us'], 'Status' => ['Paused', 'Halted']], $surface['deprecatedEnumCases'] ?? []);
+
+        // Loading the enums catches duplicate values and invalid constants.
+        $namespace = 'namespace App\\Api\\Test\\Enum' . bin2hex(random_bytes(4)) . ';';
+        foreach (['Enum/Status.php', 'Enum/Region.php'] as $file) {
+            $path = (string) tempnam(sys_get_temp_dir(), 'enum');
+            file_put_contents($path, str_replace('namespace App\\Api\\Test\\Enum;', $namespace, $files[$file]));
+            try {
+                require $path;
+            } finally {
+                unlink($path);
+            }
+        }
+    }
+
+    public function testDropsRemovedEnumCasesForAMajorVersion(): void
+    {
+        $spec = ['paths' => [], 'components' => ['schemas' => ['Status' => ['type' => 'string', 'enum' => ['active']]]]];
+        $locked = ['operations' => [], 'enums' => ['Status' => ['Active' => 'active', 'Paused' => 'paused'], 'Region' => ['Eu' => 1]]];
+
+        $generator = new SpecGenerator($spec, self::CONFIG, 'App\\Api', $locked, keepRemoved: false);
+        $files = $generator->generate();
+
+        self::assertStringNotContainsString('Paused', $files['Enum/Status.php']);
+        self::assertArrayNotHasKey('Enum/Region.php', $files);
+        self::assertArrayNotHasKey('deprecatedEnumCases', $generator->surface());
+    }
+
+    public function testMarksExperimentalApis(): void
+    {
+        $files = (new SpecGenerator(self::spec(), self::CONFIG + ['experimental' => true], 'App\\Api'))->generate();
+
+        self::assertStringContainsString('@experimental', $files['TestApi.php']);
+        self::assertStringContainsString('@experimental', $files['Resource/PullZone.php']);
+    }
+
     public function testOverridesNamesAndResponseKinds(): void
     {
         $spec = self::spec();

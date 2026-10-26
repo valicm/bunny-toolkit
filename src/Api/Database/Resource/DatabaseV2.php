@@ -13,6 +13,8 @@ use Valicm\BunnyToolkit\Http\ApiException;
 /**
  * DatabaseV2 endpoints of the bunny.net Database API.
  *
+ * @experimental Generated from a spec bunny.net does not publish as public; may change in any release.
+ *
  * @phpstan-import-type ActiveStatsResponse from \Valicm\BunnyToolkit\Api\Database\Types
  * @phpstan-import-type CreateDatabaseV2Payload from \Valicm\BunnyToolkit\Api\Database\Types
  * @phpstan-import-type CreateDatabaseV2Response from \Valicm\BunnyToolkit\Api\Database\Types

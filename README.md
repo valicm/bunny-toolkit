@@ -10,7 +10,7 @@ interfaces.
 
 ## Requirements
 
-- PHP 8.2+
+- PHP 8.3+
 - A PSR-18 HTTP client and PSR-17 factories, e.g. Guzzle 7 with
   `GuzzleHttp\Psr7\HttpFactory` (Drupal's `http_client` service works)
 
@@ -167,21 +167,78 @@ without them. Ones not listed are left alone.
 
 ```bash
 composer update-specs   # download the latest specs into specs/
-composer generate       # regenerate src/Api from specs/
+composer generate       # regenerate src/Api; prints public API changes and the release they need
 git diff specs src/Api  # review what Bunny changed
 ```
 
-Never edit `src/Api` by hand; CI fails if it doesn't match `specs/`. Fix
-naming or spec gaps in `generator/config.php` instead:
+When Bunny removes an operation that's in the lock, `update-specs` saves it,
+with the schemas it needs, to `specs/removed/<spec>.json`. `generate` keeps
+generating it, marked `@deprecated`, until the next major version. If Bunny
+brings it back, the saved copy is deleted. Enum cases Bunny removes are kept
+the same way, from the lock; a renamed case keeps its old name as a deprecated
+constant pointing at the new case.
 
-- **`methodNames`:** rename an operation, e.g. `'POST /purge' => 'purgeUrl'`.
+Never edit `src/Api` by hand; CI fails if it doesn't match `specs/` and
+`generator/api.lock.json`. Fix naming or spec gaps in `generator/config.php`
+instead:
+
+- **`methodNames`:** name a new operation, e.g. `'POST /purge' => 'purgeUrl'`.
   Generation fails when two operations in a resource get the same name.
+  Operations already in the lock keep their names (see [Versioning](#versioning)).
 - **`responseKinds`:** declare a response body the spec leaves out (the
   storage download is one).
 - **`slashParams`:** path parameters that may contain `/`.
+- **`experimental`:** leave an API out of the backward compatibility promise.
 
-The specs come from the same URLs bunny.net's own CLI uses. The Database spec
-is served from a `/docs/private/` URL, so treat that API as less stable.
+The specs come from the same URLs bunny.net's own CLI uses.
+
+## Versioning
+
+Releases follow [Semantic Versioning](https://semver.org). Each major version
+has a branch (`1.x`), and releases are tags on it. Until `1.0.0`, releases are
+pre-releases (`1.0.0-alpha1`, ...), installed with `^1.0@alpha`.
+
+| Change | Release |
+|---|---|
+| Bug fixes, or generator and documentation changes that leave the public API alone | patch |
+| Spec updates that add operations, optional parameters, enums or enum cases | minor |
+| New features in the hand-written classes, and deprecations | minor |
+| Dropping a PHP version once php.net has ended its security support | minor |
+| Removing or renaming a class, method, parameter or enum case; changing a parameter's type or position; making a parameter required | major |
+| Changing what a `TagFormat` writes into `CDN-Tag` | major |
+
+A `TagFormat` change is major even without a signature change: responses
+already cached carry the old tags, and a purger using the new format can't
+purge them.
+
+Not covered by these rules:
+
+- **The Database API** is `@experimental`: its spec is served from a
+  `/docs/private/` URL, so it may change in any release.
+- **PHPStan array shapes** follow Bunny's specs and can change in a minor
+  release. Requests and responses are plain arrays, so a shape change can
+  surface new PHPStan errors but doesn't change what runs.
+
+### Keeping the generated API stable
+
+`generator/api.lock.json` records each operation's resource class, method name,
+parameter names, parameter order and return type, and each enum's cases.
+`composer generate` builds on it:
+
+- Locked operations keep their class and name, even when Bunny rewrites a
+  summary or moves the operation to another tag.
+- New optional parameters go at the end of the signature.
+- A parameter Bunny makes optional stays required, so positional calls keep
+  working.
+- Operations and enum cases Bunny removes are kept, marked `@deprecated`.
+- It prints what changed against the lock and the release that needs, and
+  writes nothing when a change breaks callers.
+
+Other breaking changes from Bunny (a parameter removed, a type changed) wait
+for the next major version. On its branch, run
+`composer generate:allow-breaking`: it accepts them and drops what was kept for
+compatibility, deleting `specs/removed/`. To also regenerate every name and
+parameter order from the current specs, delete the lock first.
 
 ## Bunny behaviour to verify on a test pull zone
 

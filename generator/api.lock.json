@@ -1,0 +1,3425 @@
+{
+    "Core": {
+        "operations": {
+            "DELETE /dnszone/{id}": {
+                "method": "DnsZone::deleteDnsZone",
+                "params": {
+                    "path:id": "int $id"
+                },
+                "returns": "void"
+            },
+            "DELETE /dnszone/{id}/dnssec": {
+                "method": "DnsZone::disableDnssecOnDnsZone",
+                "params": {
+                    "path:id": "int $id"
+                },
+                "returns": "mixed"
+            },
+            "DELETE /dnszone/{zoneId}/records/{id}": {
+                "method": "DnsZone::deleteDnsRecord",
+                "params": {
+                    "path:zoneId": "int $zoneId",
+                    "path:id": "int $id"
+                },
+                "returns": "void"
+            },
+            "DELETE /loadbalancer/{loadBalancerId}": {
+                "method": "LoadBalancer::deleteLoadBalancerProfile",
+                "params": {
+                    "path:loadBalancerId": "int $loadBalancerId"
+                },
+                "returns": "void"
+            },
+            "DELETE /loadbalancer/{loadBalancerId}/origingroup/{id}": {
+                "method": "LoadBalancer::deleteOriginGroup",
+                "params": {
+                    "path:loadBalancerId": "int $loadBalancerId",
+                    "path:id": "int $id"
+                },
+                "returns": "void"
+            },
+            "DELETE /loadbalancer/{loadBalancerId}/origingroup/{originGroupId}/origin/{originId}": {
+                "method": "LoadBalancer::deleteOriginFromOriginGroup",
+                "params": {
+                    "path:loadBalancerId": "int $loadBalancerId",
+                    "path:originGroupId": "int $originGroupId",
+                    "path:originId": "int $originId"
+                },
+                "returns": "void"
+            },
+            "DELETE /pullzone/{id}": {
+                "method": "PullZone::deletePullZone",
+                "params": {
+                    "path:id": "int $id"
+                },
+                "returns": "void"
+            },
+            "DELETE /pullzone/{id}/removeCertificate": {
+                "method": "PullZone::removeCertificate",
+                "params": {
+                    "path:id": "int $id",
+                    "body": "array $body"
+                },
+                "returns": "void"
+            },
+            "DELETE /pullzone/{id}/removeHostname": {
+                "method": "PullZone::removeCustomHostname",
+                "params": {
+                    "path:id": "int $id",
+                    "body": "array $body"
+                },
+                "returns": "void"
+            },
+            "DELETE /pullzone/{pullZoneId}/edgerules/{edgeRuleId}": {
+                "method": "PullZone::deleteEdgeRule",
+                "params": {
+                    "path:pullZoneId": "int $pullZoneId",
+                    "path:edgeRuleId": "string $edgeRuleId"
+                },
+                "returns": "void"
+            },
+            "DELETE /storagezone/{id}": {
+                "method": "StorageZone::deleteStorageZone",
+                "params": {
+                    "path:id": "int $id",
+                    "query:deleteLinkedPullZones": "?bool $deleteLinkedPullZones = null"
+                },
+                "returns": "void"
+            },
+            "DELETE /videolibrary/{id}": {
+                "method": "StreamVideoLibrary::deleteVideoLibrary",
+                "params": {
+                    "path:id": "int $id"
+                },
+                "returns": "void"
+            },
+            "DELETE /videolibrary/{id}/live/thumbnail": {
+                "method": "StreamVideoLibrary::deleteLiveThumbnail",
+                "params": {
+                    "path:id": "int $id"
+                },
+                "returns": "void"
+            },
+            "DELETE /videolibrary/{id}/live/watermark": {
+                "method": "StreamVideoLibrary::deleteLiveWatermark",
+                "params": {
+                    "path:id": "int $id"
+                },
+                "returns": "void"
+            },
+            "DELETE /videolibrary/{id}/watermark": {
+                "method": "StreamVideoLibrary::deleteWatermark",
+                "params": {
+                    "path:id": "int $id"
+                },
+                "returns": "void"
+            },
+            "GET /apikey": {
+                "method": "ApiKeys::listApiKeys",
+                "params": {
+                    "query:page": "?int $page = null",
+                    "query:perPage": "?int $perPage = null"
+                },
+                "returns": "mixed"
+            },
+            "GET /billing": {
+                "method": "Billing::getBillingDetails",
+                "params": [],
+                "returns": "mixed"
+            },
+            "GET /billing/affiliate": {
+                "method": "Affiliate::getAffiliateDetails",
+                "params": [],
+                "returns": "mixed"
+            },
+            "GET /billing/payment-request-invoice/{id}/pdf": {
+                "method": "Billing::downloadPaymentRequestInvoicePdf",
+                "params": {
+                    "path:id": "int $id"
+                },
+                "returns": "void"
+            },
+            "GET /billing/payment-requests": {
+                "method": "Billing::getPendingPaymentRequests",
+                "params": [],
+                "returns": "mixed"
+            },
+            "GET /billing/summary": {
+                "method": "Billing::getBillingSummary",
+                "params": [],
+                "returns": "mixed"
+            },
+            "GET /billing/summary/{billingRecordId}/pdf": {
+                "method": "Billing::getBillingSummaryDocument",
+                "params": {
+                    "path:billingRecordId": "int $billingRecordId"
+                },
+                "returns": "void"
+            },
+            "GET /country": {
+                "method": "Countries::getCountryList",
+                "params": [],
+                "returns": "mixed"
+            },
+            "GET /dnszone": {
+                "method": "DnsZone::listDnsZones",
+                "params": {
+                    "query:page": "?int $page = null",
+                    "query:perPage": "?int $perPage = null",
+                    "query:search": "?string $search = null",
+                    "query:view": "?int $view = null"
+                },
+                "returns": "mixed"
+            },
+            "GET /dnszone/{id}": {
+                "method": "DnsZone::getDnsZone",
+                "params": {
+                    "path:id": "int $id",
+                    "query:view": "?int $view = null"
+                },
+                "returns": "mixed"
+            },
+            "GET /dnszone/{id}/export": {
+                "method": "DnsZone::export",
+                "params": {
+                    "path:id": "int $id"
+                },
+                "returns": "StreamInterface"
+            },
+            "GET /dnszone/{id}/statistics": {
+                "method": "DnsZone::getDnsQueryStatistics",
+                "params": {
+                    "path:id": "int $id",
+                    "query:dateFrom": "?string $dateFrom = null",
+                    "query:dateTo": "?string $dateTo = null"
+                },
+                "returns": "mixed"
+            },
+            "GET /dnszone/{zoneId}/records": {
+                "method": "DnsZone::listDnsZoneRecords",
+                "params": {
+                    "path:zoneId": "int $zoneId",
+                    "query:page": "?int $page = null",
+                    "query:perPage": "?int $perPage = null",
+                    "query:type": "?int $type = null",
+                    "query:search": "?string $search = null"
+                },
+                "returns": "mixed"
+            },
+            "GET /dnszone/{zoneId}/records/scan": {
+                "method": "DnsZone::getLatestScan",
+                "params": {
+                    "path:zoneId": "int $zoneId"
+                },
+                "returns": "mixed"
+            },
+            "GET /loadbalancer": {
+                "method": "LoadBalancer::getLoadBalancers",
+                "params": {
+                    "query:page": "?int $page = null",
+                    "query:count": "?int $count = null"
+                },
+                "returns": "mixed"
+            },
+            "GET /loadbalancer/statistics": {
+                "method": "LoadBalancer::getLoadBalancerAccountStatistics",
+                "params": {
+                    "query:from": "?string $from = null",
+                    "query:to": "?string $to = null"
+                },
+                "returns": "mixed"
+            },
+            "GET /loadbalancer/{loadBalancerId}": {
+                "method": "LoadBalancer::getLoadBalancerProfile",
+                "params": {
+                    "path:loadBalancerId": "int $loadBalancerId"
+                },
+                "returns": "mixed"
+            },
+            "GET /loadbalancer/{loadBalancerId}/pullzones": {
+                "method": "LoadBalancer::getAttachedPullZones",
+                "params": {
+                    "path:loadBalancerId": "int $loadBalancerId",
+                    "query:from": "?string $from = null",
+                    "query:to": "?string $to = null"
+                },
+                "returns": "mixed"
+            },
+            "GET /loadbalancer/{loadBalancerId}/statistics": {
+                "method": "LoadBalancer::getLoadBalancerStatistics",
+                "params": {
+                    "path:loadBalancerId": "int $loadBalancerId",
+                    "query:from": "?string $from = null",
+                    "query:to": "?string $to = null",
+                    "query:hourly": "?bool $hourly = null",
+                    "query:exactRange": "?bool $exactRange = null"
+                },
+                "returns": "mixed"
+            },
+            "GET /loadbalancer/{loadBalancerId}/usage": {
+                "method": "LoadBalancer::getLoadBalancerUsage",
+                "params": {
+                    "path:loadBalancerId": "int $loadBalancerId",
+                    "query:year": "?int $year = null",
+                    "query:month": "?int $month = null"
+                },
+                "returns": "mixed"
+            },
+            "GET /pullzone": {
+                "method": "PullZone::listPullZones",
+                "params": {
+                    "query:page": "?int $page = null",
+                    "query:perPage": "?int $perPage = null",
+                    "query:search": "?string $search = null",
+                    "query:includeCertificate": "?bool $includeCertificate = null"
+                },
+                "returns": "mixed"
+            },
+            "GET /pullzone/count": {
+                "method": "PullZone::countPullZones",
+                "params": [],
+                "returns": "mixed"
+            },
+            "GET /pullzone/loadFreeCertificate": {
+                "method": "PullZone::loadFreeCertificate",
+                "params": {
+                    "query:hostname": "string $hostname",
+                    "query:useOnlyHttp01": "?bool $useOnlyHttp01 = null"
+                },
+                "returns": "void"
+            },
+            "GET /pullzone/{id}": {
+                "method": "PullZone::getPullZone",
+                "params": {
+                    "path:id": "int $id",
+                    "query:includeCertificate": "?bool $includeCertificate = null"
+                },
+                "returns": "mixed"
+            },
+            "GET /pullzone/{pullZoneId}/optimizer/statistics": {
+                "method": "Statistics::getOptimizerStatistics",
+                "params": {
+                    "path:pullZoneId": "int $pullZoneId",
+                    "query:dateFrom": "?string $dateFrom = null",
+                    "query:dateTo": "?string $dateTo = null",
+                    "query:hourly": "?bool $hourly = null"
+                },
+                "returns": "mixed"
+            },
+            "GET /pullzone/{pullZoneId}/originshield/queuestatistics": {
+                "method": "Statistics::getOriginShieldQueueStatistics",
+                "params": {
+                    "path:pullZoneId": "int $pullZoneId",
+                    "query:dateFrom": "?string $dateFrom = null",
+                    "query:dateTo": "?string $dateTo = null",
+                    "query:hourly": "?bool $hourly = null"
+                },
+                "returns": "mixed"
+            },
+            "GET /pullzone/{pullZoneId}/safehop/statistics": {
+                "method": "Statistics::getSafeHopStatistics",
+                "params": {
+                    "path:pullZoneId": "int $pullZoneId",
+                    "query:dateFrom": "?string $dateFrom = null",
+                    "query:dateTo": "?string $dateTo = null",
+                    "query:hourly": "?bool $hourly = null"
+                },
+                "returns": "mixed"
+            },
+            "GET /region": {
+                "method": "Region::regionList",
+                "params": [],
+                "returns": "mixed"
+            },
+            "GET /search": {
+                "method": "Search::globalSearch",
+                "params": {
+                    "query:search": "?string $search = null",
+                    "query:from": "?int $from = null",
+                    "query:size": "?int $size = null"
+                },
+                "returns": "mixed"
+            },
+            "GET /statistics": {
+                "method": "Statistics::getStatistics",
+                "params": {
+                    "query:dateFrom": "?string $dateFrom = null",
+                    "query:dateTo": "?string $dateTo = null",
+                    "query:pullZone": "?int $pullZone = null",
+                    "query:serverZoneId": "?int $serverZoneId = null",
+                    "query:loadErrors": "?bool $loadErrors = null",
+                    "query:hourly": "?bool $hourly = null",
+                    "query:exactRange": "?bool $exactRange = null",
+                    "query:loadOriginResponseTimes": "?bool $loadOriginResponseTimes = null",
+                    "query:loadOriginTraffic": "?bool $loadOriginTraffic = null",
+                    "query:loadRequestsServed": "?bool $loadRequestsServed = null",
+                    "query:loadBandwidthUsed": "?bool $loadBandwidthUsed = null",
+                    "query:loadOriginShieldBandwidth": "?bool $loadOriginShieldBandwidth = null",
+                    "query:loadGeographicTrafficDistribution": "?bool $loadGeographicTrafficDistribution = null",
+                    "query:loadUserBalanceHistory": "?bool $loadUserBalanceHistory = null"
+                },
+                "returns": "mixed"
+            },
+            "GET /storagezone": {
+                "method": "StorageZone::listStorageZones",
+                "params": {
+                    "query:page": "?int $page = null",
+                    "query:perPage": "?int $perPage = null",
+                    "query:includeDeleted": "?bool $includeDeleted = null",
+                    "query:search": "?string $search = null"
+                },
+                "returns": "mixed"
+            },
+            "GET /storagezone/regions": {
+                "method": "StorageZone::getStorageZoneRegions",
+                "params": [],
+                "returns": "mixed"
+            },
+            "GET /storagezone/{id}": {
+                "method": "StorageZone::getStorageZone",
+                "params": {
+                    "path:id": "int $id"
+                },
+                "returns": "mixed"
+            },
+            "GET /storagezone/{id}/statistics": {
+                "method": "StorageZone::getStorageZoneStatistics",
+                "params": {
+                    "path:id": "int $id",
+                    "query:dateFrom": "?string $dateFrom = null",
+                    "query:dateTo": "?string $dateTo = null"
+                },
+                "returns": "mixed"
+            },
+            "GET /storagezone/{id}/statistics/egress": {
+                "method": "StorageZone::getStorageZoneEgressStatistics",
+                "params": {
+                    "path:id": "int $id",
+                    "query:dateFrom": "?string $dateFrom = null",
+                    "query:dateTo": "?string $dateTo = null",
+                    "query:hourly": "?bool $hourly = null"
+                },
+                "returns": "mixed"
+            },
+            "GET /user/audit/{date}": {
+                "method": "AuditLog::getUserAuditLog",
+                "params": {
+                    "path:date": "string $date",
+                    "query:Product": "?array $product = null",
+                    "query:ResourceType": "?array $resourceType = null",
+                    "query:ResourceId": "?array $resourceId = null",
+                    "query:ActorId": "?array $actorId = null",
+                    "query:Order": "?string $order = null",
+                    "query:ContinuationToken": "?string $continuationToken = null",
+                    "query:Limit": "?int $limit = null"
+                },
+                "returns": "mixed"
+            },
+            "GET /v1/pricing/{source}/{resourceId}": {
+                "method": "Pricing::getPriceEstimation",
+                "params": {
+                    "path:source": "int $source",
+                    "path:resourceId": "int $resourceId",
+                    "query:units": "?int $units = null"
+                },
+                "returns": "mixed"
+            },
+            "GET /videolibrary": {
+                "method": "StreamVideoLibrary::listVideoLibraries",
+                "params": {
+                    "query:page": "?int $page = null",
+                    "query:perPage": "?int $perPage = null",
+                    "query:search": "?string $search = null"
+                },
+                "returns": "mixed"
+            },
+            "GET /videolibrary/languages": {
+                "method": "StreamVideoLibrary::getLanguages",
+                "params": [],
+                "returns": "mixed"
+            },
+            "GET /videolibrary/{id}": {
+                "method": "StreamVideoLibrary::getVideoLibrary",
+                "params": {
+                    "path:id": "int $id"
+                },
+                "returns": "mixed"
+            },
+            "GET /videolibrary/{id}/drm/statistics": {
+                "method": "StreamVideoLibrary::getDrmStatistics",
+                "params": {
+                    "path:id": "int $id",
+                    "query:dateFrom": "?string $dateFrom = null",
+                    "query:dateTo": "?string $dateTo = null"
+                },
+                "returns": "mixed"
+            },
+            "GET /videolibrary/{id}/transcribing/statistics": {
+                "method": "StreamVideoLibrary::getTranscribingStatistics",
+                "params": {
+                    "path:id": "int $id",
+                    "query:dateFrom": "?string $dateFrom = null",
+                    "query:dateTo": "?string $dateTo = null"
+                },
+                "returns": "mixed"
+            },
+            "POST /dnszone": {
+                "method": "DnsZone::addDnsZone",
+                "params": {
+                    "body": "array $body"
+                },
+                "returns": "void"
+            },
+            "POST /dnszone/checkavailability": {
+                "method": "DnsZone::checkDnsZoneAvailability",
+                "params": {
+                    "body": "array $body"
+                },
+                "returns": "void"
+            },
+            "POST /dnszone/records/scan": {
+                "method": "DnsZone::triggerScan",
+                "params": {
+                    "body": "array $body"
+                },
+                "returns": "mixed"
+            },
+            "POST /dnszone/{id}": {
+                "method": "DnsZone::updateDnsZones",
+                "params": {
+                    "path:id": "int $id",
+                    "body": "array $body"
+                },
+                "returns": "mixed"
+            },
+            "POST /dnszone/{id}/dnssec": {
+                "method": "DnsZone::enableDnssecOnDnsZone",
+                "params": {
+                    "path:id": "int $id"
+                },
+                "returns": "mixed"
+            },
+            "POST /dnszone/{zoneId}/certificate/issue": {
+                "method": "DnsZone::issueNewWildcardCertificate",
+                "params": {
+                    "path:zoneId": "int $zoneId",
+                    "body": "?array $body = null"
+                },
+                "returns": "void"
+            },
+            "POST /dnszone/{zoneId}/import": {
+                "method": "DnsZone::importDnsRecords",
+                "params": {
+                    "path:zoneId": "int $zoneId"
+                },
+                "returns": "mixed"
+            },
+            "POST /dnszone/{zoneId}/records/{id}": {
+                "method": "DnsZone::updateDnsRecord",
+                "params": {
+                    "path:zoneId": "int $zoneId",
+                    "path:id": "int $id",
+                    "body": "array $body"
+                },
+                "returns": "void"
+            },
+            "POST /loadbalancer": {
+                "method": "LoadBalancer::createNewLoadBalancerProfile",
+                "params": {
+                    "body": "array $body"
+                },
+                "returns": "mixed"
+            },
+            "POST /loadbalancer/{loadBalancerId}": {
+                "method": "LoadBalancer::updateLoadBalancerProfile",
+                "params": {
+                    "path:loadBalancerId": "int $loadBalancerId",
+                    "body": "array $body"
+                },
+                "returns": "mixed"
+            },
+            "POST /loadbalancer/{loadBalancerId}/origingroup": {
+                "method": "LoadBalancer::addOriginGroup",
+                "params": {
+                    "path:loadBalancerId": "int $loadBalancerId",
+                    "body": "array $body"
+                },
+                "returns": "mixed"
+            },
+            "POST /loadbalancer/{loadBalancerId}/origingroup/{id}": {
+                "method": "LoadBalancer::updateOriginGroup",
+                "params": {
+                    "path:loadBalancerId": "int $loadBalancerId",
+                    "path:id": "int $id",
+                    "body": "array $body"
+                },
+                "returns": "mixed"
+            },
+            "POST /loadbalancer/{loadBalancerId}/origingroup/{originGroupId}/origin": {
+                "method": "LoadBalancer::addOrigin",
+                "params": {
+                    "path:loadBalancerId": "int $loadBalancerId",
+                    "path:originGroupId": "int $originGroupId",
+                    "body": "array $body"
+                },
+                "returns": "mixed"
+            },
+            "POST /loadbalancer/{loadBalancerId}/origingroup/{originGroupId}/origin/{originId}": {
+                "method": "LoadBalancer::updateExistingOrigin",
+                "params": {
+                    "path:loadBalancerId": "int $loadBalancerId",
+                    "path:originGroupId": "int $originGroupId",
+                    "path:originId": "int $originId",
+                    "body": "array $body"
+                },
+                "returns": "mixed"
+            },
+            "POST /pullzone": {
+                "method": "PullZone::addPullZone",
+                "params": {
+                    "body": "array $body"
+                },
+                "returns": "void"
+            },
+            "POST /pullzone/checkavailability": {
+                "method": "PullZone::checkPullZoneAvailability",
+                "params": {
+                    "body": "array $body"
+                },
+                "returns": "void"
+            },
+            "POST /pullzone/completeExternalDnsCertificate": {
+                "method": "PullZone::completeExternalDnsCertificate",
+                "params": {
+                    "body": "array $body"
+                },
+                "returns": "void"
+            },
+            "POST /pullzone/completeExternalHttpCertificate": {
+                "method": "PullZone::completeExternalHttpCertificate",
+                "params": {
+                    "body": "array $body"
+                },
+                "returns": "void"
+            },
+            "POST /pullzone/requestExternalDnsCertificate": {
+                "method": "PullZone::requestExternalDnsCertificate",
+                "params": {
+                    "body": "array $body"
+                },
+                "returns": "mixed"
+            },
+            "POST /pullzone/requestExternalHttpCertificate": {
+                "method": "PullZone::requestExternalHttpCertificate",
+                "params": {
+                    "body": "array $body"
+                },
+                "returns": "mixed"
+            },
+            "POST /pullzone/{id}": {
+                "method": "PullZone::updatePullZone",
+                "params": {
+                    "path:id": "int $id",
+                    "body": "array $body"
+                },
+                "returns": "mixed"
+            },
+            "POST /pullzone/{id}/addAllowedReferrer": {
+                "method": "PullZone::addAllowedReferer",
+                "params": {
+                    "path:id": "int $id",
+                    "body": "array $body"
+                },
+                "returns": "void"
+            },
+            "POST /pullzone/{id}/addBlockedIp": {
+                "method": "PullZone::addBlockedIp",
+                "params": {
+                    "path:id": "int $id",
+                    "body": "array $body"
+                },
+                "returns": "void"
+            },
+            "POST /pullzone/{id}/addBlockedReferrer": {
+                "method": "PullZone::addBlockedReferer",
+                "params": {
+                    "path:id": "int $id",
+                    "body": "array $body"
+                },
+                "returns": "void"
+            },
+            "POST /pullzone/{id}/addCertificate": {
+                "method": "PullZone::addCustomCertificate",
+                "params": {
+                    "path:id": "int $id",
+                    "body": "array $body"
+                },
+                "returns": "void"
+            },
+            "POST /pullzone/{id}/addHostname": {
+                "method": "PullZone::addCustomHostname",
+                "params": {
+                    "path:id": "int $id",
+                    "body": "array $body"
+                },
+                "returns": "void"
+            },
+            "POST /pullzone/{id}/purgeCache": {
+                "method": "PullZone::purgeCache",
+                "params": {
+                    "path:id": "int $id",
+                    "body": "?array $body = null"
+                },
+                "returns": "void"
+            },
+            "POST /pullzone/{id}/removeAllowedReferrer": {
+                "method": "PullZone::removeAllowedReferer",
+                "params": {
+                    "path:id": "int $id",
+                    "body": "array $body"
+                },
+                "returns": "void"
+            },
+            "POST /pullzone/{id}/removeBlockedIp": {
+                "method": "PullZone::removeBlockedIp",
+                "params": {
+                    "path:id": "int $id",
+                    "body": "array $body"
+                },
+                "returns": "void"
+            },
+            "POST /pullzone/{id}/removeBlockedReferrer": {
+                "method": "PullZone::removeBlockedReferer",
+                "params": {
+                    "path:id": "int $id",
+                    "body": "array $body"
+                },
+                "returns": "void"
+            },
+            "POST /pullzone/{id}/resetSecurityKey": {
+                "method": "PullZone::resetTokenKey",
+                "params": {
+                    "path:id": "int $id",
+                    "body": "?array $body = null"
+                },
+                "returns": "void"
+            },
+            "POST /pullzone/{id}/setForceSSL": {
+                "method": "PullZone::setForceSsl",
+                "params": {
+                    "path:id": "int $id",
+                    "body": "array $body"
+                },
+                "returns": "void"
+            },
+            "POST /pullzone/{id}/updatePrivateKeyType": {
+                "method": "PullZone::changeHostnamePrivateKeyType",
+                "params": {
+                    "path:id": "int $id",
+                    "body": "array $body"
+                },
+                "returns": "void"
+            },
+            "POST /pullzone/{pullZoneId}/edgerules/addOrUpdate": {
+                "method": "PullZone::addOrUpdateEdgeRule",
+                "params": {
+                    "path:pullZoneId": "int $pullZoneId",
+                    "body": "array $body"
+                },
+                "returns": "void"
+            },
+            "POST /pullzone/{pullZoneId}/edgerules/{edgeRuleId}/setEdgeRuleEnabled": {
+                "method": "PullZone::setEdgeRuleEnabled",
+                "params": {
+                    "path:pullZoneId": "int $pullZoneId",
+                    "path:edgeRuleId": "string $edgeRuleId",
+                    "body": "array $body"
+                },
+                "returns": "void"
+            },
+            "POST /purge": {
+                "method": "Purge::purgeUrl",
+                "params": {
+                    "query:url": "string $url",
+                    "query:async": "?bool $async = null",
+                    "query:exactPath": "?bool $exactPath = null"
+                },
+                "returns": "void"
+            },
+            "POST /storagezone": {
+                "method": "StorageZone::addStorageZone",
+                "params": {
+                    "body": "array $body"
+                },
+                "returns": "mixed"
+            },
+            "POST /storagezone/checkavailability": {
+                "method": "StorageZone::checkStorageZoneAvailability",
+                "params": {
+                    "body": "array $body"
+                },
+                "returns": "void"
+            },
+            "POST /storagezone/resetReadOnlyPassword": {
+                "method": "StorageZone::resetReadOnlyPassword",
+                "params": {
+                    "query:id": "int $id"
+                },
+                "returns": "void"
+            },
+            "POST /storagezone/{id}": {
+                "method": "StorageZone::updateStorageZone",
+                "params": {
+                    "path:id": "int $id",
+                    "body": "array $body"
+                },
+                "returns": "void"
+            },
+            "POST /storagezone/{id}/resetPassword": {
+                "method": "StorageZone::resetPassword",
+                "params": {
+                    "path:id": "int $id"
+                },
+                "returns": "void"
+            },
+            "POST /user/closeaccount": {
+                "method": "User::closeAccount",
+                "params": {
+                    "body": "array $body"
+                },
+                "returns": "mixed"
+            },
+            "POST /videolibrary": {
+                "method": "StreamVideoLibrary::addVideoLibrary",
+                "params": {
+                    "body": "array $body"
+                },
+                "returns": "mixed"
+            },
+            "POST /videolibrary/{id}": {
+                "method": "StreamVideoLibrary::updateVideoLibrary",
+                "params": {
+                    "path:id": "int $id",
+                    "body": "array $body"
+                },
+                "returns": "mixed"
+            },
+            "POST /videolibrary/{id}/addAllowedReferrer": {
+                "method": "StreamVideoLibrary::addAllowedReferer",
+                "params": {
+                    "path:id": "int $id",
+                    "body": "array $body"
+                },
+                "returns": "void"
+            },
+            "POST /videolibrary/{id}/addBlockedReferrer": {
+                "method": "StreamVideoLibrary::addBlockedReferer",
+                "params": {
+                    "path:id": "int $id",
+                    "body": "array $body"
+                },
+                "returns": "void"
+            },
+            "POST /videolibrary/{id}/removeAllowedReferrer": {
+                "method": "StreamVideoLibrary::removeAllowedReferer",
+                "params": {
+                    "path:id": "int $id",
+                    "body": "array $body"
+                },
+                "returns": "void"
+            },
+            "POST /videolibrary/{id}/removeBlockedReferrer": {
+                "method": "StreamVideoLibrary::removeBlockedReferer",
+                "params": {
+                    "path:id": "int $id",
+                    "body": "array $body"
+                },
+                "returns": "void"
+            },
+            "POST /videolibrary/{id}/resetApiKey": {
+                "method": "StreamVideoLibrary::resetApiKey",
+                "params": {
+                    "path:id": "int $id"
+                },
+                "returns": "void"
+            },
+            "POST /videolibrary/{id}/resetReadOnlyApiKey": {
+                "method": "StreamVideoLibrary::resetReadOnlyApiKey",
+                "params": {
+                    "path:id": "int $id"
+                },
+                "returns": "void"
+            },
+            "PUT /dnszone/{zoneId}/records": {
+                "method": "DnsZone::addDnsRecord",
+                "params": {
+                    "path:zoneId": "int $zoneId",
+                    "body": "array $body"
+                },
+                "returns": "mixed"
+            },
+            "PUT /videolibrary/{id}/live/thumbnail": {
+                "method": "StreamVideoLibrary::addLiveThumbnail",
+                "params": {
+                    "path:id": "int $id"
+                },
+                "returns": "void"
+            },
+            "PUT /videolibrary/{id}/live/watermark": {
+                "method": "StreamVideoLibrary::addLiveWatermark",
+                "params": {
+                    "path:id": "int $id"
+                },
+                "returns": "void"
+            },
+            "PUT /videolibrary/{id}/watermark": {
+                "method": "StreamVideoLibrary::addWatermark",
+                "params": {
+                    "path:id": "int $id"
+                },
+                "returns": "void"
+            }
+        },
+        "enums": {
+            "AcceleratedStatus": {
+                "None": 0,
+                "Pending": 1,
+                "Processing": 2,
+                "Completed": 3,
+                "Failed": 4
+            },
+            "AppliedPricingType": {
+                "ListPrice": 0,
+                "UserOverride": 1,
+                "ResourceOverride": 2
+            },
+            "BillingRecordType": {
+                "PayPal": 0,
+                "Crypto": 1,
+                "CreditCard": 2,
+                "MonthlyUsage": 3,
+                "Refund": 4,
+                "CouponCode": 5,
+                "BankTransfer": 6,
+                "AffiliateCredits": 7
+            },
+            "CertificateProvisionType": {
+                "Unknown": 0,
+                "Http01": 1,
+                "Dns01": 2,
+                "Custom": 3,
+                "Managed": 4
+            },
+            "DnsMonitoringStatus": {
+                "Unknown": 0,
+                "Online": 1,
+                "Offline": 2
+            },
+            "DnsMonitoringType": {
+                "None": 0,
+                "Ping": 1,
+                "Http": 2,
+                "Monitor": 3
+            },
+            "DnsRecordTypes": {
+                "A": 0,
+                "Aaaa": 1,
+                "Cname": 2,
+                "Txt": 3,
+                "Mx": 4,
+                "Redirect": 5,
+                "Flatten": 6,
+                "PullZone": 7,
+                "Srv": 8,
+                "Caa": 9,
+                "Ptr": 10,
+                "Script": 11,
+                "Ns": 12,
+                "Svcb": 13,
+                "Https": 14,
+                "Tlsa": 15
+            },
+            "DnsRecordTypes2": {
+                "A": 0,
+                "Aaaa": 1,
+                "Cname": 2,
+                "Txt": 3,
+                "Mx": 4,
+                "Redirect": 5,
+                "Flatten": 6,
+                "PullZone": 7,
+                "Srv": 8,
+                "Caa": 9,
+                "Ptr": 10,
+                "Script": 11,
+                "Ns": 12,
+                "Svcb": 13,
+                "Https": 14,
+                "Tlsa": 15
+            },
+            "DnsSmartRoutingType": {
+                "None": 0,
+                "Latency": 1,
+                "Geolocation": 2
+            },
+            "DnsViewType": {
+                "Full": 0,
+                "Lite": 1
+            },
+            "DnsZoneDiscoveredRecordType": {
+                "A": 0,
+                "Aaaa": 1,
+                "Cname": 2,
+                "Txt": 3,
+                "Mx": 4,
+                "Srv": 8,
+                "Caa": 9,
+                "Ptr": 10,
+                "Ns": 12,
+                "Svcb": 13,
+                "Https": 14,
+                "Tlsa": 15,
+                "Soa": 16
+            },
+            "DnsZoneScanJobStatus": {
+                "Pending": 0,
+                "InProgress": 1,
+                "Completed": 2,
+                "Failed": 3
+            },
+            "DrmVersion": {
+                "Basic": 0,
+                "Enterprise": 1,
+                "BasicV2": 2
+            },
+            "EdgeRuleActionType": {
+                "ForceSsl": 0,
+                "Redirect": 1,
+                "OriginUrl": 2,
+                "OverrideCacheTime": 3,
+                "BlockRequest": 4,
+                "SetResponseHeader": 5,
+                "SetRequestHeader": 6,
+                "ForceDownload": 7,
+                "DisableTokenAuthentication": 8,
+                "EnableTokenAuthentication": 9,
+                "OverrideCacheTimePublic": 10,
+                "IgnoreQueryString": 11,
+                "DisableOptimizer": 12,
+                "ForceCompression": 13,
+                "SetStatusCode": 14,
+                "BypassPermaCache": 15,
+                "OverrideBrowserCacheTime": 16,
+                "OriginStorage": 17,
+                "SetNetworkRateLimit": 18,
+                "SetConnectionLimit": 19,
+                "SetRequestsPerSecondLimit": 20,
+                "RunEdgeScript": 21,
+                "OriginMagicContainers": 22,
+                "DisableWaf": 23,
+                "RetryOrigin": 24,
+                "OverrideBrowserCacheResponseHeader": 25,
+                "RemoveBrowserCacheResponseHeader": 26,
+                "DisableShieldChallenge": 27,
+                "DisableShield": 28,
+                "DisableShieldBotDetection": 29,
+                "BypassAwsS3Authentication": 30,
+                "DisableShieldAccessLists": 31,
+                "DisableShieldRateLimiting": 32,
+                "EnableRequestCoalescing": 33,
+                "DisableRequestCoalescing": 34,
+                "UseLoadBalancer": 35,
+                "ForceLoadBalancerStickySessionMode": 36,
+                "StripCookiesClientToOrigin": 37
+            },
+            "EncodingTier": {
+                "Free": 0,
+                "Premium": 1
+            },
+            "ExecutionPhase": {
+                "Cache": 0,
+                "LoadBalancer": 1,
+                "PreCache": 2
+            },
+            "HealthStatus": {
+                "Healthy": 0,
+                "Degraded": 1
+            },
+            "IpFamilyPolicy": {
+                "IPv4Only": 0,
+                "DualStack": 1,
+                "DualStackPreferIPv6": 2,
+                "IPv6Only": 3
+            },
+            "LoadBalancerStickySessionType": {
+                "Off": 0,
+                "Cookie": 1
+            },
+            "LogAnonymizationType": {
+                "OneDigit": 0,
+                "Drop": 1
+            },
+            "LogOrdering": {
+                "Ascending": "Ascending",
+                "Descending": "Descending"
+            },
+            "OptimizerHtmlToMarkdownType": {
+                "Off": 0,
+                "Simple": 1,
+                "Prerendered": 2
+            },
+            "OptimizerWatermarkPosition": {
+                "BottomLeft": 0,
+                "BottomRight": 1,
+                "TopLeft": 2,
+                "TopRight": 3,
+                "Center": 4,
+                "CenterStretch": 5
+            },
+            "OriginGroupLoadBalancingMethod": {
+                "WeightedRandom": 0,
+                "RoundRobin": 1,
+                "GeoLocation": 2,
+                "LowestAverageLatency": 3
+            },
+            "OriginLoadBalancingMethod": {
+                "RoundRobin": 0,
+                "WeightedRandom": 1,
+                "LeastConnections": 2,
+                "Latency": 3
+            },
+            "OriginType": {
+                "Standard": 0,
+                "Storage": 1,
+                "EdgeScript": 2,
+                "MagicContainer": 3
+            },
+            "PatternMatchingTypes": {
+                "MatchAny": 0,
+                "MatchAll": 1,
+                "MatchNone": 2
+            },
+            "PermaCacheType": {
+                "Automatic": 0,
+                "Manual": 1
+            },
+            "PreloadingScreenTheme": {
+                "Light": 0,
+                "Dark": 1
+            },
+            "PricingEstimationSource": {
+                "CdnStandardTierEuTraffic": 1101,
+                "CdnStandardTierNaTraffic": 1102,
+                "CdnStandardTierApacTraffic": 1103,
+                "CdnStandardTierAfTraffic": 1104,
+                "CdnStandardTierSaTraffic": 1105,
+                "CdnStandardTierUncategorized": 1106,
+                "CdnStandardTierStreamEuTraffic": 1201,
+                "CdnStandardTierStreamNaTraffic": 1202,
+                "CdnStandardTierStreamApacTraffic": 1203,
+                "CdnStandardTierStreamAfTraffic": 1204,
+                "CdnStandardTierStreamSaTraffic": 1205,
+                "CdnStandardTierStreamUncategorized": 1206,
+                "CdnVolumeTierEuTraffic": 1301,
+                "CdnVolumeTierNaTraffic": 1302,
+                "CdnVolumeTierApacTraffic": 1303,
+                "CdnVolumeTierAfTraffic": 1304,
+                "CdnVolumeTierSaTraffic": 1305,
+                "CdnVolumeTierUncategorized": 1306,
+                "CdnVolumeTierStreamEuTraffic": 1401,
+                "CdnVolumeTierStreamNaTraffic": 1402,
+                "CdnVolumeTierStreamApacTraffic": 1403,
+                "CdnVolumeTierStreamAfTraffic": 1404,
+                "CdnVolumeTierStreamSaTraffic": 1405,
+                "CdnVolumeTierStreamUncategorized": 1406,
+                "CdnStandardTierStorageEuTraffic": 1501,
+                "CdnStandardTierStorageNaTraffic": 1502,
+                "CdnStandardTierStorageApacTraffic": 1503,
+                "CdnStandardTierStorageAfTraffic": 1504,
+                "CdnStandardTierStorageSaTraffic": 1505,
+                "CdnStandardTierStorageUncategorized": 1506,
+                "CdnVolumeTierStorageEuTraffic": 1511,
+                "CdnVolumeTierStorageNaTraffic": 1512,
+                "CdnVolumeTierStorageApacTraffic": 1513,
+                "CdnVolumeTierStorageAfTraffic": 1514,
+                "CdnVolumeTierStorageSaTraffic": 1515,
+                "CdnVolumeTierStorageUncategorized": 1516,
+                "CdnWebSocketsConsumptionBased": 1630,
+                "CdnStandardTierMagicContainersEuTraffic": 1701,
+                "CdnStandardTierMagicContainersNaTraffic": 1702,
+                "CdnStandardTierMagicContainersApacTraffic": 1703,
+                "CdnStandardTierMagicContainersAfTraffic": 1704,
+                "CdnStandardTierMagicContainersSaTraffic": 1705,
+                "CdnStandardTierMagicContainersUncategorized": 1706,
+                "CdnVolumeTierMagicContainersEuTraffic": 1711,
+                "CdnVolumeTierMagicContainersNaTraffic": 1712,
+                "CdnVolumeTierMagicContainersApacTraffic": 1713,
+                "CdnVolumeTierMagicContainersAfTraffic": 1714,
+                "CdnVolumeTierMagicContainersSaTraffic": 1715,
+                "CdnVolumeTierMagicContainersUncategorized": 1716,
+                "CdnStandardTierScriptingEuTraffic": 1801,
+                "CdnStandardTierScriptingNaTraffic": 1802,
+                "CdnStandardTierScriptingApacTraffic": 1803,
+                "CdnStandardTierScriptingAfTraffic": 1804,
+                "CdnStandardTierScriptingSaTraffic": 1805,
+                "CdnStandardTierScriptingUncategorized": 1806,
+                "CdnVolumeTierScriptingEuTraffic": 1811,
+                "CdnVolumeTierScriptingNaTraffic": 1812,
+                "CdnVolumeTierScriptingApacTraffic": 1813,
+                "CdnVolumeTierScriptingAfTraffic": 1814,
+                "CdnVolumeTierScriptingSaTraffic": 1815,
+                "CdnVolumeTierScriptingUncategorized": 1816,
+                "StorageStandardTier": 2100,
+                "StorageSsdTier": 2200,
+                "StorageStandardTierStream": 2300,
+                "StorageSsdTierStream": 2400,
+                "Transcribing": 4100,
+                "PremiumEncoding": 4200,
+                "DrmBase": 4300,
+                "DrmLicenseIssued": 4400,
+                "LiveEncodingSd": 4501,
+                "LiveEncodingHd": 4502,
+                "LiveEncoding4K": 4503,
+                "ScriptingCdnRequests": 5200,
+                "ScriptingCdnCpu": 5300
+            },
+            "PrivateKeyType": {
+                "Ecdsa": 0,
+                "Rsa": 1
+            },
+            "PullZoneLogFormat": {
+                "Plain": 0,
+                "Json": 1
+            },
+            "PullZoneLogForwarderProtocolType": {
+                "Udp": 0,
+                "Tcp": 1,
+                "TcpEncrypted": 2,
+                "DataDog": 3
+            },
+            "PullZoneOriginType": {
+                "OriginUrl": 0,
+                "DnsAccelerate": 1,
+                "StorageZone": 2,
+                "LoadBalancer": 3,
+                "EdgeScript": 4,
+                "MagicContainers": 5,
+                "PushZone": 6
+            },
+            "PullZoneType": {
+                "Premium": 0,
+                "Volume": 1
+            },
+            "ShieldDDosProtectionType": {
+                "DetectOnly": 0,
+                "ActiveStandard": 1,
+                "ActiveAggressive": 2
+            },
+            "StickySessionType": {
+                "Off": 0,
+                "On": 1
+            },
+            "StorageZoneS3Type": {
+                "NotSupported": 0,
+                "Supported": 1
+            },
+            "StorageZoneTier": {
+                "Standard": 0,
+                "Edge": 1
+            },
+            "TlsSecurityLevelType": {
+                "Legacy": 0,
+                "Compatible": 1,
+                "ModernOnly": 2
+            },
+            "TriggerMatchingTypes": {
+                "MatchAny": 0,
+                "MatchAll": 1,
+                "MatchNone": 2
+            },
+            "TriggerTypes": {
+                "Url": 0,
+                "RequestHeader": 1,
+                "ResponseHeader": 2,
+                "UrlExtension": 3,
+                "CountryCode": 4,
+                "RemoteIp": 5,
+                "UrlQueryString": 6,
+                "RandomChance": 7,
+                "StatusCode": 8,
+                "RequestMethod": 9,
+                "CookieValue": 10,
+                "CountryStateCode": 11,
+                "OriginRetryAttemptCount": 12,
+                "OriginConnectionError": 13
+            },
+            "WidevineMinClientSecurityLevel": {
+                "None": 0,
+                "L1": 1,
+                "L2": 2,
+                "L3": 3
+            }
+        }
+    },
+    "Database": {
+        "operations": {
+            "DELETE /v1/databases/{db_id}": {
+                "method": "Database::deleteDatabase",
+                "params": {
+                    "path:db_id": "string $dbId"
+                },
+                "returns": "mixed"
+            },
+            "DELETE /v1/groups/{group_id}": {
+                "method": "DatabaseGroup::deleteGroup",
+                "params": {
+                    "path:group_id": "string $groupId"
+                },
+                "returns": "mixed"
+            },
+            "DELETE /v2/databases/{db_id}": {
+                "method": "DatabaseV2::deleteDatabase",
+                "params": {
+                    "path:db_id": "string $dbId"
+                },
+                "returns": "mixed"
+            },
+            "GET /v1/config": {
+                "method": "Configuration::list",
+                "params": [],
+                "returns": "mixed"
+            },
+            "GET /v1/config/limits": {
+                "method": "Configuration::getLimits",
+                "params": [],
+                "returns": "mixed"
+            },
+            "GET /v1/config/optimal": {
+                "method": "Configuration::optimal",
+                "params": {
+                    "query:cdn_server_token": "string $cdnServerToken"
+                },
+                "returns": "mixed"
+            },
+            "GET /v1/config/optimal_single": {
+                "method": "Configuration::optimalSingleRegion",
+                "params": {
+                    "query:cdn_server_token": "string $cdnServerToken"
+                },
+                "returns": "mixed"
+            },
+            "GET /v1/databases": {
+                "method": "Database::list",
+                "params": {
+                    "query:group_id": "?string $groupId = null"
+                },
+                "returns": "mixed"
+            },
+            "GET /v1/databases/{db_id}": {
+                "method": "Database::readDatabase",
+                "params": {
+                    "path:db_id": "string $dbId"
+                },
+                "returns": "mixed"
+            },
+            "GET /v1/groups": {
+                "method": "DatabaseGroup::list",
+                "params": {
+                    "query:search": "?string $search = null"
+                },
+                "returns": "mixed"
+            },
+            "GET /v1/groups/{group_id}": {
+                "method": "DatabaseGroup::read",
+                "params": {
+                    "path:group_id": "string $groupId"
+                },
+                "returns": "mixed"
+            },
+            "GET /v1/groups/{group_id}/aggregated_usage": {
+                "method": "DatabaseGroup::aggregatedUsage",
+                "params": {
+                    "path:group_id": "string $groupId",
+                    "query:from": "string $from",
+                    "query:to": "string $to"
+                },
+                "returns": "mixed"
+            },
+            "GET /v1/groups/{group_id}/stats": {
+                "method": "DatabaseGroup::statistics",
+                "params": {
+                    "path:group_id": "string $groupId",
+                    "query:from": "string $from",
+                    "query:to": "string $to"
+                },
+                "returns": "mixed"
+            },
+            "GET /v2/databases": {
+                "method": "DatabaseV2::list",
+                "params": {
+                    "query:page": "int $page",
+                    "query:search": "?string $search = null",
+                    "query:per_page": "?int $perPage = null"
+                },
+                "returns": "mixed"
+            },
+            "GET /v2/databases/active_usage": {
+                "method": "DatabaseV2::activeStats",
+                "params": [],
+                "returns": "mixed"
+            },
+            "GET /v2/databases/{db_id}": {
+                "method": "DatabaseV2::read",
+                "params": {
+                    "path:db_id": "string $dbId"
+                },
+                "returns": "mixed"
+            },
+            "GET /v2/databases/{db_id}/statistics": {
+                "method": "DatabaseV2::statistics",
+                "params": {
+                    "path:db_id": "string $dbId",
+                    "query:from": "string $from",
+                    "query:to": "string $to"
+                },
+                "returns": "mixed"
+            },
+            "GET /v2/databases/{db_id}/usage": {
+                "method": "DatabaseV2::aggregatedUsage",
+                "params": {
+                    "path:db_id": "string $dbId",
+                    "query:from": "string $from",
+                    "query:to": "string $to"
+                },
+                "returns": "mixed"
+            },
+            "PATCH /v1/groups/{group_id}": {
+                "method": "DatabaseGroup::update",
+                "params": {
+                    "path:group_id": "string $groupId",
+                    "body": "array $body"
+                },
+                "returns": "mixed"
+            },
+            "PATCH /v2/databases/{db_id}": {
+                "method": "DatabaseV2::update",
+                "params": {
+                    "path:db_id": "string $dbId",
+                    "body": "array $body"
+                },
+                "returns": "mixed"
+            },
+            "POST /v1/databases": {
+                "method": "Database::createDatabase",
+                "params": {
+                    "body": "array $body"
+                },
+                "returns": "mixed"
+            },
+            "POST /v1/databases/{db_id}/auth/invalidate": {
+                "method": "Database::invalidateTokens",
+                "params": {
+                    "path:db_id": "string $dbId"
+                },
+                "returns": "void"
+            },
+            "POST /v1/databases/{db_id}/auth/tokens": {
+                "method": "Database::generateToken",
+                "params": {
+                    "path:db_id": "string $dbId",
+                    "body": "array $body"
+                },
+                "returns": "mixed"
+            },
+            "POST /v1/databases/{db_id}/fork": {
+                "method": "Database::previewFork",
+                "params": {
+                    "path:db_id": "string $dbId",
+                    "body": "array $body"
+                },
+                "returns": "mixed"
+            },
+            "POST /v1/databases/{db_id}/list_versions": {
+                "method": "Database::previewListVersions",
+                "params": {
+                    "path:db_id": "string $dbId",
+                    "body": "array $body"
+                },
+                "returns": "mixed"
+            },
+            "POST /v1/databases/{db_id}/restore": {
+                "method": "Database::previewDestructiveRestore",
+                "params": {
+                    "path:db_id": "string $dbId",
+                    "body": "array $body"
+                },
+                "returns": "mixed"
+            },
+            "POST /v1/groups": {
+                "method": "DatabaseGroup::create",
+                "params": {
+                    "body": "array $body"
+                },
+                "returns": "mixed"
+            },
+            "POST /v1/groups/{group_id}/auth/generate": {
+                "method": "DatabaseGroup::generateToken",
+                "params": {
+                    "path:group_id": "string $groupId",
+                    "body": "array $body"
+                },
+                "returns": "mixed"
+            },
+            "POST /v1/groups/{group_id}/auth/invalidate": {
+                "method": "DatabaseGroup::invalidateTokens",
+                "params": {
+                    "path:group_id": "string $groupId"
+                },
+                "returns": "void"
+            },
+            "POST /v1/live/live_db": {
+                "method": "LiveMetrics::liveMetricsDBs",
+                "params": {
+                    "body": "array $body"
+                },
+                "returns": "mixed"
+            },
+            "POST /v1/live/live_group": {
+                "method": "LiveMetrics::liveMetricsGroups",
+                "params": {
+                    "body": "array $body"
+                },
+                "returns": "mixed"
+            },
+            "POST /v2/databases": {
+                "method": "DatabaseV2::create",
+                "params": {
+                    "body": "array $body"
+                },
+                "returns": "mixed"
+            },
+            "POST /v2/databases/{db_id}/auth/revoke": {
+                "method": "DatabaseV2::invalidateTokens",
+                "params": {
+                    "path:db_id": "string $dbId"
+                },
+                "returns": "void"
+            },
+            "PUT /v2/databases/{db_id}/auth/generate": {
+                "method": "DatabaseV2::generateToken",
+                "params": {
+                    "path:db_id": "string $dbId",
+                    "body": "array $body"
+                },
+                "returns": "mixed"
+            }
+        },
+        "enums": {
+            "Authorization": {
+                "FullAccess": "full-access",
+                "ReadOnly": "read-only"
+            },
+            "Authorization2": {
+                "FullAccess": "full-access",
+                "ReadOnly": "read-only"
+            },
+            "Authorization3": {
+                "FullAccess": "full-access",
+                "ReadOnly": "read-only"
+            },
+            "ChartUnit": {
+                "NoUnit": "NoUnit",
+                "Milliseconds": "milliseconds",
+                "Megabyte": "megabyte"
+            },
+            "PossibleRegion": {
+                "Ams": "AMS",
+                "Asb": "ASB",
+                "At": "AT",
+                "Be": "BE",
+                "Bo": "BO",
+                "Br": "BR",
+                "Bu": "BU",
+                "Ca": "CA",
+                "Co": "CO",
+                "Cz": "CZ",
+                "De": "DE",
+                "Den": "DEN",
+                "Dk": "DK",
+                "Es": "ES",
+                "Fr": "FR",
+                "Ga": "GA",
+                "Gr": "GR",
+                "Hk": "HK",
+                "Hr": "HR",
+                "Id": "ID",
+                "Il": "IL",
+                "Isr": "ISR",
+                "It": "IT",
+                "Jh": "JH",
+                "Jp": "JP",
+                "La": "LA",
+                "Mi": "MI",
+                "Mx": "MX",
+                "My": "MY",
+                "Ng": "NG",
+                "Ny": "NY",
+                "Ph": "PH",
+                "Pl": "PL",
+                "Se": "SE",
+                "Sg": "SG",
+                "Sil": "SIL",
+                "Syd": "SYD",
+                "Th": "TH",
+                "Tr": "TR",
+                "Tx": "TX",
+                "Uk": "UK",
+                "Wa": "WA"
+            },
+            "RegionGroups": {
+                "Eu": "EU",
+                "Na": "NA",
+                "Sa": "SA",
+                "Af": "AF",
+                "Asia": "ASIA",
+                "Oc": "OC"
+            }
+        }
+    },
+    "EdgeScripting": {
+        "operations": {
+            "DELETE /compute/script/{id}": {
+                "method": "EdgeScript::deleteEdgeScript",
+                "params": {
+                    "path:id": "int $id",
+                    "query:deleteLinkedPullZones": "?bool $deleteLinkedPullZones = null"
+                },
+                "returns": "void"
+            },
+            "DELETE /compute/script/{id}/secrets/{secretId}": {
+                "method": "Secret::deleteSecret",
+                "params": {
+                    "path:id": "int $id",
+                    "path:secretId": "int $secretId"
+                },
+                "returns": "void"
+            },
+            "DELETE /compute/script/{id}/variables/{variableId}": {
+                "method": "Variable::deleteVariable",
+                "params": {
+                    "path:id": "int $id",
+                    "path:variableId": "int $variableId"
+                },
+                "returns": "void"
+            },
+            "GET /compute/script": {
+                "method": "EdgeScript::listEdgeScripts",
+                "params": {
+                    "query:type": "?array $type = null",
+                    "query:page": "?int $page = null",
+                    "query:perPage": "?int $perPage = null",
+                    "query:search": "?string $search = null",
+                    "query:includeLinkedPullzones": "?bool $includeLinkedPullzones = null",
+                    "query:integrationId": "?int $integrationId = null"
+                },
+                "returns": "mixed"
+            },
+            "GET /compute/script/{id}": {
+                "method": "EdgeScript::getEdgeScript",
+                "params": {
+                    "path:id": "int $id"
+                },
+                "returns": "mixed"
+            },
+            "GET /compute/script/{id}/code": {
+                "method": "Code::getCode",
+                "params": {
+                    "path:id": "int $id"
+                },
+                "returns": "mixed"
+            },
+            "GET /compute/script/{id}/releases": {
+                "method": "Release::getReleases",
+                "params": {
+                    "path:id": "int $id",
+                    "query:page": "?int $page = null",
+                    "query:perPage": "?int $perPage = null"
+                },
+                "returns": "mixed"
+            },
+            "GET /compute/script/{id}/releases/active": {
+                "method": "Release::getActiveRelease",
+                "params": {
+                    "path:id": "int $id"
+                },
+                "returns": "mixed"
+            },
+            "GET /compute/script/{id}/secrets": {
+                "method": "Secret::listSecrets",
+                "params": {
+                    "path:id": "int $id"
+                },
+                "returns": "mixed"
+            },
+            "GET /compute/script/{id}/statistics": {
+                "method": "EdgeScript::getEdgeScriptStatistics",
+                "params": {
+                    "path:id": "int $id",
+                    "query:dateFrom": "?string $dateFrom = null",
+                    "query:dateTo": "?string $dateTo = null",
+                    "query:loadLatest": "?bool $loadLatest = null",
+                    "query:hourly": "?bool $hourly = null"
+                },
+                "returns": "mixed"
+            },
+            "GET /compute/script/{id}/variables/{variableId}": {
+                "method": "Variable::getVariable",
+                "params": {
+                    "path:id": "int $id",
+                    "path:variableId": "int $variableId"
+                },
+                "returns": "mixed"
+            },
+            "POST /compute/script": {
+                "method": "EdgeScript::addEdgeScript",
+                "params": {
+                    "body": "array $body"
+                },
+                "returns": "mixed"
+            },
+            "POST /compute/script/{id}": {
+                "method": "EdgeScript::updateEdgeScript",
+                "params": {
+                    "path:id": "int $id",
+                    "body": "array $body"
+                },
+                "returns": "mixed"
+            },
+            "POST /compute/script/{id}/code": {
+                "method": "Code::setCode",
+                "params": {
+                    "path:id": "int $id",
+                    "body": "array $body"
+                },
+                "returns": "void"
+            },
+            "POST /compute/script/{id}/deploymentKey/rotate": {
+                "method": "EdgeScript::rotateDeploymentKey",
+                "params": {
+                    "path:id": "int $id"
+                },
+                "returns": "void"
+            },
+            "POST /compute/script/{id}/publish": {
+                "method": "Release::publishRelease",
+                "params": {
+                    "path:id": "int $id",
+                    "body": "array $body"
+                },
+                "returns": "void"
+            },
+            "POST /compute/script/{id}/publish/{uuid}": {
+                "method": "Release::publishByUuid",
+                "params": {
+                    "path:id": "int $id",
+                    "path:uuid": "string $uuid",
+                    "body": "array $body"
+                },
+                "returns": "void"
+            },
+            "POST /compute/script/{id}/secrets": {
+                "method": "Secret::addSecret",
+                "params": {
+                    "path:id": "int $id",
+                    "body": "array $body"
+                },
+                "returns": "mixed"
+            },
+            "POST /compute/script/{id}/secrets/{secretId}": {
+                "method": "Secret::updateSecret",
+                "params": {
+                    "path:id": "int $id",
+                    "path:secretId": "int $secretId",
+                    "body": "array $body"
+                },
+                "returns": "mixed"
+            },
+            "POST /compute/script/{id}/variables/add": {
+                "method": "Variable::addVariable",
+                "params": {
+                    "path:id": "int $id",
+                    "body": "array $body"
+                },
+                "returns": "mixed"
+            },
+            "POST /compute/script/{id}/variables/{variableId}": {
+                "method": "Variable::updateVariable",
+                "params": {
+                    "path:id": "int $id",
+                    "path:variableId": "int $variableId",
+                    "body": "array $body"
+                },
+                "returns": "mixed"
+            },
+            "PUT /compute/script/{id}/secrets": {
+                "method": "Secret::upsertSecret",
+                "params": {
+                    "path:id": "int $id",
+                    "body": "array $body"
+                },
+                "returns": "mixed"
+            },
+            "PUT /compute/script/{id}/variables": {
+                "method": "Variable::upsertVariable",
+                "params": {
+                    "path:id": "int $id",
+                    "body": "array $body"
+                },
+                "returns": "mixed"
+            }
+        },
+        "enums": {
+            "EdgeScriptReleaseStatus": {
+                "Archived": 0,
+                "Live": 1
+            },
+            "EdgeScriptTypes": {
+                "Dns": 0,
+                "Cdn": 1,
+                "Middleware": 2
+            },
+            "EdgeScriptTypes2": {
+                "Dns": 0,
+                "Cdn": 1,
+                "Middleware": 2
+            }
+        }
+    },
+    "MagicContainers": {
+        "operations": {
+            "DELETE /apps/{appId}": {
+                "method": "Applications::deleteApplication",
+                "params": {
+                    "path:appId": "string $appId"
+                },
+                "returns": "void"
+            },
+            "DELETE /apps/{appId}/containers/{containerId}": {
+                "method": "Containers::deleteApplicationContainerTemplate",
+                "params": {
+                    "path:appId": "string $appId",
+                    "path:containerId": "string $containerId"
+                },
+                "returns": "void"
+            },
+            "DELETE /apps/{appId}/endpoints/{endpointId}": {
+                "method": "Endpoints::deleteApplication",
+                "params": {
+                    "path:appId": "string $appId",
+                    "path:endpointId": "string $endpointId"
+                },
+                "returns": "void"
+            },
+            "DELETE /apps/{appId}/volumes/{volumeId}": {
+                "method": "Volumes::deleteAllVolumeInstances",
+                "params": {
+                    "path:appId": "string $appId",
+                    "path:volumeId": "string $volumeId"
+                },
+                "returns": "mixed"
+            },
+            "DELETE /apps/{appId}/volumes/{volumeId}/instances/{instanceId}": {
+                "method": "Volumes::deleteVolumeInstance",
+                "params": {
+                    "path:appId": "string $appId",
+                    "path:volumeId": "string $volumeId",
+                    "path:instanceId": "string $instanceId"
+                },
+                "returns": "mixed"
+            },
+            "DELETE /log/forwarding/{appId}": {
+                "method": "LogForwarding::deleteLogForwardingConfiguration",
+                "params": {
+                    "path:appId": "string $appId"
+                },
+                "returns": "void"
+            },
+            "DELETE /registries/{registryId}": {
+                "method": "ContainerRegistries::deleteContainerRegistry",
+                "params": {
+                    "path:registryId": "int $registryId"
+                },
+                "returns": "mixed"
+            },
+            "GET /apps": {
+                "method": "Applications::listApplications",
+                "params": {
+                    "query:nextCursor": "?string $nextCursor = null",
+                    "query:limit": "?int $limit = null"
+                },
+                "returns": "mixed"
+            },
+            "GET /apps/{appId}": {
+                "method": "Applications::getApplication",
+                "params": {
+                    "path:appId": "string $appId"
+                },
+                "returns": "mixed"
+            },
+            "GET /apps/{appId}/autoscaling": {
+                "method": "AutoscalingSettings::getApplicationAutoscaling",
+                "params": {
+                    "path:appId": "string $appId"
+                },
+                "returns": "mixed"
+            },
+            "GET /apps/{appId}/containers/{containerId}": {
+                "method": "Containers::getApplicationContainerTemplate",
+                "params": {
+                    "path:appId": "string $appId",
+                    "path:containerId": "string $containerId"
+                },
+                "returns": "mixed"
+            },
+            "GET /apps/{appId}/endpoints": {
+                "method": "Endpoints::listApplicationEndpoints",
+                "params": {
+                    "path:appId": "string $appId"
+                },
+                "returns": "mixed"
+            },
+            "GET /apps/{appId}/overview": {
+                "method": "Applications::getApplicationOverview",
+                "params": {
+                    "path:appId": "string $appId"
+                },
+                "returns": "mixed"
+            },
+            "GET /apps/{appId}/region-settings": {
+                "method": "RegionSettings::getApplicationRegionSettings",
+                "params": {
+                    "path:appId": "string $appId"
+                },
+                "returns": "mixed"
+            },
+            "GET /apps/{appId}/statistics": {
+                "method": "Applications::getApplicationStatistics",
+                "params": {
+                    "path:appId": "string $appId",
+                    "query:fromDate": "string $fromDate",
+                    "query:granularity": "string $granularity",
+                    "query:toDate": "?string $toDate = null"
+                },
+                "returns": "mixed"
+            },
+            "GET /apps/{appId}/summary": {
+                "method": "Applications::getApplicationUsageSummary",
+                "params": {
+                    "path:appId": "string $appId"
+                },
+                "returns": "mixed"
+            },
+            "GET /apps/{appId}/volumes": {
+                "method": "Volumes::listVolumes",
+                "params": {
+                    "path:appId": "string $appId"
+                },
+                "returns": "mixed"
+            },
+            "GET /limits": {
+                "method": "Limits::getLimits",
+                "params": [],
+                "returns": "mixed"
+            },
+            "GET /log/forwarding": {
+                "method": "LogForwarding::listLogForwardingConfigurations",
+                "params": [],
+                "returns": "mixed"
+            },
+            "GET /log/forwarding/{appId}": {
+                "method": "LogForwarding::getLogForwardingConfiguration",
+                "params": {
+                    "path:appId": "string $appId"
+                },
+                "returns": "mixed"
+            },
+            "GET /nodes": {
+                "method": "Nodes::listNodes",
+                "params": {
+                    "query:nextCursor": "?string $nextCursor = null",
+                    "query:limit": "?int $limit = null"
+                },
+                "returns": "mixed"
+            },
+            "GET /nodes/plain": {
+                "method": "Nodes::listNodesPlain",
+                "params": [],
+                "returns": "mixed"
+            },
+            "GET /regions": {
+                "method": "Regions::listRegions",
+                "params": {
+                    "query:nextCursor": "?string $nextCursor = null",
+                    "query:limit": "?int $limit = null"
+                },
+                "returns": "mixed"
+            },
+            "GET /regions/optimal": {
+                "method": "Regions::getOptimalBaseRegion",
+                "params": {
+                    "query:cdnServerToken": "?string $cdnServerToken = null"
+                },
+                "returns": "mixed"
+            },
+            "GET /registries": {
+                "method": "ContainerRegistries::listContainerRegistries",
+                "params": [],
+                "returns": "mixed"
+            },
+            "GET /registries/{registryId}": {
+                "method": "ContainerRegistries::getContainerRegistry",
+                "params": {
+                    "path:registryId": "int $registryId"
+                },
+                "returns": "mixed"
+            },
+            "PATCH /apps/{appId}": {
+                "method": "Applications::patchApplication",
+                "params": {
+                    "path:appId": "string $appId",
+                    "body": "?array $body = null"
+                },
+                "returns": "mixed"
+            },
+            "PATCH /apps/{appId}/containers/{containerId}": {
+                "method": "Containers::patchApplicationContainerTemplate",
+                "params": {
+                    "path:appId": "string $appId",
+                    "path:containerId": "string $containerId",
+                    "body": "?array $body = null"
+                },
+                "returns": "mixed"
+            },
+            "PATCH /apps/{appId}/volumes/{volumeId}": {
+                "method": "Volumes::updateVolume",
+                "params": {
+                    "path:appId": "string $appId",
+                    "path:volumeId": "string $volumeId",
+                    "body": "?array $body = null"
+                },
+                "returns": "mixed"
+            },
+            "POST /apps": {
+                "method": "Applications::addApplication",
+                "params": {
+                    "body": "?array $body = null"
+                },
+                "returns": "mixed"
+            },
+            "POST /apps/{appId}/containers": {
+                "method": "Containers::addApplicationContainerTemplate",
+                "params": {
+                    "path:appId": "string $appId",
+                    "body": "?array $body = null"
+                },
+                "returns": "mixed"
+            },
+            "POST /apps/{appId}/containers/{containerId}/endpoints": {
+                "method": "Endpoints::addApplication",
+                "params": {
+                    "path:appId": "string $appId",
+                    "path:containerId": "string $containerId",
+                    "body": "?array $body = null"
+                },
+                "returns": "mixed"
+            },
+            "POST /apps/{appId}/deploy": {
+                "method": "Applications::deployApplication",
+                "params": {
+                    "path:appId": "string $appId"
+                },
+                "returns": "void"
+            },
+            "POST /apps/{appId}/pods/{podId}/recreate": {
+                "method": "Pods::recreatePod",
+                "params": {
+                    "path:appId": "string $appId",
+                    "path:podId": "string $podId"
+                },
+                "returns": "void"
+            },
+            "POST /apps/{appId}/restart": {
+                "method": "Applications::restartApplication",
+                "params": {
+                    "path:appId": "string $appId"
+                },
+                "returns": "void"
+            },
+            "POST /apps/{appId}/undeploy": {
+                "method": "Applications::undeployApplication",
+                "params": {
+                    "path:appId": "string $appId"
+                },
+                "returns": "void"
+            },
+            "POST /apps/{appId}/volumes/{volumeId}/detach": {
+                "method": "Volumes::detachVolume",
+                "params": {
+                    "path:appId": "string $appId",
+                    "path:volumeId": "string $volumeId"
+                },
+                "returns": "mixed"
+            },
+            "POST /log/forwarding": {
+                "method": "LogForwarding::createLogForwardingConfiguration",
+                "params": {
+                    "body": "array $body"
+                },
+                "returns": "mixed"
+            },
+            "POST /registries": {
+                "method": "ContainerRegistries::addContainerRegistry",
+                "params": {
+                    "body": "?array $body = null"
+                },
+                "returns": "mixed"
+            },
+            "POST /registries/config-suggestions": {
+                "method": "ContainerRegistries::getContainerConfigSuggestions",
+                "params": {
+                    "body": "?array $body = null"
+                },
+                "returns": "mixed"
+            },
+            "POST /registries/digest": {
+                "method": "ContainerRegistries::getContainerImageTagDigest",
+                "params": {
+                    "body": "?array $body = null"
+                },
+                "returns": "mixed"
+            },
+            "POST /registries/image-config": {
+                "method": "ContainerRegistries::getImageConfig",
+                "params": {
+                    "body": "?array $body = null"
+                },
+                "returns": "mixed"
+            },
+            "POST /registries/images": {
+                "method": "ContainerRegistries::listContainerImages",
+                "params": {
+                    "body": "?array $body = null"
+                },
+                "returns": "mixed"
+            },
+            "POST /registries/images/find": {
+                "method": "ContainerRegistries::findContainerImage",
+                "params": {
+                    "body": "?array $body = null"
+                },
+                "returns": "mixed"
+            },
+            "POST /registries/public-images/search": {
+                "method": "ContainerRegistries::searchForPublicContainerImages",
+                "params": {
+                    "body": "?array $body = null"
+                },
+                "returns": "mixed"
+            },
+            "POST /registries/tags": {
+                "method": "ContainerRegistries::listContainerImageTags",
+                "params": {
+                    "body": "?array $body = null"
+                },
+                "returns": "mixed"
+            },
+            "POST /registries/tags/paged": {
+                "method": "ContainerRegistries::listContainerImageTagsPage",
+                "params": {
+                    "body": "?array $body = null"
+                },
+                "returns": "mixed"
+            },
+            "PUT /apps/{appId}": {
+                "method": "Applications::updateApplication",
+                "params": {
+                    "path:appId": "string $appId",
+                    "body": "?array $body = null"
+                },
+                "returns": "mixed"
+            },
+            "PUT /apps/{appId}/autoscaling": {
+                "method": "AutoscalingSettings::updateApplicationAutoscaling",
+                "params": {
+                    "path:appId": "string $appId",
+                    "body": "?array $body = null"
+                },
+                "returns": "void"
+            },
+            "PUT /apps/{appId}/containers/{containerId}/env": {
+                "method": "Containers::setContainerEnvironmentVariables",
+                "params": {
+                    "path:appId": "string $appId",
+                    "path:containerId": "string $containerId",
+                    "body": "?array $body = null"
+                },
+                "returns": "mixed"
+            },
+            "PUT /apps/{appId}/endpoints/{endpointId}": {
+                "method": "Endpoints::updateApplication",
+                "params": {
+                    "path:appId": "string $appId",
+                    "path:endpointId": "string $endpointId",
+                    "body": "?array $body = null"
+                },
+                "returns": "void"
+            },
+            "PUT /apps/{appId}/region-settings": {
+                "method": "RegionSettings::updateApplicationRegionSettings",
+                "params": {
+                    "path:appId": "string $appId",
+                    "body": "?array $body = null"
+                },
+                "returns": "void"
+            },
+            "PUT /log/forwarding/{appId}": {
+                "method": "LogForwarding::updateLogForwardingConfiguration",
+                "params": {
+                    "path:appId": "string $appId",
+                    "body": "array $body"
+                },
+                "returns": "mixed"
+            },
+            "PUT /registries/{registryId}": {
+                "method": "ContainerRegistries::updateContainerRegistry",
+                "params": {
+                    "path:registryId": "int $registryId",
+                    "body": "?array $body = null"
+                },
+                "returns": "mixed"
+            }
+        },
+        "enums": {
+            "AnycastIpProtocolVersion": {
+                "IPv4": "iPv4"
+            },
+            "ApplicationRuntimeType": {
+                "Shared": "shared",
+                "Reserved": "reserved"
+            },
+            "ApplicationStatus": {
+                "Unknown": "unknown",
+                "Active": "active",
+                "Progressing": "progressing",
+                "Inactive": "inactive",
+                "Failing": "failing",
+                "Suspended": "suspended"
+            },
+            "ContainerStatus": {
+                "NotStarted": "notStarted",
+                "Started": "started",
+                "Ready": "ready"
+            },
+            "DataGranularity": {
+                "Daily": "Daily",
+                "Hourly": "Hourly",
+                "Minute": "Minute"
+            },
+            "DeploymentStatus": {
+                "Unknown": "unknown",
+                "Active": "active",
+                "Progressing": "progressing",
+                "Inactive": "inactive",
+                "Failing": "failing"
+            },
+            "EndpointType": {
+                "Cdn": "cdn",
+                "Anycast": "anycast",
+                "PublicIp": "publicIp"
+            },
+            "Grade": {
+                "CouldBeBetter": "couldBeBetter",
+                "NotBad": "notBad",
+                "DoingGreat": "doingGreat"
+            },
+            "HttpStatusCode": {
+                "Continue": "continue",
+                "SwitchingProtocols": "switchingProtocols",
+                "Processing": "processing",
+                "EarlyHints": "earlyHints",
+                "Ok": "ok",
+                "Created": "created",
+                "Accepted": "accepted",
+                "NonAuthoritativeInformation": "nonAuthoritativeInformation",
+                "NoContent": "noContent",
+                "ResetContent": "resetContent",
+                "PartialContent": "partialContent",
+                "MultiStatus": "multiStatus",
+                "AlreadyReported": "alreadyReported",
+                "ImUsed": "imUsed",
+                "MultipleChoices": "multipleChoices",
+                "MovedPermanently": "movedPermanently",
+                "Found": "found",
+                "SeeOther": "seeOther",
+                "NotModified": "notModified",
+                "UseProxy": "useProxy",
+                "Unused": "unused",
+                "TemporaryRedirect": "temporaryRedirect",
+                "PermanentRedirect": "permanentRedirect",
+                "BadRequest": "badRequest",
+                "Unauthorized": "unauthorized",
+                "PaymentRequired": "paymentRequired",
+                "Forbidden": "forbidden",
+                "NotFound": "notFound",
+                "MethodNotAllowed": "methodNotAllowed",
+                "NotAcceptable": "notAcceptable",
+                "ProxyAuthenticationRequired": "proxyAuthenticationRequired",
+                "RequestTimeout": "requestTimeout",
+                "Conflict": "conflict",
+                "Gone": "gone",
+                "LengthRequired": "lengthRequired",
+                "PreconditionFailed": "preconditionFailed",
+                "RequestEntityTooLarge": "requestEntityTooLarge",
+                "RequestUriTooLong": "requestUriTooLong",
+                "UnsupportedMediaType": "unsupportedMediaType",
+                "RequestedRangeNotSatisfiable": "requestedRangeNotSatisfiable",
+                "ExpectationFailed": "expectationFailed",
+                "MisdirectedRequest": "misdirectedRequest",
+                "UnprocessableEntity": "unprocessableEntity",
+                "Locked": "locked",
+                "FailedDependency": "failedDependency",
+                "UpgradeRequired": "upgradeRequired",
+                "PreconditionRequired": "preconditionRequired",
+                "TooManyRequests": "tooManyRequests",
+                "RequestHeaderFieldsTooLarge": "requestHeaderFieldsTooLarge",
+                "UnavailableForLegalReasons": "unavailableForLegalReasons",
+                "InternalServerError": "internalServerError",
+                "NotImplemented": "notImplemented",
+                "BadGateway": "badGateway",
+                "ServiceUnavailable": "serviceUnavailable",
+                "GatewayTimeout": "gatewayTimeout",
+                "HttpVersionNotSupported": "httpVersionNotSupported",
+                "VariantAlsoNegotiates": "variantAlsoNegotiates",
+                "InsufficientStorage": "insufficientStorage",
+                "LoopDetected": "loopDetected",
+                "NotExtended": "notExtended",
+                "NetworkAuthenticationRequired": "networkAuthenticationRequired"
+            },
+            "ImagePullPolicy": {
+                "Always": "always",
+                "IfNotPresent": "ifNotPresent"
+            },
+            "PodStatus": {
+                "NotScheduled": "notScheduled",
+                "Scheduled": "scheduled",
+                "Ready": "ready",
+                "Deleting": "deleting"
+            },
+            "Protocol": {
+                "Tcp": "tcp",
+                "Udp": "udp",
+                "Sctp": "sctp"
+            },
+            "ProtocolV3": {
+                "Tcp": "tcp",
+                "Udp": "udp",
+                "Sctp": "sctp"
+            },
+            "RegionProvisioningType": {
+                "Static": "static",
+                "Dynamic": "dynamic"
+            },
+            "RegistryType": {
+                "DockerHub": "dockerHub",
+                "GitHub": "gitHub",
+                "BunnyRegistry": "bunnyRegistry"
+            },
+            "RemoveContainerRegistryResponseStatus": {
+                "NotFound": "notFound",
+                "InUse": "inUse",
+                "Removed": "removed"
+            },
+            "SavedContainerRegistryStatus": {
+                "Saved": "saved",
+                "SecretsValidationFailed": "secretsValidationFailed",
+                "UnknownErrorOccured": "unknownErrorOccured",
+                "NotFound": "notFound",
+                "InvalidInput": "invalidInput"
+            },
+            "VolumeStatus": {
+                "Unknown": "unknown",
+                "Attached": "attached",
+                "Detached": "detached",
+                "Extending": "extending",
+                "Deleting": "deleting",
+                "Creating": "creating",
+                "NotScheduled": "notScheduled",
+                "Scheduled": "scheduled",
+                "Failed": "failed",
+                "Maintenance": "maintenance"
+            }
+        }
+    },
+    "OriginErrors": {
+        "operations": {
+            "GET /{pullZoneId}/{dateTime}": {
+                "method": "Logs::getLogs",
+                "params": {
+                    "path:pullZoneId": "int $pullZoneId",
+                    "path:dateTime": "string $dateTime"
+                },
+                "returns": "mixed"
+            }
+        },
+        "enums": []
+    },
+    "Shield": {
+        "operations": {
+            "DELETE /shield/rate-limit/{id}": {
+                "method": "RateLimiting::deleteRateLimit",
+                "params": {
+                    "path:id": "int $id"
+                },
+                "returns": "mixed"
+            },
+            "DELETE /shield/shield-zone/{shieldZoneId}/access-lists/{id}": {
+                "method": "AccessLists::deleteCustomAccessList",
+                "params": {
+                    "path:shieldZoneId": "int $shieldZoneId",
+                    "path:id": "int $id"
+                },
+                "returns": "mixed"
+            },
+            "DELETE /shield/shield-zone/{shieldZoneId}/custom-page/{pageType}": {
+                "method": "CustomResponsePages::deleteCustomResponsePage",
+                "params": {
+                    "path:shieldZoneId": "int $shieldZoneId",
+                    "path:pageType": "string $pageType"
+                },
+                "returns": "mixed"
+            },
+            "DELETE /shield/waf/custom-rule/{id}": {
+                "method": "Waf::deleteCustomWafRule",
+                "params": {
+                    "path:id": "int $id"
+                },
+                "returns": "mixed"
+            },
+            "GET /shield/ddos/enums": {
+                "method": "Ddos::getDDoSEnums",
+                "params": [],
+                "returns": "mixed"
+            },
+            "GET /shield/event-logs/{shieldZoneId}/{date}/{continuationToken}": {
+                "method": "EventLogs::getEventLogs",
+                "params": {
+                    "path:shieldZoneId": "int $shieldZoneId",
+                    "path:date": "string $date",
+                    "path:continuationToken": "string $continuationToken"
+                },
+                "returns": "mixed"
+            },
+            "GET /shield/metrics/overages/{shieldZoneId}": {
+                "method": "Metrics::getShieldZoneMonthlyOverages",
+                "params": {
+                    "path:shieldZoneId": "int $shieldZoneId",
+                    "query:year": "?int $year = null",
+                    "query:month": "?int $month = null"
+                },
+                "returns": "mixed"
+            },
+            "GET /shield/metrics/overview/{shieldZoneId}": {
+                "method": "Metrics::getShieldZoneMetricsOverview",
+                "params": {
+                    "path:shieldZoneId": "int $shieldZoneId"
+                },
+                "returns": "mixed"
+            },
+            "GET /shield/metrics/overview/{shieldZoneId}/detailed": {
+                "method": "Metrics::getShieldZoneDetailedMetricsOverview",
+                "params": {
+                    "path:shieldZoneId": "int $shieldZoneId",
+                    "query:StartDate": "?string $startDate = null",
+                    "query:EndDate": "?string $endDate = null",
+                    "query:Resolution": "?int $resolution = null"
+                },
+                "returns": "mixed"
+            },
+            "GET /shield/metrics/rate-limit/{id}": {
+                "method": "Metrics::getRateLimitMetrics",
+                "params": {
+                    "path:id": "int $id"
+                },
+                "returns": "mixed"
+            },
+            "GET /shield/metrics/rate-limits/{shieldZoneId}": {
+                "method": "Metrics::getShieldZoneRateLimitMetrics",
+                "params": {
+                    "path:shieldZoneId": "int $shieldZoneId"
+                },
+                "returns": "mixed"
+            },
+            "GET /shield/metrics/shield-zone/{shieldZoneId}/api-guardian": {
+                "method": "Metrics::getShieldZoneApiGuardianMetrics",
+                "params": {
+                    "path:shieldZoneId": "int $shieldZoneId"
+                },
+                "returns": "mixed"
+            },
+            "GET /shield/metrics/shield-zone/{shieldZoneId}/api-guardian/endpoint/{endpointId}": {
+                "method": "Metrics::getApiGuardianEndpointMetrics",
+                "params": {
+                    "path:shieldZoneId": "int $shieldZoneId",
+                    "path:endpointId": "int $endpointId"
+                },
+                "returns": "mixed"
+            },
+            "GET /shield/metrics/shield-zone/{shieldZoneId}/bot-detection": {
+                "method": "Metrics::getShieldZoneBotDetectionMetrics",
+                "params": {
+                    "path:shieldZoneId": "int $shieldZoneId"
+                },
+                "returns": "mixed"
+            },
+            "GET /shield/metrics/shield-zone/{shieldZoneId}/upload-scanning": {
+                "method": "Metrics::getShieldZoneUploadScanningMetrics",
+                "params": {
+                    "path:shieldZoneId": "int $shieldZoneId"
+                },
+                "returns": "mixed"
+            },
+            "GET /shield/metrics/shield-zone/{shieldZoneId}/waf-rule/{ruleId}": {
+                "method": "Metrics::getWafRuleMetrics",
+                "params": {
+                    "path:shieldZoneId": "int $shieldZoneId",
+                    "path:ruleId": "string $ruleId"
+                },
+                "returns": "mixed"
+            },
+            "GET /shield/promo/state": {
+                "method": "Promotions::getPromotionState",
+                "params": [],
+                "returns": "void"
+            },
+            "GET /shield/rate-limit/{id}": {
+                "method": "RateLimiting::getRateLimit",
+                "params": {
+                    "path:id": "int $id"
+                },
+                "returns": "mixed"
+            },
+            "GET /shield/rate-limits/{shieldZoneId}": {
+                "method": "RateLimiting::getRateLimits",
+                "params": {
+                    "path:shieldZoneId": "int $shieldZoneId",
+                    "query:page": "?int $page = null",
+                    "query:perPage": "?int $perPage = null"
+                },
+                "returns": "mixed"
+            },
+            "GET /shield/shield-zone/defaults": {
+                "method": "ShieldZone::getShieldZoneDefaults",
+                "params": [],
+                "returns": "mixed"
+            },
+            "GET /shield/shield-zone/get-by-pullzone/{pullZoneId}": {
+                "method": "ShieldZone::getShieldZoneConfigurationByPullZone",
+                "params": {
+                    "path:pullZoneId": "int $pullZoneId"
+                },
+                "returns": "mixed"
+            },
+            "GET /shield/shield-zone/{shieldZoneId}": {
+                "method": "ShieldZone::getShieldZoneConfiguration",
+                "params": {
+                    "path:shieldZoneId": "int $shieldZoneId"
+                },
+                "returns": "mixed"
+            },
+            "GET /shield/shield-zone/{shieldZoneId}/access-lists": {
+                "method": "AccessLists::getAccessLists",
+                "params": {
+                    "path:shieldZoneId": "int $shieldZoneId"
+                },
+                "returns": "mixed"
+            },
+            "GET /shield/shield-zone/{shieldZoneId}/access-lists/enums": {
+                "method": "AccessLists::getAccessListEnums",
+                "params": {
+                    "path:shieldZoneId": "string $shieldZoneId"
+                },
+                "returns": "mixed"
+            },
+            "GET /shield/shield-zone/{shieldZoneId}/access-lists/{id}": {
+                "method": "AccessLists::getCustomAccessList",
+                "params": {
+                    "path:shieldZoneId": "int $shieldZoneId",
+                    "path:id": "int $id"
+                },
+                "returns": "mixed"
+            },
+            "GET /shield/shield-zone/{shieldZoneId}/api-guardian": {
+                "method": "ApiGuardian::getApiGuardian",
+                "params": {
+                    "path:shieldZoneId": "int $shieldZoneId"
+                },
+                "returns": "mixed"
+            },
+            "GET /shield/shield-zone/{shieldZoneId}/api-guardian/enums": {
+                "method": "ApiGuardian::getApiGuardianEnums",
+                "params": {
+                    "path:shieldZoneId": "string $shieldZoneId"
+                },
+                "returns": "mixed"
+            },
+            "GET /shield/shield-zone/{shieldZoneId}/bot-categorization": {
+                "method": "BotCategorization::listBotCategorizations",
+                "params": {
+                    "path:shieldZoneId": "int $shieldZoneId"
+                },
+                "returns": "mixed"
+            },
+            "GET /shield/shield-zone/{shieldZoneId}/bot-detection": {
+                "method": "BotDetection::getCurrentBotDetection",
+                "params": {
+                    "path:shieldZoneId": "int $shieldZoneId"
+                },
+                "returns": "mixed"
+            },
+            "GET /shield/shield-zone/{shieldZoneId}/custom-page/{pageType}": {
+                "method": "CustomResponsePages::getCustomResponsePage",
+                "params": {
+                    "path:shieldZoneId": "int $shieldZoneId",
+                    "path:pageType": "string $pageType"
+                },
+                "returns": "mixed"
+            },
+            "GET /shield/shield-zone/{shieldZoneId}/upload-scanning": {
+                "method": "UploadScanning::getUploadScanning",
+                "params": {
+                    "path:shieldZoneId": "int $shieldZoneId"
+                },
+                "returns": "mixed"
+            },
+            "GET /shield/shield-zones": {
+                "method": "ShieldZone::getShieldZoneConfigurations",
+                "params": {
+                    "query:page": "?int $page = null",
+                    "query:perPage": "?int $perPage = null"
+                },
+                "returns": "mixed"
+            },
+            "GET /shield/shield-zones/pullzone-mapping": {
+                "method": "ShieldZone::getShieldZonesPullZoneMapping",
+                "params": [],
+                "returns": "mixed"
+            },
+            "GET /shield/waf/custom-rule/{id}": {
+                "method": "Waf::getCustomWafRule",
+                "params": {
+                    "path:id": "int $id"
+                },
+                "returns": "mixed"
+            },
+            "GET /shield/waf/custom-rules/{shieldZoneId}": {
+                "method": "Waf::getCustomWafRules",
+                "params": {
+                    "path:shieldZoneId": "int $shieldZoneId",
+                    "query:page": "?int $page = null",
+                    "query:perPage": "?int $perPage = null"
+                },
+                "returns": "mixed"
+            },
+            "GET /shield/waf/engine-config": {
+                "method": "Waf::getWafEngineConfiguration",
+                "params": [],
+                "returns": "mixed"
+            },
+            "GET /shield/waf/enums": {
+                "method": "Waf::getWafEnumMappings",
+                "params": [],
+                "returns": "mixed"
+            },
+            "GET /shield/waf/profiles": {
+                "method": "Waf::listWafProfiles",
+                "params": [],
+                "returns": "mixed"
+            },
+            "GET /shield/waf/rules/plan-segmentation": {
+                "method": "Waf::getWafRulesByPlan",
+                "params": [],
+                "returns": "mixed"
+            },
+            "GET /shield/waf/rules/review-triggered/ai-recommendation/{shieldZoneId}/{ruleId}": {
+                "method": "Waf::getTriggeredRuleAiRecommendation",
+                "params": {
+                    "path:shieldZoneId": "int $shieldZoneId",
+                    "path:ruleId": "string $ruleId"
+                },
+                "returns": "mixed"
+            },
+            "GET /shield/waf/rules/review-triggered/{shieldZoneId}": {
+                "method": "Waf::getTriggeredWafRules",
+                "params": {
+                    "path:shieldZoneId": "int $shieldZoneId"
+                },
+                "returns": "mixed"
+            },
+            "GET /shield/waf/rules/{shieldZoneId}": {
+                "method": "Waf::getWafRules",
+                "params": {
+                    "path:shieldZoneId": "int $shieldZoneId"
+                },
+                "returns": "mixed"
+            },
+            "PATCH /shield/rate-limit/{id}": {
+                "method": "RateLimiting::updateRateLimit",
+                "params": {
+                    "path:id": "int $id",
+                    "body": "array $body"
+                },
+                "returns": "mixed"
+            },
+            "PATCH /shield/shield-zone": {
+                "method": "ShieldZone::updateShieldZone",
+                "params": {
+                    "body": "array $body"
+                },
+                "returns": "mixed"
+            },
+            "PATCH /shield/shield-zone/{shieldZoneId}/access-lists/configurations/{id}": {
+                "method": "AccessLists::updateAccessListConfiguration",
+                "params": {
+                    "path:shieldZoneId": "int $shieldZoneId",
+                    "path:id": "int $id",
+                    "body": "array $body"
+                },
+                "returns": "mixed"
+            },
+            "PATCH /shield/shield-zone/{shieldZoneId}/access-lists/{id}": {
+                "method": "AccessLists::updateCustomAccessList",
+                "params": {
+                    "path:shieldZoneId": "int $shieldZoneId",
+                    "path:id": "int $id",
+                    "body": "array $body"
+                },
+                "returns": "mixed"
+            },
+            "PATCH /shield/shield-zone/{shieldZoneId}/api-guardian": {
+                "method": "ApiGuardian::updateApiGuardianConfiguration",
+                "params": {
+                    "path:shieldZoneId": "int $shieldZoneId",
+                    "body": "array $body"
+                },
+                "returns": "mixed"
+            },
+            "PATCH /shield/shield-zone/{shieldZoneId}/api-guardian/endpoint/{endpointId}": {
+                "method": "ApiGuardian::updateApiGuardian",
+                "params": {
+                    "path:shieldZoneId": "int $shieldZoneId",
+                    "path:endpointId": "int $endpointId",
+                    "body": "array $body"
+                },
+                "returns": "mixed"
+            },
+            "PATCH /shield/shield-zone/{shieldZoneId}/api-guardian/spec": {
+                "method": "ApiGuardian::updateOpenApiSpecification",
+                "params": {
+                    "path:shieldZoneId": "int $shieldZoneId",
+                    "body": "array $body"
+                },
+                "returns": "mixed"
+            },
+            "PATCH /shield/shield-zone/{shieldZoneId}/bot-detection": {
+                "method": "BotDetection::updateBotDetection",
+                "params": {
+                    "path:shieldZoneId": "int $shieldZoneId",
+                    "body": "array $body"
+                },
+                "returns": "mixed"
+            },
+            "PATCH /shield/shield-zone/{shieldZoneId}/upload-scanning": {
+                "method": "UploadScanning::updateUploadScanning",
+                "params": {
+                    "path:shieldZoneId": "int $shieldZoneId",
+                    "body": "array $body"
+                },
+                "returns": "mixed"
+            },
+            "PATCH /shield/waf/custom-rule/{id}": {
+                "method": "Waf::patchCustomWafRule",
+                "params": {
+                    "path:id": "int $id",
+                    "body": "array $body"
+                },
+                "returns": "mixed"
+            },
+            "POST /shield/event-logs/{shieldZoneId}/export": {
+                "method": "EventLogs::exportEventLogs",
+                "params": {
+                    "path:shieldZoneId": "int $shieldZoneId",
+                    "body": "?array $body = null"
+                },
+                "returns": "mixed"
+            },
+            "POST /shield/event-logs/{shieldZoneId}/search": {
+                "method": "EventLogs::searchEventLogs",
+                "params": {
+                    "path:shieldZoneId": "int $shieldZoneId",
+                    "body": "?array $body = null"
+                },
+                "returns": "mixed"
+            },
+            "POST /shield/rate-limit": {
+                "method": "RateLimiting::createRateLimit",
+                "params": {
+                    "body": "array $body"
+                },
+                "returns": "mixed"
+            },
+            "POST /shield/shield-zone": {
+                "method": "ShieldZone::createShieldZone",
+                "params": {
+                    "body": "array $body"
+                },
+                "returns": "mixed"
+            },
+            "POST /shield/shield-zone/under-attack": {
+                "method": "ShieldZone::createShieldZoneUnderAttack",
+                "params": {
+                    "body": "array $body"
+                },
+                "returns": "mixed"
+            },
+            "POST /shield/shield-zone/{shieldZoneId}/access-lists": {
+                "method": "AccessLists::createCustomAccessList",
+                "params": {
+                    "path:shieldZoneId": "int $shieldZoneId",
+                    "body": "array $body"
+                },
+                "returns": "mixed"
+            },
+            "POST /shield/shield-zone/{shieldZoneId}/api-guardian/spec": {
+                "method": "ApiGuardian::uploadOpenApiSpecification",
+                "params": {
+                    "path:shieldZoneId": "int $shieldZoneId",
+                    "body": "array $body"
+                },
+                "returns": "mixed"
+            },
+            "POST /shield/waf/custom-rule": {
+                "method": "Waf::createCustomWafRule",
+                "params": {
+                    "body": "array $body"
+                },
+                "returns": "mixed"
+            },
+            "POST /shield/waf/rules/review-triggered/{shieldZoneId}": {
+                "method": "Waf::updateTriggeredWafRule",
+                "params": {
+                    "path:shieldZoneId": "int $shieldZoneId",
+                    "body": "array $body"
+                },
+                "returns": "mixed"
+            },
+            "PUT /shield/shield-zone/{shieldZoneId}/bot-categorization/bots/{botId}": {
+                "method": "BotCategorization::setBotCategorizationAction",
+                "params": {
+                    "path:shieldZoneId": "int $shieldZoneId",
+                    "path:botId": "int $botId",
+                    "body": "array $body"
+                },
+                "returns": "mixed"
+            },
+            "PUT /shield/shield-zone/{shieldZoneId}/bot-categorization/categories/{category}": {
+                "method": "BotCategorization::setBotCategoryAction",
+                "params": {
+                    "path:shieldZoneId": "int $shieldZoneId",
+                    "path:category": "int $category",
+                    "body": "array $body"
+                },
+                "returns": "mixed"
+            },
+            "PUT /shield/shield-zone/{shieldZoneId}/custom-page/{pageType}": {
+                "method": "CustomResponsePages::uploadCustomResponsePage",
+                "params": {
+                    "path:shieldZoneId": "int $shieldZoneId",
+                    "path:pageType": "string $pageType"
+                },
+                "returns": "mixed"
+            },
+            "PUT /shield/waf/custom-rule/{id}": {
+                "method": "Waf::updateCustomWafRule",
+                "params": {
+                    "path:id": "int $id",
+                    "body": "array $body"
+                },
+                "returns": "mixed"
+            }
+        },
+        "enums": {
+            "AccessListAction": {
+                "None": 0,
+                "Allow": 1,
+                "Block": 2,
+                "Challenge": 3,
+                "Log": 4,
+                "Bypass": 5
+            },
+            "AccessListCategory": {
+                "None": 0,
+                "VpNs": 1,
+                "Datacenters": 2,
+                "Proxies": 4,
+                "TorExitNodes": 8,
+                "Botnets": 16,
+                "VulnerabilityScanners": 32,
+                "WebScrapers": 64,
+                "SearchEngines": 128,
+                "SearchEngineCrawlers": 256,
+                "AiSearch": 512,
+                "AiCrawlers": 1024,
+                "AiAgents": 2048,
+                "PagePreview": 4096,
+                "InternetTools": 8192
+            },
+            "AccessListType": {
+                "Ip": 0,
+                "Cidr": 1,
+                "Asn": 2,
+                "Country": 3,
+                "Organization": 4,
+                "Ja4": 5
+            },
+            "ApiGuardianRateLimitType": {
+                "Global": "Global",
+                "Ip": "IP"
+            },
+            "AuthLocation": {
+                "Header": "Header",
+                "Query": "Query",
+                "Cookie": "Cookie"
+            },
+            "AuthSchemeType": {
+                "ApiKey": "ApiKey",
+                "Http": "Http",
+                "OAuth2": "OAuth2",
+                "OpenIdConnect": "OpenIdConnect"
+            },
+            "BotCategorizationAction": {
+                "None": 0,
+                "Block": 1,
+                "Allow": 2,
+                "Ignore": 3
+            },
+            "BotCategoryAction": {
+                "None": 0,
+                "Block": 1,
+                "Allow": 2
+            },
+            "BotDetectionExecutionMode": {
+                "LogOnly": 0,
+                "Challenge": 1
+            },
+            "BotDetectionSensitivity": {
+                "Off": 0,
+                "Low": 1,
+                "Medium": 2,
+                "High": 3
+            },
+            "BrowserFingerprintAggression": {
+                "Unknown": 0,
+                "Low": 1,
+                "Medium": 2,
+                "High": 3,
+                "Custom": 4
+            },
+            "DDoSExecutionMode": {
+                "Log": 0,
+                "Block": 1
+            },
+            "DDoSShieldSensitivity": {
+                "Off": 0,
+                "Low": 1,
+                "Medium": 2,
+                "High": 3,
+                "Challenge": 4,
+                "ChallengeInteractive": 5
+            },
+            "MetricsOverviewResolution": {
+                "Auto": 0,
+                "TwoMinutes": 1,
+                "TenMinutes": 2,
+                "Hourly": 3,
+                "Daily": 4,
+                "Weekly": 5,
+                "Monthly": 6
+            },
+            "RateLimitTimeframe": {
+                "PerSecond": 1,
+                "PerTenSeconds": 10,
+                "PerOneMinute": 60,
+                "PerFiveMinutes": 300,
+                "PerFifteenMinutes": 900,
+                "PerOneHour": 3600
+            },
+            "RatelimitRuleActionType": {
+                "RateLimit": 1,
+                "Log": 2,
+                "Challenge": 3
+            },
+            "ReviewActionType": {
+                "Ignore": 0,
+                "LogOnly": 1,
+                "DisableRule": 2
+            },
+            "ShieldPlanType": {
+                "Basic": 0,
+                "Advanced": 1,
+                "Business": 2,
+                "Enterprise": 3
+            },
+            "UnmatchedPathAction": {
+                "Block": 0,
+                "Log": 1,
+                "Ignore": 2
+            },
+            "UploadScanningScannerMode": {
+                "Disabled": 0,
+                "Log": 1,
+                "Block": 2
+            },
+            "WAFExecutionMode": {
+                "Log": 0,
+                "Block": 1
+            },
+            "WAFPayloadLimitAction": {
+                "Block": 0,
+                "Log": 1,
+                "Ignore": 2
+            },
+            "WafRateLimitTimeframeType": {
+                "PerSecond": 1,
+                "PerTenSeconds": 10,
+                "PerOneMinute": 60,
+                "PerFiveMinutes": 300,
+                "PerFifteenMinutes": 900,
+                "PerOneHour": 3600
+            },
+            "WafRatelimitBlockType": {
+                "ForThirtySeconds": 30,
+                "ForOneMinute": 60,
+                "ForFiveMinutes": 300,
+                "ForFifteenMinutes": 900,
+                "ForThirtyMinutes": 1800,
+                "ForOneHour": 3600
+            },
+            "WafRatelimitCounterKeyType": {
+                "Ip": 0,
+                "Host": 1,
+                "Country": 2,
+                "City": 3,
+                "Asn": 4,
+                "Organization": 5,
+                "Ja4": 6,
+                "IpJa4": 7
+            },
+            "WafRuleActionType": {
+                "Block": 1,
+                "Log": 2,
+                "Challenge": 3,
+                "Allow": 4,
+                "Bypass": 5
+            },
+            "WafRuleOperatorType": {
+                "Beginswith": 0,
+                "Endswith": 1,
+                "Contains": 2,
+                "Containsword": 3,
+                "Strmatch": 4,
+                "Eq": 5,
+                "Ge": 6,
+                "Gt": 7,
+                "Le": 8,
+                "Lt": 9,
+                "Within": 12,
+                "Ipmatch": 13,
+                "Rx": 14,
+                "Streq": 15,
+                "Detectsqli": 17,
+                "Detectxss": 18
+            },
+            "WafRuleSeverityType": {
+                "Notice": 0,
+                "Warning": 1,
+                "Critical": 2
+            },
+            "WafRuleTransformationType": {
+                "Cmdline": 1,
+                "Compresswhitespace": 2,
+                "Cssdecode": 3,
+                "Hexencode": 4,
+                "Htmlentitydecode": 5,
+                "Jsdecode": 6,
+                "Length": 7,
+                "Lowercase": 8,
+                "Md5": 9,
+                "Normalizepath": 10,
+                "Normalisepath": 11,
+                "Normalizepathwin": 12,
+                "Normalisepathwin": 13,
+                "Removecomments": 14,
+                "Removenulls": 15,
+                "Removewhitespace": 16,
+                "Replacecomments": 17,
+                "Sha1": 18,
+                "Urldecode": 19,
+                "Urldecodeuni": 20,
+                "Utf8Tounicode": 21
+            },
+            "WafValueKind": {
+                "Text": "Text",
+                "Number": "Number",
+                "Regex": "Regex",
+                "IpMatch": "IPMatch"
+            }
+        }
+    },
+    "Storage": {
+        "operations": {
+            "DELETE /{storageZoneName}/{path}/{fileName}": {
+                "method": "ManageFiles::deleteFile",
+                "params": {
+                    "path:storageZoneName": "string $storageZoneName",
+                    "path:path": "string $path",
+                    "path:fileName": "string $fileName",
+                    "query:allowRootDelete": "?string $allowRootDelete = null",
+                    "header:allowRootDelete": "?string $allowRootDelete2 = null"
+                },
+                "returns": "void"
+            },
+            "GET /{storageZoneName}/{path}/": {
+                "method": "BrowseFiles::listFiles",
+                "params": {
+                    "path:storageZoneName": "string $storageZoneName",
+                    "path:path": "string $path"
+                },
+                "returns": "mixed"
+            },
+            "GET /{storageZoneName}/{path}/{fileName}": {
+                "method": "ManageFiles::downloadFile",
+                "params": {
+                    "path:storageZoneName": "string $storageZoneName",
+                    "path:path": "string $path",
+                    "path:fileName": "string $fileName"
+                },
+                "returns": "StreamInterface"
+            },
+            "PUT /{storageZoneName}/{path}/{fileName}": {
+                "method": "ManageFiles::uploadFile",
+                "params": {
+                    "path:storageZoneName": "string $storageZoneName",
+                    "path:path": "string $path",
+                    "path:fileName": "string $fileName",
+                    "body": "StreamInterface|string $body",
+                    "header:Checksum": "?string $checksum = null"
+                },
+                "returns": "void"
+            }
+        },
+        "enums": []
+    },
+    "Stream": {
+        "operations": {
+            "DELETE /library/{libraryId}/collections/{collectionId}": {
+                "method": "ManageCollections::deleteCollection",
+                "params": {
+                    "path:libraryId": "int $libraryId",
+                    "path:collectionId": "string $collectionId"
+                },
+                "returns": "mixed"
+            },
+            "DELETE /library/{libraryId}/videos/{videoId}": {
+                "method": "ManageVideos::deleteVideo",
+                "params": {
+                    "path:libraryId": "int $libraryId",
+                    "path:videoId": "string $videoId"
+                },
+                "returns": "mixed"
+            },
+            "DELETE /library/{libraryId}/videos/{videoId}/captions/{srclang}": {
+                "method": "ManageVideos::deleteCaption",
+                "params": {
+                    "path:libraryId": "int $libraryId",
+                    "path:videoId": "string $videoId",
+                    "path:srclang": "string $srclang"
+                },
+                "returns": "mixed"
+            },
+            "GET /OEmbed": {
+                "method": "OEmbed::getOEmbedData",
+                "params": {
+                    "query:url": "?string $url = null",
+                    "query:maxWidth": "?int $maxWidth = null",
+                    "query:maxHeight": "?int $maxHeight = null",
+                    "query:token": "?string $token = null",
+                    "query:expires": "?int $expires = null"
+                },
+                "returns": "mixed"
+            },
+            "GET /library/{libraryId}/collections": {
+                "method": "ManageCollections::getCollectionList",
+                "params": {
+                    "path:libraryId": "int $libraryId",
+                    "query:page": "?int $page = null",
+                    "query:itemsPerPage": "?int $itemsPerPage = null",
+                    "query:search": "?string $search = null",
+                    "query:orderBy": "?string $orderBy = null",
+                    "query:includeThumbnails": "?bool $includeThumbnails = null"
+                },
+                "returns": "mixed"
+            },
+            "GET /library/{libraryId}/collections/{collectionId}": {
+                "method": "ManageCollections::getCollection",
+                "params": {
+                    "path:libraryId": "int $libraryId",
+                    "path:collectionId": "string $collectionId",
+                    "query:includeThumbnails": "?bool $includeThumbnails = null"
+                },
+                "returns": "mixed"
+            },
+            "GET /library/{libraryId}/statistics": {
+                "method": "ManageVideos::getVideoStatistics",
+                "params": {
+                    "path:libraryId": "int $libraryId",
+                    "query:dateFrom": "?string $dateFrom = null",
+                    "query:dateTo": "?string $dateTo = null",
+                    "query:hourly": "?bool $hourly = null",
+                    "query:videoGuid": "?string $videoGuid = null"
+                },
+                "returns": "mixed"
+            },
+            "GET /library/{libraryId}/statistics/encoding": {
+                "method": "EncodingStatistics::getEncodingStatistics",
+                "params": {
+                    "path:libraryId": "int $libraryId",
+                    "query:dateFrom": "?string $dateFrom = null",
+                    "query:dateTo": "?string $dateTo = null",
+                    "query:hourly": "?bool $hourly = null",
+                    "query:videoCodecs": "?array $videoCodecs = null",
+                    "query:resolutions": "?array $resolutions = null",
+                    "query:jit": "?bool $jit = null"
+                },
+                "returns": "mixed"
+            },
+            "GET /library/{libraryId}/videos": {
+                "method": "ManageVideos::listVideos",
+                "params": {
+                    "path:libraryId": "int $libraryId",
+                    "query:page": "?int $page = null",
+                    "query:itemsPerPage": "?int $itemsPerPage = null",
+                    "query:search": "?string $search = null",
+                    "query:collection": "?string $collection = null",
+                    "query:orderBy": "?string $orderBy = null"
+                },
+                "returns": "mixed"
+            },
+            "GET /library/{libraryId}/videos/{videoId}": {
+                "method": "ManageVideos::getVideo",
+                "params": {
+                    "path:libraryId": "int $libraryId",
+                    "path:videoId": "string $videoId"
+                },
+                "returns": "mixed"
+            },
+            "GET /library/{libraryId}/videos/{videoId}/heatmap": {
+                "method": "ManageVideos::getVideoHeatmap",
+                "params": {
+                    "path:libraryId": "int $libraryId",
+                    "path:videoId": "string $videoId"
+                },
+                "returns": "mixed"
+            },
+            "GET /library/{libraryId}/videos/{videoId}/play": {
+                "method": "ManageVideos::getVideoPlayData",
+                "params": {
+                    "path:libraryId": "int $libraryId",
+                    "path:videoId": "string $videoId",
+                    "query:token": "?string $token = null",
+                    "query:expires": "?int $expires = null"
+                },
+                "returns": "mixed"
+            },
+            "GET /library/{libraryId}/videos/{videoId}/play/heatmap": {
+                "method": "ManageVideos::getVideoHeatmapData",
+                "params": {
+                    "path:libraryId": "int $libraryId",
+                    "path:videoId": "string $videoId",
+                    "query:token": "?string $token = null",
+                    "query:expires": "?int $expires = null"
+                },
+                "returns": "mixed"
+            },
+            "GET /library/{libraryId}/videos/{videoId}/resolutions": {
+                "method": "ManageVideos::videoResolutionsInfo",
+                "params": {
+                    "path:libraryId": "int $libraryId",
+                    "path:videoId": "string $videoId"
+                },
+                "returns": "mixed"
+            },
+            "GET /library/{libraryId}/videos/{videoId}/storage": {
+                "method": "ManageVideos::getVideoStorageSizeInfo",
+                "params": {
+                    "path:libraryId": "int $libraryId",
+                    "path:videoId": "string $videoId"
+                },
+                "returns": "mixed"
+            },
+            "POST /library/{libraryId}/collections": {
+                "method": "ManageCollections::createCollection",
+                "params": {
+                    "path:libraryId": "int $libraryId",
+                    "body": "array $body"
+                },
+                "returns": "mixed"
+            },
+            "POST /library/{libraryId}/collections/{collectionId}": {
+                "method": "ManageCollections::updateCollection",
+                "params": {
+                    "path:libraryId": "int $libraryId",
+                    "path:collectionId": "string $collectionId",
+                    "body": "array $body"
+                },
+                "returns": "mixed"
+            },
+            "POST /library/{libraryId}/videos": {
+                "method": "ManageVideos::createVideo",
+                "params": {
+                    "path:libraryId": "int $libraryId",
+                    "body": "array $body"
+                },
+                "returns": "mixed"
+            },
+            "POST /library/{libraryId}/videos/fetch": {
+                "method": "ManageVideos::fetchVideo",
+                "params": {
+                    "path:libraryId": "int $libraryId",
+                    "body": "array $body",
+                    "query:collectionId": "?string $collectionId = null",
+                    "query:thumbnailTime": "?int $thumbnailTime = null"
+                },
+                "returns": "mixed"
+            },
+            "POST /library/{libraryId}/videos/{videoId}": {
+                "method": "ManageVideos::updateVideo",
+                "params": {
+                    "path:libraryId": "int $libraryId",
+                    "path:videoId": "string $videoId",
+                    "body": "array $body"
+                },
+                "returns": "mixed"
+            },
+            "POST /library/{libraryId}/videos/{videoId}/captions/{srclang}": {
+                "method": "ManageVideos::addCaption",
+                "params": {
+                    "path:libraryId": "int $libraryId",
+                    "path:videoId": "string $videoId",
+                    "path:srclang": "string $srclang",
+                    "body": "array $body"
+                },
+                "returns": "mixed"
+            },
+            "POST /library/{libraryId}/videos/{videoId}/reencode": {
+                "method": "ManageVideos::reencodeVideo",
+                "params": {
+                    "path:libraryId": "int $libraryId",
+                    "path:videoId": "string $videoId"
+                },
+                "returns": "mixed"
+            },
+            "POST /library/{libraryId}/videos/{videoId}/repackage": {
+                "method": "ManageVideos::repackageVideo",
+                "params": {
+                    "path:libraryId": "int $libraryId",
+                    "path:videoId": "string $videoId",
+                    "query:keepOriginalFiles": "?bool $keepOriginalFiles = null"
+                },
+                "returns": "mixed"
+            },
+            "POST /library/{libraryId}/videos/{videoId}/resolutions/cleanup": {
+                "method": "ManageVideos::cleanupUnconfiguredResolutions",
+                "params": {
+                    "path:libraryId": "int $libraryId",
+                    "path:videoId": "string $videoId",
+                    "query:resolutionsToDelete": "?string $resolutionsToDelete = null",
+                    "query:deleteNonConfiguredResolutions": "?bool $deleteNonConfiguredResolutions = null",
+                    "query:allResolutions": "?bool $allResolutions = null",
+                    "query:deleteOriginal": "?bool $deleteOriginal = null",
+                    "query:outputs": "?string $outputs = null",
+                    "query:deleteMp4Files": "?bool $deleteMp4Files = null",
+                    "query:dryRun": "?bool $dryRun = null"
+                },
+                "returns": "mixed"
+            },
+            "POST /library/{libraryId}/videos/{videoId}/smart": {
+                "method": "ManageVideos::triggerSmartActions",
+                "params": {
+                    "path:libraryId": "int $libraryId",
+                    "path:videoId": "string $videoId",
+                    "body": "array $body"
+                },
+                "returns": "mixed"
+            },
+            "POST /library/{libraryId}/videos/{videoId}/thumbnail": {
+                "method": "ManageVideos::setThumbnail",
+                "params": {
+                    "path:libraryId": "int $libraryId",
+                    "path:videoId": "string $videoId",
+                    "query:thumbnailUrl": "?string $thumbnailUrl = null",
+                    "body": "StreamInterface|string|null $body = null"
+                },
+                "returns": "mixed"
+            },
+            "POST /library/{libraryId}/videos/{videoId}/transcribe": {
+                "method": "ManageVideos::transcribeVideo",
+                "params": {
+                    "path:libraryId": "int $libraryId",
+                    "path:videoId": "string $videoId",
+                    "query:force": "?bool $force = null",
+                    "body": "?array $body = null"
+                },
+                "returns": "mixed"
+            },
+            "PUT /library/{libraryId}/videos/{videoId}": {
+                "method": "ManageVideos::uploadVideo",
+                "params": {
+                    "path:libraryId": "int $libraryId",
+                    "path:videoId": "string $videoId",
+                    "body": "StreamInterface|string $body",
+                    "query:jitEnabled": "?bool $jitEnabled = null",
+                    "query:enabledResolutions": "?string $enabledResolutions = null",
+                    "query:enabledOutputCodecs": "?string $enabledOutputCodecs = null",
+                    "query:transcribeEnabled": "?bool $transcribeEnabled = null",
+                    "query:transcribeLanguages": "?string $transcribeLanguages = null",
+                    "query:sourceLanguage": "?string $sourceLanguage = null",
+                    "query:generateTitle": "?bool $generateTitle = null",
+                    "query:generateDescription": "?bool $generateDescription = null",
+                    "query:generateChapters": "?bool $generateChapters = null",
+                    "query:generateMoments": "?bool $generateMoments = null"
+                },
+                "returns": "mixed"
+            },
+            "PUT /library/{libraryId}/videos/{videoId}/outputs/{outputCodecId}": {
+                "method": "ManageVideos::addOutputCodecToVideo",
+                "params": {
+                    "path:libraryId": "int $libraryId",
+                    "path:videoId": "string $videoId",
+                    "path:outputCodecId": "int $outputCodecId"
+                },
+                "returns": "mixed"
+            }
+        },
+        "enums": []
+    }
+}

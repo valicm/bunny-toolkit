@@ -16,6 +16,11 @@ declare(strict_types=1);
  * - preferOperationId: name methods from operationIds even when the summary is short.
  * - responseKinds: "METHOD /path" => json|text|stream|none, where the spec
  *   doesn't describe the response body.
+ * - experimental: the API is outside the backward compatibility promise, so
+ *   breaking changes to it don't need a major version.
+ *
+ * Names here only apply to operations that aren't in generator/api.lock.json
+ * yet; locked operations keep their names until the next major version.
  */
 return [
     'core' => [
@@ -81,6 +86,8 @@ return [
         'source' => 'https://api.bunny.net/database/docs/private/api.json',
         'namespace' => 'Database',
         'title' => 'Database API',
+        // Served from a /docs/private/ URL.
+        'experimental' => true,
     ],
     'origin-errors' => [
         'file' => 'specs/origin-errors.json',

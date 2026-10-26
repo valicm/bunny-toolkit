@@ -23,7 +23,7 @@
         "source": "https://github.com/valicm/bunny-toolkit"
     },
     "require": {
-        "php": "^8.2",
+        "php": "^8.3",
         "psr/http-client": "^1.0",
         "psr/http-factory": "^1.0",
         "psr/http-message": "^1.1 || ^2.0",
@@ -54,6 +54,10 @@
         "test": "phpunit",
         "generate": [
             "@php generator/generate.php",
+            "php-cs-fixer fix --quiet src/Api"
+        ],
+        "generate:allow-breaking": [
+            "@php generator/generate.php --allow-breaking",
             "php-cs-fixer fix --quiet src/Api"
         ],
         "update-specs": "@php generator/update-specs.php",

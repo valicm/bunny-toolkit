@@ -18,8 +18,10 @@ namespace Valicm\BunnyToolkit\Generator;
  *     slashParams?: list<string>,
  *     preferOperationId?: bool,
  *     responseKinds?: array<string, 'json'|'text'|'stream'|'none'>,
+ *     experimental?: bool,
  * }
  * @phpstan-type Param array{
+ *     key: string,
  *     name: string,
  *     wireName: string,
  *     in: string,
@@ -28,16 +30,27 @@ namespace Valicm\BunnyToolkit\Generator;
  *     description: ?string,
  * }
  * @phpstan-type Operation array{
+ *     key: string,
  *     httpMethod: string,
  *     path: string,
  *     name: string,
  *     summary: ?string,
  *     description: ?string,
  *     deprecated: bool,
+ *     removedOn: ?string,
  *     params: list<Param>,
  *     body: array{kind: 'json'|'raw', required: bool, schema: mixed, description: ?string}|null,
  *     response: array{kind: 'json'|'text'|'stream'|'none', schema: mixed, nullable: bool},
  * }
+ * @phpstan-type EnumDefinition array{
+ *     backing: 'int'|'string',
+ *     cases: array<string, int|string>,
+ *     description: ?string,
+ *     deprecated: list<string>,
+ *     aliases: array<string, string>,
+ *     removed: bool,
+ * }
+ * @phpstan-import-type Surface from ApiSurface
  */
 final class SpecGenerator
 {
@@ -64,13 +77,22 @@ final class SpecGenerator
     private TypeMapper $types;
 
     /**
+     * @var Surface The surface generate() produced.
+     */
+    private array $surface = ['operations' => [], 'enums' => []];
+
+    /**
      * @param array<array-key, mixed> $spec
      * @param SpecConfig $config
+     * @param Surface $locked This API's section of generator/api.lock.json.
+     * @param bool $keepRemoved Keep locked enum cases the spec no longer has; false when preparing a major version.
      */
     public function __construct(
         private readonly array $spec,
         private readonly array $config,
         string $baseNamespace,
+        private readonly array $locked = ['operations' => [], 'enums' => []],
+        private readonly bool $keepRemoved = true,
     ) {
         $this->namespace = $baseNamespace . '\\' . $config['namespace'];
         $this->apiClass = $config['namespace'] . 'Api';
@@ -95,11 +117,87 @@ final class SpecGenerator
         if ($this->types->aliases() !== []) {
             $files['Types.php'] = $this->typesFile();
         }
-        foreach ($this->types->enums() as $class => $enum) {
+        foreach ($this->enums() as $class => $enum) {
             $files['Enum/' . $class . '.php'] = $this->enumFile($class, $enum);
+            $this->surface['enums'][$class] = $enum['cases'] + array_map(static fn(string $target): int|string => $enum['cases'][$target], $enum['aliases']);
+            if ($enum['deprecated'] !== []) {
+                $this->surface['deprecatedEnumCases'][$class] = $enum['deprecated'];
+            }
         }
 
         return $files;
+    }
+
+    /**
+     * The spec's enums, plus the locked cases and enums Bunny has since removed,
+     * which stay until the next major version.
+     *
+     * @return array<string, EnumDefinition>
+     */
+    private function enums(): array
+    {
+        $enums = [];
+        foreach ($this->types->enums() as $class => $enum) {
+            $enums[$class] = $enum + ['deprecated' => [], 'aliases' => [], 'removed' => false];
+        }
+        if (!$this->keepRemoved) {
+            return $enums;
+        }
+
+        foreach ($this->locked['enums'] as $class => $lockedCases) {
+            if (!isset($enums[$class])) {
+                $ints = array_filter($lockedCases, is_int(...));
+                if ($ints !== [] && count($ints) !== count($lockedCases)) {
+                    continue;
+                }
+                $enums[$class] = [
+                    'backing' => $ints !== [] ? 'int' : 'string',
+                    'cases' => $lockedCases,
+                    'description' => null,
+                    'deprecated' => array_keys($lockedCases),
+                    'aliases' => [],
+                    'removed' => true,
+                ];
+                continue;
+            }
+            $enum = $enums[$class];
+            foreach ($lockedCases as $name => $value) {
+                if (isset($enum['cases'][$name])) {
+                    // Still there, possibly with a new value, which diff() reports as breaking.
+                    continue;
+                }
+                $renamedTo = array_search($value, $enum['cases'], true);
+                if (is_string($renamedTo)) {
+                    // Backed enums can't repeat a value, so the old name points at the new case.
+                    $enum['aliases'][$name] = $renamedTo;
+                } elseif (is_int($value) === ($enum['backing'] === 'int')) {
+                    $enum['cases'][$name] = $value;
+                } else {
+                    continue;
+                }
+                $enum['deprecated'][] = $name;
+            }
+            $enums[$class] = $enum;
+        }
+
+        return $enums;
+    }
+
+    /**
+     * The public surface of the code generate() returned, for the lock file.
+     *
+     * @return Surface
+     */
+    public function surface(): array
+    {
+        $surface = $this->surface;
+        ksort($surface['operations']);
+        ksort($surface['enums']);
+        if (isset($surface['deprecatedEnumCases'])) {
+            ksort($surface['deprecatedEnumCases']);
+        }
+
+        return $surface;
     }
 
     private function collectOperations(): void
@@ -123,22 +221,37 @@ final class SpecGenerator
                 $key = strtoupper($httpMethod) . ' ' . $path;
                 $tags = Json::map($operation, 'tags');
                 $tag = is_string($tags[0] ?? null) ? $tags[0] : ($this->config['defaultResource'] ?? $this->config['namespace']);
-                $class = $this->config['resourceNames'][$tag] ?? Naming::className($tag);
-                $this->resourceDescriptions[$class] ??= trim($tagDescriptions[$tag] ?? '');
+                $tagClass = $this->config['resourceNames'][$tag] ?? Naming::className($tag);
+                $this->resourceDescriptions[$tagClass] ??= trim($tagDescriptions[$tag] ?? '');
 
-                $name = $this->config['methodNames'][$key]
-                    ?? Naming::method(Json::str($operation, 'operationId'), Json::str($operation, 'summary'), $httpMethod, $path, $this->config['preferOperationId'] ?? false);
+                // Locked operations keep their class and name, whatever the spec now says.
+                $locked = $this->locked['operations'][$key] ?? null;
+                if ($locked !== null) {
+                    [$class, $name] = self::splitMethod($locked['method']);
+                } else {
+                    $class = $tagClass;
+                    $name = $this->config['methodNames'][$key]
+                        ?? Naming::method(Json::str($operation, 'operationId'), Json::str($operation, 'summary'), $httpMethod, $path, $this->config['preferOperationId'] ?? false);
+                }
                 $methodNames[$class][strtolower($name)][] = $key;
 
+                $lockedParams = $locked['params'] ?? [];
+                $body = $this->body($operation);
+                if ($body !== null && self::lockedAsRequired($lockedParams, 'body')) {
+                    $body['required'] = true;
+                }
+
                 $this->resources[$class][] = [
+                    'key' => $key,
                     'httpMethod' => strtoupper($httpMethod),
                     'path' => $path,
                     'name' => $name,
                     'summary' => Json::str($operation, 'summary'),
                     'description' => Json::str($operation, 'description'),
                     'deprecated' => Json::isTrue($operation, 'deprecated'),
-                    'params' => $this->params($path, Json::map($item, 'parameters'), Json::map($operation, 'parameters'), $operation),
-                    'body' => $this->body($operation),
+                    'removedOn' => Json::str($operation, RemovedOperations::REMOVED_ON),
+                    'params' => $this->params($path, Json::map($item, 'parameters'), Json::map($operation, 'parameters'), $operation, $lockedParams),
+                    'body' => $body,
                     'response' => isset($this->config['responseKinds'][$key])
                         ? ['kind' => $this->config['responseKinds'][$key], 'schema' => null, 'nullable' => false]
                         : $this->response($operation),
@@ -168,9 +281,10 @@ final class SpecGenerator
      * @param array<array-key, mixed> $shared Path-level parameters.
      * @param array<array-key, mixed> $own Operation parameters, which override shared ones.
      * @param array<array-key, mixed> $operation
+     * @param array<string, string> $locked Locked parameter key => signature.
      * @return list<Param>
      */
-    private function params(string $path, array $shared, array $own, array $operation): array
+    private function params(string $path, array $shared, array $own, array $operation, array $locked): array
     {
         $byKey = [];
         foreach ([...$shared, ...$own] as $param) {
@@ -189,14 +303,9 @@ final class SpecGenerator
         preg_match_all('/\{([^}]+)\}/', $path, $matches);
         $placeholders = $matches[1];
 
-        $params = [];
-        $taken = [];
-        if (Json::has($operation, 'requestBody')) {
-            $taken['body'] = true;
-        }
+        $entries = [];
         foreach ($placeholders as $placeholder) {
-            $param = $byKey['path:' . $placeholder] ?? ['schema' => ['type' => 'string']];
-            $params[] = $this->param($placeholder, 'path', true, $param, $taken);
+            $entries[] = ['path', $placeholder, true, $byKey['path:' . $placeholder] ?? ['schema' => ['type' => 'string']]];
         }
         foreach ($byKey as $param) {
             $in = (string) Json::str($param, 'in');
@@ -204,26 +313,59 @@ final class SpecGenerator
                 // Some specs list path parameters their path never uses.
                 continue;
             }
-            $params[] = $this->param((string) Json::str($param, 'name'), $in, Json::isTrue($param, 'required'), $param, $taken);
+            $entries[] = [$in, (string) Json::str($param, 'name'), Json::isTrue($param, 'required'), $param];
+        }
+
+        // Locked names are reserved first, so new parameters can't take them.
+        $taken = [];
+        if (Json::has($operation, 'requestBody')) {
+            $taken['body'] = true;
+        }
+        foreach ($entries as [$in, $wireName]) {
+            if (isset($locked[$in . ':' . $wireName])) {
+                $taken[strtolower(ApiSurface::parseParam($locked[$in . ':' . $wireName])['name'])] = true;
+            }
+        }
+
+        $params = [];
+        foreach ($entries as [$in, $wireName, $required, $param]) {
+            $key = $in . ':' . $wireName;
+            $params[] = [
+                'key' => $key,
+                'name' => isset($locked[$key]) ? ApiSurface::parseParam($locked[$key])['name'] : Naming::unique(Naming::camel($wireName), $taken),
+                'wireName' => $wireName,
+                'in' => $in,
+                'required' => $required || self::lockedAsRequired($locked, $key),
+                'schema' => is_array($param) ? ($param['schema'] ?? null) : null,
+                'description' => Json::str($param, 'description'),
+            ];
         }
 
         return $params;
     }
 
     /**
-     * @param array<string, true> $taken
-     * @return Param
+     * A parameter the spec made optional stays required until the next major
+     * version, so calls that pass it positionally keep working.
+     *
+     * @param array<string, string> $locked
      */
-    private function param(string $wireName, string $in, bool $required, mixed $param, array &$taken): array
+    private static function lockedAsRequired(array $locked, string $key): bool
     {
-        return [
-            'name' => Naming::unique(Naming::camel($wireName), $taken),
-            'wireName' => $wireName,
-            'in' => $in,
-            'required' => $required,
-            'schema' => is_array($param) ? ($param['schema'] ?? null) : null,
-            'description' => Json::str($param, 'description'),
-        ];
+        return isset($locked[$key]) && !ApiSurface::parseParam($locked[$key])['optional'];
+    }
+
+    /**
+     * @return array{string, string} Resource class and method name.
+     */
+    private static function splitMethod(string $method): array
+    {
+        $parts = explode('::', $method);
+        if (count($parts) !== 2) {
+            throw new \RuntimeException(sprintf('generator/api.lock.json has an invalid method "%s".', $method));
+        }
+
+        return [$parts[0], $parts[1]];
     }
 
     /**
@@ -330,7 +472,7 @@ final class SpecGenerator
         return $this->file(
             $this->namespace,
             ['Valicm\\BunnyToolkit\\Http\\ApiClient'],
-            self::docblock(['bunny.net ' . $this->config['title'] . '.']) .
+            self::docblock(['bunny.net ' . $this->config['title'] . '.', ...$this->experimentalNote()]) .
             "final class {$this->apiClass}\n{\n"
             . sprintf("    public const BASE_URL = %s;\n\n", var_export(rtrim($server, '/'), true))
             . "    public function __construct(\n        private readonly ApiClient \$client,\n    ) {}\n\n"
@@ -352,14 +494,14 @@ final class SpecGenerator
         ];
         $methods = [];
         foreach ($operations as $operation) {
-            $methods[] = $this->method($operation, $uses, $imports);
+            $methods[] = $this->method($class, $operation, $uses, $imports);
         }
         ksort($uses);
         $imports = array_values(array_unique($imports));
         sort($imports);
 
         $description = $this->resourceDescriptions[$class] ?? '';
-        $doc = [$description !== '' ? self::oneLine($description) : $class . ' endpoints of the bunny.net ' . $this->config['title'] . '.'];
+        $doc = [$description !== '' ? self::oneLine($description) : $class . ' endpoints of the bunny.net ' . $this->config['title'] . '.', ...$this->experimentalNote()];
         if ($uses !== []) {
             $doc[] = '';
             foreach (array_keys($uses) as $alias) {
@@ -379,11 +521,21 @@ final class SpecGenerator
     }
 
     /**
+     * @return list<string> Docblock lines marking an API outside the backward compatibility promise.
+     */
+    private function experimentalNote(): array
+    {
+        return ($this->config['experimental'] ?? false)
+            ? ['', '@experimental Generated from a spec bunny.net does not publish as public; may change in any release.']
+            : [];
+    }
+
+    /**
      * @param Operation $operation
      * @param array<string, true> $uses
      * @param list<string> $imports
      */
-    private function method(array $operation, array &$uses, array &$imports): string
+    private function method(string $class, array $operation, array &$uses, array &$imports): string
     {
         $doc = [];
         $doc[] = self::oneLine($operation['summary'] ?? $operation['name']);
@@ -396,8 +548,7 @@ final class SpecGenerator
         }
         $doc[] = '';
 
-        $required = [];
-        $optional = [];
+        $parameters = [];
         $paramDocs = [];
         foreach ($operation['params'] as $param) {
             $native = $this->types->nativeType($param['schema']);
@@ -406,14 +557,9 @@ final class SpecGenerator
                 // Path and header values are always sent as text.
                 [$native, $type] = ['string', 'string'];
             }
-            if ($param['required']) {
-                $required[] = self::signature($native, $param['name'], false);
-                // Nullable schemas on required parameters still need a value.
-                $type = self::withoutNull($type);
-            } else {
-                $optional[] = self::signature($native, $param['name'], true);
-                $type = self::withNull($type);
-            }
+            // Nullable schemas on required parameters still need a value.
+            $type = $param['required'] ? self::withoutNull($type) : self::withNull($type);
+            $parameters[] = ['key' => $param['key'], 'required' => $param['required'], 'signature' => self::signature($native, $param['name'], !$param['required'])];
             $paramDocs[] = self::paramDoc($type, $param['name'], $param['description']);
         }
 
@@ -432,13 +578,8 @@ final class SpecGenerator
                     ? ($body['required'] ? 'json: (object) $body' : 'json: $body === null ? null : (object) $body')
                     : 'json: $body';
             }
-            if ($body['required']) {
-                $required[] = self::signature($native, 'body', false);
-                $type = self::withoutNull($type);
-            } else {
-                $optional[] = self::signature($native, 'body', true);
-                $type = self::withNull($type);
-            }
+            $type = $body['required'] ? self::withoutNull($type) : self::withNull($type);
+            $parameters[] = ['key' => 'body', 'required' => $body['required'], 'signature' => self::signature($native, 'body', !$body['required'])];
             $paramDocs[] = self::paramDoc($type, 'body', $body['description']);
         }
         array_push($doc, ...$paramDocs);
@@ -466,7 +607,10 @@ final class SpecGenerator
         }
         $doc[] = '@throws ApiException When Bunny answers with an error status.';
         $doc[] = '@throws ClientExceptionInterface When the request cannot be sent.';
-        if ($operation['deprecated']) {
+        if ($operation['removedOn'] !== null) {
+            $doc[] = '';
+            $doc[] = sprintf('@deprecated Removed from the bunny.net spec on %s; kept until the next major version.', $operation['removedOn']);
+        } elseif ($operation['deprecated']) {
             $doc[] = '';
             $doc[] = '@deprecated Marked deprecated in the bunny.net spec.';
         }
@@ -491,8 +635,35 @@ final class SpecGenerator
             default => "        return {$call};\n",
         };
 
+        $signature = self::ordered($parameters, $this->locked['operations'][$operation['key']]['params'] ?? []);
+        $this->surface['operations'][$operation['key']] = [
+            'method' => $class . '::' . $operation['name'],
+            'params' => $signature,
+            'returns' => $returnType,
+        ];
+        if ($operation['deprecated'] || $operation['removedOn'] !== null) {
+            $this->surface['operations'][$operation['key']]['deprecated'] = true;
+        }
+
         return self::docblock($doc, '    ')
-            . sprintf("    public function %s(%s): %s\n    {\n%s    }\n", $operation['name'], implode(', ', [...$required, ...$optional]), $returnType, $code);
+            . sprintf("    public function %s(%s): %s\n    {\n%s    }\n", $operation['name'], implode(', ', $signature), $returnType, $code);
+    }
+
+    /**
+     * Puts required parameters before optional ones, and each group in locked
+     * order, so new optional parameters are added at the end.
+     *
+     * @param list<array{key: string, required: bool, signature: string}> $parameters In spec order.
+     * @param array<string, string> $locked
+     * @return array<string, string> Parameter key => signature.
+     */
+    private static function ordered(array $parameters, array $locked): array
+    {
+        $positions = array_flip(array_keys($locked));
+        usort($parameters, static fn(array $a, array $b): int => [!$a['required'], $positions[$a['key']] ?? \PHP_INT_MAX]
+            <=> [!$b['required'], $positions[$b['key']] ?? \PHP_INT_MAX]);
+
+        return array_column($parameters, 'signature', 'key');
     }
 
     /**
@@ -563,25 +734,36 @@ final class SpecGenerator
     }
 
     /**
-     * @param array{backing: 'int'|'string', cases: array<string, int|string>, description: ?string} $enum
+     * @param EnumDefinition $enum
      */
     private function enumFile(string $class, array $enum): string
     {
+        $kept = '@deprecated Removed from the bunny.net spec; kept until the next major version.';
         $cases = '';
         foreach ($enum['cases'] as $name => $value) {
+            if (!$enum['removed'] && in_array($name, $enum['deprecated'], true)) {
+                $cases .= self::docblock([$kept], '    ');
+            }
             $cases .= sprintf("    case %s = %s;\n", $name, var_export($value, true));
+        }
+        foreach ($enum['aliases'] as $name => $target) {
+            $cases .= self::docblock([sprintf('@deprecated Removed from the bunny.net spec; use %s instead. Kept until the next major version.', $target)], '    ')
+                . sprintf("    public const %s = self::%s;\n", $name, $target);
         }
         $description = self::oneLine($enum['description'] ?? '');
         if (preg_match('/^-?\d+ = /', $description) === 1) {
             // NSwag lists "0 = Name 1 = Name", which the cases already say.
             $description = '';
         }
+        $doc = [$description !== '' ? $description : $class . ' values in the bunny.net ' . $this->config['title'] . '.'];
+        if ($enum['removed']) {
+            array_push($doc, '', $kept);
+        }
 
         return $this->file(
             $this->namespace . '\\Enum',
             [],
-            self::docblock([$description !== '' ? $description : $class . ' values in the bunny.net ' . $this->config['title'] . '.'])
-            . "enum {$class}: {$enum['backing']}\n{\n{$cases}}\n",
+            self::docblock($doc) . "enum {$class}: {$enum['backing']}\n{\n{$cases}}\n",
         );
     }
 
