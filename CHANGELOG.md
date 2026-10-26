@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- `HashedTagList` writes URL-safe base64 tokens instead of 12 hex characters. `hashLength` is 3 to 8, default 5, which fits 170 tags in `CDN-Tag` instead of 78. Tokens change, so purge the pull zone once after upgrading.
+
 - API client for Core, Edge Scripting, Shield, Stream, Edge Storage, Magic Containers, Database and Origin Errors, generated from bunny.net's OpenAPI specs in `specs/` by `generator/`. Request and response arrays are typed with PHPStan shapes; named enums are PHP enums.
 - `Http\ApiClient` transport on PSR-18/PSR-17; throws `ApiException` and `RateLimitedException` with Bunny's error details and `Retry-After`.
 - `Bunny` entry point, with `StorageRegion` for Edge Storage endpoints.

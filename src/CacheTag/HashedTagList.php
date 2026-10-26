@@ -10,10 +10,23 @@ namespace Valicm\BunnyToolkit\CacheTag;
  * Bunny caps CDN-Tag at 1024 bytes and, according to a third-party
  * integration, stores the whole value as a single tag instead of splitting
  * it. So each tag is hashed to a short token, the tokens are wrapped in
- * guards (": a1b2c3d4e5f6 0f9e8d7c6b5a :") and a tag is purged with a
- * wildcard match ("* a1b2c3d4e5f6 *"). The guards keep the outer spaces from
- * being trimmed as header whitespace. A hash collision only causes an extra
- * purge.
+ * guards (": k3XqA 7m-2d :") and a tag is purged with a wildcard match
+ * ("* k3XqA *"). The guards keep the outer spaces from being trimmed as
+ * header whitespace. A hash collision only causes an extra purge.
+ *
+ * Tokens are URL-safe base64. Shorter tokens fit more tags but purge more
+ * unrelated pages:
+ *
+ * | Length | Bits | Tags in 1024 bytes | A purge also hits a full page   |
+ * |--------|------|--------------------|---------------------------------|
+ * | 3      | 18   | 255                | 1 in 1,000                      |
+ * | 4      | 24   | 204                | 1 in 82,000                     |
+ * | 5      | 30   | 170                | 1 in 6.3 million                |
+ * | 6      | 36   | 145                | 1 in 470 million                |
+ * | 7      | 42   | 127                | 1 in 35 billion                 |
+ * | 8      | 48   | 113                | 1 in 2.5 trillion               |
+ *
+ * The default is 5.
  *
  * Verify the single-value behaviour on a test pull zone before relying on it.
  *
@@ -21,13 +34,19 @@ namespace Valicm\BunnyToolkit\CacheTag;
  */
 final class HashedTagList implements TagFormat
 {
+    private const string ALPHABET = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-_';
+
+    public const int MIN_HASH_LENGTH = 3;
+
+    public const int MAX_HASH_LENGTH = 8;
+
     public function __construct(
-        private readonly int $hashLength = 12,
+        private readonly int $hashLength = 5,
         private readonly int $maxBytes = 1024,
         private readonly string $guard = ':',
     ) {
-        if ($hashLength < 6 || $hashLength > 32) {
-            throw new \InvalidArgumentException('Hash length must be between 6 and 32 characters.');
+        if ($hashLength < self::MIN_HASH_LENGTH || $hashLength > self::MAX_HASH_LENGTH) {
+            throw new \InvalidArgumentException(sprintf('Hash length must be between %d and %d characters.', self::MIN_HASH_LENGTH, self::MAX_HASH_LENGTH));
         }
         if ($guard === '' || preg_match('/[\s*]/', $guard) === 1) {
             throw new \InvalidArgumentException('The guard must be non-empty and contain no whitespace or "*".');
@@ -88,7 +107,16 @@ final class HashedTagList implements TagFormat
      */
     public function token(string $tag): string
     {
-        return substr(hash('xxh128', $tag), 0, $this->hashLength);
+        $bits = '';
+        foreach (str_split(hash('xxh128', $tag)) as $hex) {
+            $bits .= str_pad(base_convert($hex, 16, 2), 4, '0', STR_PAD_LEFT);
+        }
+        $token = '';
+        foreach (str_split(substr($bits, 0, $this->hashLength * 6), 6) as $chunk) {
+            $token .= self::ALPHABET[(int) bindec($chunk)];
+        }
+
+        return $token;
     }
 
     /**

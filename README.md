@@ -96,8 +96,20 @@ if (!$header->isEmpty()) {
 // $header->dropped lists tags that didn't fit; keep the TTL short enough for them.
 ```
 
-- **`HashedTagList`** hashes many tags into 12-character tokens, which fits 78
-  tags in the header, and purges each with a wildcard pattern.
+- **`HashedTagList`** hashes many tags into short URL-safe base64 tokens and
+  purges each with a wildcard pattern. `hashLength` trades header room for
+  precision:
+
+  | `hashLength` | Tags in the header | A purge also hits a page with a full header |
+  |---|---|---|
+  | 3 | 255 | 1 in 1,000 |
+  | 4 | 204 | 1 in 82,000 |
+  | 5 (default) | 170 | 1 in 6.3 million |
+  | 6 | 145 | 1 in 470 million |
+  | 7 | 127 | 1 in 35 billion |
+  | 8 | 113 | 1 in 2.5 trillion |
+
+  A collision never leaves a page stale; it only purges more than needed.
 - **`SingleTag`** writes one plain tag and purges it by exact match. Use it for
   responses that depend on one thing, such as a single lot's bidding data.
 
