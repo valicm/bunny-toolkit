@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- Partner Portal API: `Bunny::partner()` creates, invites and lists customers, and reads their pricing, products, contract, billing and audit log, using a partner account's key. Generated from `specs/partner.json`; `@experimental`.
+- `PullZone::addPullZone()` returns the new pull zone (`PullZoneModel`), as Bunny answers, instead of nothing. The generator's new `responseSchemas` option declares a JSON response the spec leaves out.
 - Tag purges always count against Bunny's Exact rate-limit bucket, as Bunny's docs say, including `HashedTagList`'s wildcard values. They were counted against the Prefix bucket, which allows a tenth as many.
 - `Purger` can send purges concurrently: `concurrency` on `Bunny::purger()`, with `Http\GuzzleConcurrentClient` (or any client implementing `Http\ConcurrentClient`). Each request takes a rate-limit token first; a 429'd item is retried first.
 - `Purger` builds every request before sending any, so a tag the format refuses throws before anything is purged.

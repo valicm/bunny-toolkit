@@ -217,10 +217,14 @@ instead:
   Operations already in the lock keep their names (see [Versioning](#versioning)).
 - **`responseKinds`:** declare a response body the spec leaves out (the
   storage download is one).
+- **`responseSchemas`:** name the component schema of a JSON response the
+  spec leaves out (`addPullZone()` returns the new zone).
 - **`slashParams`:** path parameters that may contain `/`.
 - **`experimental`:** leave an API out of the backward compatibility promise.
 
-The specs come from the same URLs bunny.net's own CLI uses.
+The specs come from the same URLs bunny.net's own CLI uses. The Partner
+Portal spec, which the CLI doesn't read, is the one bunny.net's docs index
+links to.
 
 ## Versioning
 
@@ -245,6 +249,8 @@ Not covered by these rules:
 
 - **The Database API** is `@experimental`: its spec is served from a
   `/docs/private/` URL, so it may change in any release.
+- **The Partner Portal API** is `@experimental`: it is new and open only to
+  bunny.net partners, so it may change in any release.
 - **PHPStan array shapes** follow Bunny's specs and can change in a minor
   release. Requests and responses are plain arrays, so a shape change can
   surface new PHPStan errors but doesn't change what runs.

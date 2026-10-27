@@ -18,6 +18,7 @@ namespace Valicm\BunnyToolkit\Generator;
  *     slashParams?: list<string>,
  *     preferOperationId?: bool,
  *     responseKinds?: array<string, 'json'|'text'|'stream'|'none'>,
+ *     responseSchemas?: array<string, string>,
  *     experimental?: bool,
  * }
  * @phpstan-type Param array{
@@ -252,9 +253,7 @@ final class SpecGenerator
                     'removedOn' => Json::str($operation, RemovedOperations::REMOVED_ON),
                     'params' => $this->params($path, Json::map($item, 'parameters'), Json::map($operation, 'parameters'), $operation, $lockedParams),
                     'body' => $body,
-                    'response' => isset($this->config['responseKinds'][$key])
-                        ? ['kind' => $this->config['responseKinds'][$key], 'schema' => null, 'nullable' => false]
-                        : $this->response($operation),
+                    'response' => $this->declaredResponse($key) ?? $this->response($operation),
                 ];
             }
         }
@@ -445,6 +444,27 @@ final class SpecGenerator
         return null;
     }
 
+    /**
+     * The response config declares for an operation, where the spec leaves it out.
+     *
+     * @return array{kind: 'json'|'text'|'stream'|'none', schema: mixed, nullable: bool}|null
+     */
+    private function declaredResponse(string $key): ?array
+    {
+        $schema = $this->config['responseSchemas'][$key] ?? null;
+        if ($schema !== null) {
+            $ref = '#/components/schemas/' . $schema;
+            if ($this->resolveRef(['$ref' => $ref]) === null) {
+                throw new \RuntimeException(sprintf('responseSchemas for %s names %s, which %s does not define.', $key, $schema, $this->config['file']));
+            }
+
+            return ['kind' => 'json', 'schema' => ['$ref' => $ref], 'nullable' => false];
+        }
+        $kind = $this->config['responseKinds'][$key] ?? null;
+
+        return $kind !== null ? ['kind' => $kind, 'schema' => null, 'nullable' => false] : null;
+    }
+
     private function resolveRef(mixed $node): mixed
     {
         $ref = Json::str($node, '$ref');
@@ -526,7 +546,7 @@ final class SpecGenerator
     private function experimentalNote(): array
     {
         return ($this->config['experimental'] ?? false)
-            ? ['', '@experimental Generated from a spec bunny.net does not publish as public; may change in any release.']
+            ? ['', '@experimental Outside the backward compatibility promise; may change in any release.']
             : [];
     }
 

@@ -13,6 +13,9 @@ use Valicm\BunnyToolkit\Api\Core\Enum\TriggerMatchingTypes;
 use Valicm\BunnyToolkit\Api\Core\Enum\TriggerTypes;
 use Valicm\BunnyToolkit\Api\Core\Resource\PullZone;
 use Valicm\BunnyToolkit\Api\MagicContainers\MagicContainersApi;
+use Valicm\BunnyToolkit\Api\Partner\PartnerApi;
+use Valicm\BunnyToolkit\Api\Partner\Resource\Billing;
+use Valicm\BunnyToolkit\Api\Partner\Resource\Customers;
 use Valicm\BunnyToolkit\Api\Storage\Resource\ManageFiles;
 use Valicm\BunnyToolkit\Api\Storage\StorageApi;
 use Valicm\BunnyToolkit\Api\Stream\StreamApi;
@@ -31,6 +34,9 @@ use Valicm\BunnyToolkit\Tests\Support\TestApi;
 #[CoversClass(ManageFiles::class)]
 #[CoversClass(StreamApi::class)]
 #[CoversClass(MagicContainersApi::class)]
+#[CoversClass(PartnerApi::class)]
+#[CoversClass(Customers::class)]
+#[CoversClass(Billing::class)]
 final class GeneratedApiTest extends TestCase
 {
     private FakeHttpClient $http;
@@ -123,5 +129,40 @@ final class GeneratedApiTest extends TestCase
         $this->bunny->magicContainers()->applications()->listApplications();
 
         self::assertStringStartsWith('https://api.bunny.net/mc/apps', (string) $this->http->requests[0]->getUri());
+    }
+
+    public function testAddingAPullZoneReturnsTheNewZone(): void
+    {
+        $this->http->respondJson(201, ['Id' => 77, 'Name' => 'new-zone']);
+
+        $zone = $this->bunny->core()->pullZone()->addPullZone(['Name' => 'new-zone', 'OriginUrl' => 'https://origin.example']);
+
+        self::assertSame(77, $zone['Id'] ?? null);
+        self::assertSame('POST', $this->http->requests[0]->getMethod());
+        self::assertSame('https://api.bunny.net/pullzone', (string) $this->http->requests[0]->getUri());
+    }
+
+    public function testPartnerCreatesACustomer(): void
+    {
+        $this->http->respondJson(200, ['CustomerUserId' => 'user-1']);
+
+        $created = $this->bunny->partner()->customers()->createCustomer(['Email' => 'customer@example.com']);
+
+        $request = $this->http->requests[0];
+        self::assertSame('user-1', $created['CustomerUserId'] ?? null);
+        self::assertSame('POST', $request->getMethod());
+        self::assertSame('https://api.bunny.net/partner/customers', (string) $request->getUri());
+        self::assertSame('secret-key', $request->getHeaderLine('AccessKey'));
+        self::assertSame(['Email' => 'customer@example.com'], json_decode((string) $request->getBody(), true));
+    }
+
+    public function testPartnerInvoicePdfIsAStream(): void
+    {
+        $this->http->respond(200, '%PDF-1.7', ['Content-Type' => 'application/pdf']);
+
+        $pdf = $this->bunny->partner()->billing()->downloadInvoicePdf('user-1', 9);
+
+        self::assertSame('%PDF-1.7', (string) $pdf);
+        self::assertSame('https://api.bunny.net/partner/customer/user-1/billing/9/pdf', (string) $this->http->requests[0]->getUri());
     }
 }

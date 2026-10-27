@@ -579,7 +579,7 @@
                 "params": {
                     "body": "array $body"
                 },
-                "returns": "void"
+                "returns": "mixed"
             },
             "POST /pullzone/checkavailability": {
                 "method": "PullZone::checkPullZoneAvailability",
@@ -2372,6 +2372,292 @@
             }
         },
         "enums": []
+    },
+    "Partner": {
+        "operations": {
+            "GET /partner/contract": {
+                "method": "Contract::getContract",
+                "params": [],
+                "returns": "mixed"
+            },
+            "GET /partner/customer/{customerUserId}": {
+                "method": "Customers::getCustomerOverview",
+                "params": {
+                    "path:customerUserId": "string $customerUserId"
+                },
+                "returns": "mixed"
+            },
+            "GET /partner/customer/{customerUserId}/audit/{date}": {
+                "method": "AuditLog::getAuditLog",
+                "params": {
+                    "path:customerUserId": "string $customerUserId",
+                    "path:date": "string $date",
+                    "query:Product": "?array $product = null",
+                    "query:ResourceType": "?array $resourceType = null",
+                    "query:ResourceId": "?array $resourceId = null",
+                    "query:ActorId": "?array $actorId = null",
+                    "query:Order": "?string $order = null",
+                    "query:ContinuationToken": "?string $continuationToken = null",
+                    "query:Limit": "?int $limit = null"
+                },
+                "returns": "mixed"
+            },
+            "GET /partner/customer/{customerUserId}/billing": {
+                "method": "Billing::getCustomerBilling",
+                "params": {
+                    "path:customerUserId": "string $customerUserId"
+                },
+                "returns": "mixed"
+            },
+            "GET /partner/customer/{customerUserId}/billing/{billingRecordId}/pdf": {
+                "method": "Billing::downloadInvoicePdf",
+                "params": {
+                    "path:customerUserId": "string $customerUserId",
+                    "path:billingRecordId": "int $billingRecordId"
+                },
+                "returns": "StreamInterface"
+            },
+            "GET /partner/customer/{customerUserId}/pricing": {
+                "method": "Pricing::getCustomerPricing",
+                "params": {
+                    "path:customerUserId": "string $customerUserId"
+                },
+                "returns": "mixed"
+            },
+            "GET /partner/customer/{customerUserId}/products": {
+                "method": "Products::listCustomerProducts",
+                "params": {
+                    "path:customerUserId": "string $customerUserId"
+                },
+                "returns": "mixed"
+            },
+            "GET /partner/customers": {
+                "method": "Customers::listCustomers",
+                "params": [],
+                "returns": "mixed"
+            },
+            "GET /partner/overview": {
+                "method": "Customers::getPartnerOverview",
+                "params": [],
+                "returns": "mixed"
+            },
+            "GET /partner/pricing": {
+                "method": "Pricing::getPartnerPricing",
+                "params": [],
+                "returns": "mixed"
+            },
+            "POST /partner/customers": {
+                "method": "Customers::createCustomer",
+                "params": {
+                    "body": "array $body"
+                },
+                "returns": "mixed"
+            },
+            "POST /partner/customers/invite": {
+                "method": "Customers::inviteCustomer",
+                "params": {
+                    "body": "array $body"
+                },
+                "returns": "void"
+            },
+            "PUT /partner/customer/{customerUserId}/products/{productId}": {
+                "method": "Products::setCustomerProduct",
+                "params": {
+                    "path:customerUserId": "string $customerUserId",
+                    "path:productId": "int $productId",
+                    "query:enabled": "?bool $enabled = null"
+                },
+                "returns": "void"
+            }
+        },
+        "enums": {
+            "BalanceAdjustmentSource": {
+                "Cdn": 1000,
+                "CdnStandardTier": 1100,
+                "CdnStandardTierEuTraffic": 1101,
+                "CdnStandardTierNaTraffic": 1102,
+                "CdnStandardTierApacTraffic": 1103,
+                "CdnStandardTierAfTraffic": 1104,
+                "CdnStandardTierSaTraffic": 1105,
+                "CdnStandardTierUncategorized": 1106,
+                "CdnStandardTierStream": 1200,
+                "CdnStandardTierStreamEuTraffic": 1201,
+                "CdnStandardTierStreamNaTraffic": 1202,
+                "CdnStandardTierStreamApacTraffic": 1203,
+                "CdnStandardTierStreamAfTraffic": 1204,
+                "CdnStandardTierStreamSaTraffic": 1205,
+                "CdnStandardTierStreamUncategorized": 1206,
+                "CdnVolumeTier": 1300,
+                "CdnVolumeTierEuTraffic": 1301,
+                "CdnVolumeTierNaTraffic": 1302,
+                "CdnVolumeTierApacTraffic": 1303,
+                "CdnVolumeTierAfTraffic": 1304,
+                "CdnVolumeTierSaTraffic": 1305,
+                "CdnVolumeTierUncategorized": 1306,
+                "CdnVolumeTierStream": 1400,
+                "CdnVolumeTierStreamEuTraffic": 1401,
+                "CdnVolumeTierStreamNaTraffic": 1402,
+                "CdnVolumeTierStreamApacTraffic": 1403,
+                "CdnVolumeTierStreamAfTraffic": 1404,
+                "CdnVolumeTierStreamSaTraffic": 1405,
+                "CdnVolumeTierStreamUncategorized": 1406,
+                "CdnStandardTierStorage": 1500,
+                "CdnStandardTierStorageEuTraffic": 1501,
+                "CdnStandardTierStorageNaTraffic": 1502,
+                "CdnStandardTierStorageApacTraffic": 1503,
+                "CdnStandardTierStorageAfTraffic": 1504,
+                "CdnStandardTierStorageSaTraffic": 1505,
+                "CdnStandardTierStorageUncategorized": 1506,
+                "CdnVolumeTierStorage": 1510,
+                "CdnVolumeTierStorageEuTraffic": 1511,
+                "CdnVolumeTierStorageNaTraffic": 1512,
+                "CdnVolumeTierStorageApacTraffic": 1513,
+                "CdnVolumeTierStorageAfTraffic": 1514,
+                "CdnVolumeTierStorageSaTraffic": 1515,
+                "CdnVolumeTierStorageUncategorized": 1516,
+                "CdnWebSocketsTier1000": 1600,
+                "CdnWebSocketsTier2500": 1605,
+                "CdnWebSocketsTier5000": 1610,
+                "CdnWebSocketsTier10000": 1615,
+                "CdnWebSocketsTier25000": 1620,
+                "CdnWebSocketsConsumptionBased": 1630,
+                "CdnStandardTierMagicContainers": 1700,
+                "CdnStandardTierMagicContainersEuTraffic": 1701,
+                "CdnStandardTierMagicContainersNaTraffic": 1702,
+                "CdnStandardTierMagicContainersApacTraffic": 1703,
+                "CdnStandardTierMagicContainersAfTraffic": 1704,
+                "CdnStandardTierMagicContainersSaTraffic": 1705,
+                "CdnStandardTierMagicContainersUncategorized": 1706,
+                "CdnVolumeTierMagicContainers": 1710,
+                "CdnVolumeTierMagicContainersEuTraffic": 1711,
+                "CdnVolumeTierMagicContainersNaTraffic": 1712,
+                "CdnVolumeTierMagicContainersApacTraffic": 1713,
+                "CdnVolumeTierMagicContainersAfTraffic": 1714,
+                "CdnVolumeTierMagicContainersSaTraffic": 1715,
+                "CdnVolumeTierMagicContainersUncategorized": 1716,
+                "CdnStandardTierScripting": 1800,
+                "CdnStandardTierScriptingEuTraffic": 1801,
+                "CdnStandardTierScriptingNaTraffic": 1802,
+                "CdnStandardTierScriptingApacTraffic": 1803,
+                "CdnStandardTierScriptingAfTraffic": 1804,
+                "CdnStandardTierScriptingSaTraffic": 1805,
+                "CdnStandardTierScriptingUncategorized": 1806,
+                "CdnVolumeTierScripting": 1810,
+                "CdnVolumeTierScriptingEuTraffic": 1811,
+                "CdnVolumeTierScriptingNaTraffic": 1812,
+                "CdnVolumeTierScriptingApacTraffic": 1813,
+                "CdnVolumeTierScriptingAfTraffic": 1814,
+                "CdnVolumeTierScriptingSaTraffic": 1815,
+                "CdnVolumeTierScriptingUncategorized": 1816,
+                "Storage": 2000,
+                "StorageStandardTier": 2100,
+                "StorageSsdTier": 2200,
+                "StorageStandardTierStream": 2300,
+                "StorageSsdTierStream": 2400,
+                "Dns": 3000,
+                "DnsSmartQueries": 3100,
+                "DnsStandardQueries": 3200,
+                "Stream": 4000,
+                "Transcribing": 4100,
+                "PremiumEncoding": 4200,
+                "DrmBase": 4300,
+                "DrmLicenseIssued": 4400,
+                "LiveEncodingSd": 4501,
+                "LiveEncodingHd": 4502,
+                "LiveEncoding4K": 4503,
+                "ScriptingCdn": 5000,
+                "ScriptingDns": 5100,
+                "ScriptingCdnRequests": 5200,
+                "ScriptingCdnCpu": 5300,
+                "Optimizer": 6000,
+                "OptimizerBurrowTunneledTraffic": 6100,
+                "ExtraZones": 7000,
+                "ExtraZonesCdn": 7001,
+                "ExtraZonesStream": 7002,
+                "ExtraZonesStorage": 7003,
+                "ExtraZonesDns": 7004,
+                "MonthlyCommitment": 8000,
+                "TopUp": 9000,
+                "MagicContainers": 10000,
+                "MagicContainersCpu": 10100,
+                "MagicContainersRam": 10200,
+                "MagicContainersIp": 10300,
+                "MagicContainersAnycastIp": 10301,
+                "MagicContainersTraffic": 10400,
+                "MagicContainersAnycastTraffic": 10401,
+                "MagicContainersAnycastIngressTraffic": 10410,
+                "MagicContainersAnycastIngressEuTraffic": 10411,
+                "MagicContainersAnycastIngressNaTraffic": 10412,
+                "MagicContainersAnycastIngressAsiaTraffic": 10413,
+                "MagicContainersAnycastIngressAustraliaTraffic": 10414,
+                "MagicContainersAnycastIngressAfTraffic": 10415,
+                "MagicContainersAnycastIngressSaTraffic": 10416,
+                "MagicContainersAnycastIngressUncategorized": 10417,
+                "MagicContainersEgressTraffic": 10420,
+                "MagicContainersEgressEuTraffic": 10421,
+                "MagicContainersEgressNaTraffic": 10422,
+                "MagicContainersEgressAsiaTraffic": 10423,
+                "MagicContainersEgressAustraliaTraffic": 10424,
+                "MagicContainersEgressAfTraffic": 10425,
+                "MagicContainersEgressSaTraffic": 10426,
+                "MagicContainersEgressUncategorized": 10427,
+                "MagicContainersVolumes": 10500,
+                "MagicContainersPersistentVolumes": 10510,
+                "Shield": 11000,
+                "ShieldBasicOverages": 11005,
+                "ShieldAdvancedMonthlyPlan": 11100,
+                "ShieldAdvancedOverages": 11105,
+                "ShieldBusinessMonthlyPlan": 11110,
+                "ShieldBusinessOverages": 11115,
+                "ShieldEnterpriseMonthlyPlan": 11120,
+                "ShieldEnterpriseOverages": 11125,
+                "BunnyDb": 12000,
+                "BunnyDbStorage": 12100,
+                "BunnyDbReplicaStorage": 12200,
+                "BunnyDbRowReads": 12300,
+                "BunnyDbRowWrites": 12400,
+                "CdnLoadBalancerMonthlyFee": 13000,
+                "CdnLoadBalancerRequestOverages": 13100,
+                "AiGateway": 14000,
+                "AiGatewayInputTokens": 14100,
+                "AiGatewayOutputTokens": 14200,
+                "AiGatewayCachedTokens": 14300,
+                "AiGatewayOther": 14400
+            },
+            "BillingRecordType": {
+                "PayPal": 0,
+                "Crypto": 1,
+                "CreditCard": 2,
+                "MonthlyUsage": 3,
+                "Refund": 4,
+                "CouponCode": 5,
+                "BankTransfer": 6,
+                "AffiliateCredits": 7
+            },
+            "LogOrdering": {
+                "Ascending": "Ascending",
+                "Descending": "Descending"
+            },
+            "PartnerContractBillingType": {
+                "PayAsYouGo": 1,
+                "PostPaid": 2
+            },
+            "PartnerCustomerContractCurrency": {
+                "UsDollar": 0,
+                "Euro": 1
+            },
+            "PartnerCustomerProductType": {
+                "Cdn": 1,
+                "Database": 2,
+                "Dns": 3,
+                "MagicContainers": 4,
+                "Optimizer": 5,
+                "EdgeScripting": 6,
+                "Shield": 7,
+                "Storage": 8,
+                "Stream": 9
+            }
+        }
     },
     "Shield": {
         "operations": {

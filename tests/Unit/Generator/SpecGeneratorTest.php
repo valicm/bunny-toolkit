@@ -285,4 +285,25 @@ final class SpecGeneratorTest extends TestCase
         self::assertStringContainsString('): StreamInterface', $files['Resource/Files.php']);
         self::assertStringContainsString("keepSlashes: ['path']", $files['Resource/Files.php']);
     }
+
+    public function testDeclaresAResponseSchemaTheSpecLeavesOut(): void
+    {
+        $config = self::CONFIG + ['responseSchemas' => ['POST /pullzone/{id}' => 'PullZoneModel']];
+
+        $pullZone = (new SpecGenerator(self::spec(), $config, 'App\\Api'))->generate()['Resource/PullZone.php'];
+
+        self::assertStringContainsString('public function updatePullZone(int $id, array $body): mixed', $pullZone);
+        self::assertStringContainsString("\$data = \$this->client->json('POST', ", $pullZone);
+        self::assertSame(2, substr_count($pullZone, '@return PullZoneModel'));
+    }
+
+    public function testRefusesAResponseSchemaTheSpecDoesNotDefine(): void
+    {
+        $config = self::CONFIG + ['responseSchemas' => ['POST /pullzone/{id}' => 'Missing']];
+
+        $this->expectException(\RuntimeException::class);
+        $this->expectExceptionMessage('names Missing');
+
+        (new SpecGenerator(self::spec(), $config, 'App\\Api'))->generate();
+    }
 }

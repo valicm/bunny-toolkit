@@ -13,7 +13,7 @@ use Valicm\BunnyToolkit\Http\ApiException;
 /**
  * All databases are parts of a [DatabaseGroup]. This [DatabaseGroup] is the entity we start and stop in some locations, it's the entity using ressources and sharing them to the whole databases underneeth. Every database under a [DatabaseGroup] are going to share the same Libsql Version. Those [DatabaseGroup] when hosted somewhere are either a Primary or a Replica. You do not need to handle this as this is autopiloted by Bunny itself.
  *
- * @experimental Generated from a spec bunny.net does not publish as public; may change in any release.
+ * @experimental Outside the backward compatibility promise; may change in any release.
  *
  * @phpstan-import-type CreateDatabaseGroupPayload from \Valicm\BunnyToolkit\Api\Database\Types
  * @phpstan-import-type CreateDatabaseGroupResponse from \Valicm\BunnyToolkit\Api\Database\Types

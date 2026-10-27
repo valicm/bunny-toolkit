@@ -13,7 +13,7 @@ use Valicm\BunnyToolkit\Http\ApiException;
 /**
  * General requests to get the actual configuration of the Environment.
  *
- * @experimental Generated from a spec bunny.net does not publish as public; may change in any release.
+ * @experimental Outside the backward compatibility promise; may change in any release.
  *
  * @phpstan-import-type CDNServerToken from \Valicm\BunnyToolkit\Api\Database\Types
  * @phpstan-import-type CDNServerToken2 from \Valicm\BunnyToolkit\Api\Database\Types

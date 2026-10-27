@@ -6,7 +6,8 @@ declare(strict_types=1);
  * Specs the generator reads, and how each maps to PHP.
  *
  * - source: where generator/update-specs.php downloads the spec from (the
- *   same URLs bunny.net's own CLI uses).
+ *   same URLs bunny.net's own CLI uses, or bunny.net's docs index for specs
+ *   the CLI doesn't read).
  * - namespace: sub-namespace under Valicm\BunnyToolkit\Api.
  * - methodNames: "METHOD /path" => method name, for operations whose derived
  *   name is unclear or collides. Generation fails on a collision.
@@ -16,6 +17,8 @@ declare(strict_types=1);
  * - preferOperationId: name methods from operationIds even when the summary is short.
  * - responseKinds: "METHOD /path" => json|text|stream|none, where the spec
  *   doesn't describe the response body.
+ * - responseSchemas: "METHOD /path" => component schema name, for a JSON
+ *   response body the spec leaves out. Takes precedence over responseKinds.
  * - experimental: the API is outside the backward compatibility promise, so
  *   breaking changes to it don't need a major version.
  *
@@ -35,6 +38,10 @@ return [
             'DELETE /videolibrary/{id}/live/watermark' => 'deleteLiveWatermark',
             'GET /videolibrary/{id}/transcribing/statistics' => 'getTranscribingStatistics',
             'GET /videolibrary/{id}/drm/statistics' => 'getDrmStatistics',
+        ],
+        'responseSchemas' => [
+            // Bunny answers 201 with the new zone; the spec declares no body.
+            'POST /pullzone' => 'PullZoneModel',
         ],
     ],
     'compute' => [
@@ -98,5 +105,17 @@ return [
         'methodNames' => [
             'GET /{pullZoneId}/{dateTime}' => 'getLogs',
         ],
+    ],
+    'partner' => [
+        'file' => 'specs/partner.json',
+        'source' => 'https://core-api-public-docs.b-cdn.net/docs/v3/PartnerPortal.json',
+        'namespace' => 'Partner',
+        'title' => 'Partner Portal API',
+        'responseKinds' => [
+            // The spec declares no content type for the PDF.
+            'GET /partner/customer/{customerUserId}/billing/{billingRecordId}/pdf' => 'stream',
+        ],
+        // New, and only open to bunny.net partners.
+        'experimental' => true,
     ],
 ];

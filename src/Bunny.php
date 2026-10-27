@@ -14,6 +14,7 @@ use Valicm\BunnyToolkit\Api\Database\DatabaseApi;
 use Valicm\BunnyToolkit\Api\EdgeScripting\EdgeScriptingApi;
 use Valicm\BunnyToolkit\Api\MagicContainers\MagicContainersApi;
 use Valicm\BunnyToolkit\Api\OriginErrors\OriginErrorsApi;
+use Valicm\BunnyToolkit\Api\Partner\PartnerApi;
 use Valicm\BunnyToolkit\Api\Shield\ShieldApi;
 use Valicm\BunnyToolkit\Api\Storage\StorageApi;
 use Valicm\BunnyToolkit\Api\Stream\StreamApi;
@@ -82,6 +83,14 @@ final class Bunny
     public function originErrors(): OriginErrorsApi
     {
         return new OriginErrorsApi($this->client(OriginErrorsApi::BASE_URL, $this->apiKey));
+    }
+
+    /**
+     * Customers, pricing, products and billing, for a partner account's key.
+     */
+    public function partner(): PartnerApi
+    {
+        return new PartnerApi($this->client(PartnerApi::BASE_URL, $this->apiKey));
     }
 
     /**

@@ -70,13 +70,17 @@ final class PullZone
      * `POST /pullzone`
      *
      * @param PullZoneAddModel $body The Pull Zone that will be added
+     * @return PullZoneModel
      *
      * @throws ApiException When Bunny answers with an error status.
      * @throws ClientExceptionInterface When the request cannot be sent.
      */
-    public function addPullZone(array $body): void
+    public function addPullZone(array $body): mixed
     {
-        $this->client->send('POST', '/pullzone', json: (object) $body);
+        /** @var PullZoneModel $data */
+        $data = $this->client->json('POST', '/pullzone', json: (object) $body);
+
+        return $data;
     }
 
     /**

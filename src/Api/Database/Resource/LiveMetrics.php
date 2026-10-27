@@ -13,7 +13,7 @@ use Valicm\BunnyToolkit\Http\ApiException;
 /**
  * Request associated to the live metrics.
  *
- * @experimental Generated from a spec bunny.net does not publish as public; may change in any release.
+ * @experimental Outside the backward compatibility promise; may change in any release.
  *
  * @phpstan-import-type LiveMetricsForDBPayload from \Valicm\BunnyToolkit\Api\Database\Types
  * @phpstan-import-type LiveMetricsForDBResponse from \Valicm\BunnyToolkit\Api\Database\Types
