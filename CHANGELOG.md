@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- `RedisTokenBucket`: Bunny's purge limits shared by every process through Redis or Valkey (phpredis or Predis), so workers don't each spend the whole account limit. Falls back to counting in the process if the server stops answering.
 - Logging API: `Bunny::logging()` searches a pull zone's CDN access logs (`logs()->queryLogs()`) and downloads a day's raw log (`legacyLogs()->getDailyLog()`, a stream). Generated from `specs/logging.json`; the generator's new `baseUrl` option supplies the host its spec leaves out.
 - Partner Portal API: `Bunny::partner()` creates, invites and lists customers, and reads their pricing, products, contract, billing and audit log, using a partner account's key. Generated from `specs/partner.json`; `@experimental`.
 - `PullZone::addPullZone()` returns the new pull zone (`PullZoneModel`), as Bunny answers, instead of nothing. The generator's new `responseSchemas` option declares a JSON response the spec leaves out.

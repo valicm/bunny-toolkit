@@ -68,16 +68,19 @@ and 429s as `Http\RateLimitedException` (with `retryAfter` in seconds).
 | `magicContainers()` | `api.bunny.net/mc` | Account API key |
 | `database()` | `api.bunny.net/database` | Account API key |
 | `originErrors()` | `cdn-origin-logging.bunny.net` | Account API key |
+| `logging()` | `logging.bunnycdn.com` | Account API key |
+| `partner()` | `api.bunny.net` | Partner account API key |
 | `storage($password, StorageRegion::London)` | The zone's region | Storage zone password |
 | `stream($libraryKey)` | `video.bunnycdn.com` | Video library API key |
 
 For anything the specs don't cover, call the transport directly:
 
 ```php
+use Valicm\BunnyToolkit\Api\Core\CoreApi;
 use Valicm\BunnyToolkit\Http\ApiClient;
 
-$client = new ApiClient($httpClient, $factory, $factory, 'https://logging.bunnycdn.com', $apiKey);
-$log = $client->text('GET', $client->path('/{date}/{pullZoneId}.log', ['date' => '10-26-26', 'pullZoneId' => 123]));
+$client = new ApiClient($httpClient, $factory, $factory, CoreApi::BASE_URL, $apiKey);
+$edgeServers = $client->json('GET', '/system/edgeserverlist');
 ```
 
 ### Cache tags
@@ -145,10 +148,24 @@ same way. Other errors, such as a bad API key, are thrown.
 
 Use `maxWait: 0.0` in web requests and a few seconds in queue workers.
 
-`InMemoryTokenBucket` only coordinates purges within one PHP process. Workers
-on several hosts need a `RateLimiter` backed by shared storage (e.g. Redis),
-and should still expect the odd 429. If Bunny support raises the account's
-limits, pass them in:
+`InMemoryTokenBucket` only coordinates purges within one PHP process. Where
+several processes or hosts purge on one account (FPM workers, queue workers),
+use `RedisTokenBucket`: the buckets live in Redis or Valkey, spent by one Lua
+script on the server's clock, so every process draws on the same limit. It
+takes a phpredis `\Redis` or a Predis client. If the server stops answering,
+the process logs a warning and counts for itself from then on.
+
+```php
+use Valicm\BunnyToolkit\Purge\RateLimiter\RedisTokenBucket;
+
+$redis = new \Redis();
+$redis->connect('valkey', 6379);
+$purger = $bunny->purger(new HashedTagList(), new RedisTokenBucket($redis, logger: $logger));
+```
+
+Installations sharing an account but not a server count separately, so they
+should still expect the odd 429. If Bunny support raises the account's
+limits, pass them in, to either bucket:
 
 ```php
 use Valicm\BunnyToolkit\Purge\PurgeLimit;
@@ -285,8 +302,10 @@ These are documented by third parties or inferred, not confirmed by Bunny's docs
 - **Single tag per header:** a [Sulu integration](https://packagist.org/packages/alengo/sulu-bunny-cdn-bundle)
   reports that Bunny stores the whole `CDN-Tag` value as one tag. `HashedTagList`
   is built on that.
-- **Wildcard tag purge bucket:** the docs don't say whether a tag purge containing
-  `*` uses the exact or prefix bucket. The purger assumes prefix, the smaller one.
+- **Wildcard tag purge bucket:** the docs put tag purges in the Exact bucket
+  without saying whether a tag containing `*` is an exception. The purger
+  counts every tag purge as Exact; a 429 still backs off if Bunny counts them
+  as Prefix.
 - **Silent no-op:** the purge API reportedly answers 204 even when nothing
   matched, so a purged item only means Bunny accepted the request.
 
@@ -295,6 +314,7 @@ These are documented by third parties or inferred, not confirmed by Bunny's docs
 ```bash
 composer install
 composer check      # php-cs-fixer (dry run), PHPStan level max, PHPUnit
+BUNNY_TOOLKIT_REDIS=tcp://127.0.0.1:6379 composer test   # also RedisTokenBucket's script, on a real server
 composer cs:fix
 ```
 
@@ -304,7 +324,12 @@ MIT. See [LICENSE](LICENSE).
 
 ## Roadmap
 
-- Logging API (no OpenAPI spec published; currently via `ApiClient` directly)
+- Stream live streaming (12 operations) and Core's `POST /videolibrary/resetApiKey`:
+  only in the copies of those specs on bunny.net's docs site, not in the specs
+  `update-specs` downloads. Needs the generator to merge a second source's
+  extra paths into a spec
+- Verify on a real account what is so far tested only against the specs: the
+  Logging API's date format, and the Partner Portal API (needs a partner account)
 - Pull zone settings and the few remaining edge rules as config files, with diff and apply
 - Console commands for CI: `purge`, `script:deploy`, `zone:diff`, `zone:apply`
 - Scheduled CI job that runs `update-specs` and opens a pull request

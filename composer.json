@@ -35,10 +35,13 @@
         "nyholm/psr7": "^1.8",
         "phpstan/phpstan": "^2.1",
         "phpstan/phpstan-phpunit": "^2.0",
-        "phpunit/phpunit": "^11.5"
+        "phpunit/phpunit": "^11.5",
+        "predis/predis": "^2.3"
     },
     "suggest": {
-        "guzzlehttp/guzzle": "Http\\GuzzleConcurrentClient sends purges concurrently"
+        "guzzlehttp/guzzle": "Http\\GuzzleConcurrentClient sends purges concurrently",
+        "ext-redis": "RedisTokenBucket shares purge limits between processes through Redis or Valkey",
+        "predis/predis": "RedisTokenBucket without ext-redis"
     },
     "autoload": {
         "psr-4": {
