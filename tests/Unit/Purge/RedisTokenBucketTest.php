@@ -27,6 +27,9 @@ final class RedisTokenBucketTest extends TestCase
             /** @var list<string> */
             public array $warnings = [];
 
+            /**
+             * @param array<array-key, mixed> $context
+             */
             public function log($level, \Stringable|string $message, array $context = []): void
             {
                 $this->warnings[] = strtr((string) $message, ['{reason}' => is_string($context['reason'] ?? null) ? $context['reason'] : '']);
