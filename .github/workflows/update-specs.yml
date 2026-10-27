@@ -1,0 +1,90 @@
+name: Update specs
+
+# Downloads Bunny's latest OpenAPI specs every Monday, regenerates the client
+# and opens (or updates) one pull request with the changes and the release
+# they need. Nothing is merged or tagged here.
+#
+# A pull request opened with the workflow's own token doesn't start other
+# workflows, so CI would not run on it. Set a SPECS_PR_TOKEN secret (a
+# fine-grained token with contents and pull requests write on this repository)
+# for CI to run; without it, the pull request is still opened.
+
+on:
+  schedule:
+    - cron: '23 5 * * 1'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  pull-requests: write
+
+concurrency:
+  group: update-specs
+  cancel-in-progress: false
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    env:
+      BRANCH: update-specs
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.SPECS_PR_TOKEN || github.token }}
+
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.3'
+          coverage: none
+
+      - uses: ramsey/composer-install@v3
+
+      - name: Download the specs
+        run: composer update-specs
+
+      - name: Regenerate the client
+        id: generate
+        # A change that breaks callers writes nothing and fails; the pull
+        # request still carries the new specs and says so.
+        run: |
+          set +e
+          composer generate > generate.txt 2>&1
+          echo "status=$?" >> "$GITHUB_OUTPUT"
+          cat generate.txt
+
+      - name: Open or update the pull request
+        env:
+          GH_TOKEN: ${{ secrets.SPECS_PR_TOKEN || github.token }}
+          STATUS: ${{ steps.generate.outputs.status }}
+        run: |
+          if [ -z "$(git status --porcelain -- specs src/Api generator/api.lock.json)" ]; then
+            echo "The specs are unchanged."
+            exit 0
+          fi
+
+          {
+            echo "Bunny's OpenAPI specs changed. \`composer update-specs\` and \`composer generate\` ran on $(date -u +%Y-%m-%d)."
+            echo
+            if [ "$STATUS" != "0" ]; then
+              echo "**\`composer generate\` failed**, so \`src/Api\` is not regenerated: see below. A change that breaks callers waits for the next major version."
+              echo
+            fi
+            echo '```'
+            cat generate.txt
+            echo '```'
+            echo
+            echo "Review \`git diff specs src/Api\`, add a CHANGELOG line, and release as the output says."
+          } > body.md
+
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git checkout -B "$BRANCH"
+          git add -- specs src/Api generator/api.lock.json
+          git commit -m "Update Bunny's OpenAPI specs"
+          git push --force origin "$BRANCH"
+
+          if gh pr view "$BRANCH" --json state --jq .state 2>/dev/null | grep -q OPEN; then
+            gh pr edit "$BRANCH" --body-file body.md
+          else
+            gh pr create --base "${{ github.event.repository.default_branch }}" --head "$BRANCH" --title "Update Bunny's OpenAPI specs" --body-file body.md
+          fi

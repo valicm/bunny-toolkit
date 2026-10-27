@@ -1,8 +1,14 @@
 # valicm/bunny-toolkit
 
-bunny.net tooling for PHP: a full API client generated from Bunny's official
-OpenAPI specs, cache purging within Bunny's rate limits, `CDN-Tag` response
-headers, and Edge Script deployment.
+[Bunny CDN](https://bunny.net) tooling for PHP: a full API client generated from Bunny's official
+OpenAPI specs, cache purging within Bunny's rate limits (shared between
+processes through Redis or Valkey), `CDN-Tag` response headers, caching
+choices as a pull zone's settings and Edge Rules, and Edge Script deployment.
+
+For Drupal, [drupal/bunny_net](https://www.drupal.org/project/bunny_net) is
+built on it: cache tag purging from Drupal's invalidations, a queue for what
+the rate limits defer, and the pull zone's settings, caching, Edge Rules and
+Edge Scripts kept in config and the repository.
 
 The specs are committed in `specs/`, the generator lives in `generator/`, and
 the generated client in `src/Api/`. The only runtime dependencies are the PSR
@@ -257,6 +263,14 @@ composer generate       # regenerate src/Api; prints public API changes and the 
 git diff specs src/Api  # review what Bunny changed
 ```
 
+A scheduled workflow (`.github/workflows/update-specs.yml`) runs both every
+Monday and opens one pull request, `update-specs`, with the changes and the
+release `generate` says they need; it updates that pull request on later runs
+while it is open. A pull request opened with the workflow's own token starts no
+other workflows, so for CI to run on it, set a `SPECS_PR_TOKEN` secret: a
+fine-grained token with contents and pull requests write on this repository.
+The repository also has to allow GitHub Actions to create pull requests.
+
 When Bunny removes an operation that's in the lock, `update-specs` saves it,
 with the schemas it needs, to `specs/removed/<spec>.json`. `generate` keeps
 generating it, marked `@deprecated`, until the next major version. If Bunny
@@ -280,15 +294,15 @@ instead:
 - **`slashParams`:** path parameters that may contain `/`.
 - **`experimental`:** leave an API out of the backward compatibility promise.
 
-The specs come from the same URLs bunny.net's own CLI uses. The Partner
-Portal spec, which the CLI doesn't read, is the one bunny.net's docs index
+The specs come from the same URLs Bunny CDN's own CLI uses. The Partner
+Portal spec, which the CLI doesn't read, is the one Bunny CDN's docs index
 links to.
 
 ## Versioning
 
 Releases follow [Semantic Versioning](https://semver.org). Each major version
-has a branch (`1.x`), and releases are tags on it. Until `1.0.0`, releases are
-pre-releases (`1.0.0-alpha1`, ...), installed with `^1.0@alpha`.
+has a branch (`1.x`), and releases are tags on it, from `1.0.0`; install with
+`^1.0`. The `1.0.0-alpha` pre-releases before it were outside these rules.
 
 | Change | Release |
 |---|---|
@@ -308,7 +322,7 @@ Not covered by these rules:
 - **The Database API** is `@experimental`: its spec is served from a
   `/docs/private/` URL, so it may change in any release.
 - **The Partner Portal API** is `@experimental`: it is new and open only to
-  bunny.net partners, so it may change in any release.
+  Bunny CDN partners, so it may change in any release.
 - **PHPStan array shapes** follow Bunny's specs and can change in a minor
   release. Requests and responses are plain arrays, so a shape change can
   surface new PHPStan errors but doesn't change what runs.
@@ -364,12 +378,13 @@ MIT. See [LICENSE](LICENSE).
 ## Roadmap
 
 - Stream live streaming (12 operations) and Core's `POST /videolibrary/resetApiKey`:
-  only in the copies of those specs on bunny.net's docs site, not in the specs
+  only in the copies of those specs on Bunny CDN's docs site, not in the specs
   `update-specs` downloads. Needs the generator to merge a second source's
   extra paths into a spec
 - Verify on a real account what is so far tested only against the specs: the
   Logging API's date format, and the Partner Portal API (needs a partner account)
-- Pull zone settings and the few remaining edge rules as config files, with diff and apply
+- Pull zone settings and Edge Rules from files, with diff and apply, outside
+  Drupal: drupal/bunny_net has both for Drupal sites, and caching's rules are
+  already `Caching\ZoneCaching`. Moving bunny_net's rule-file format and
+  settings diff here would serve the console commands below
 - Console commands for CI: `purge`, `script:deploy`, `zone:diff`, `zone:apply`
-- Scheduled CI job that runs `update-specs` and opens a pull request
-- Drupal module on top: cache-tag invalidator, queue-backed purging, shared rate limiter

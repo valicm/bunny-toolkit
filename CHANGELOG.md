@@ -1,6 +1,12 @@
 # Changelog
 
-## Unreleased
+## 1.0.0 - 2026-10-27
+
+The first stable release; from here, releases follow the rules in the README's Versioning section.
+
+- A scheduled workflow downloads Bunny's specs every Monday, regenerates the client and opens a pull request with the changes and the release they need.
+
+Everything below came in the `1.0.0-alpha` pre-releases.
 
 - `Caching\ZoneCaching`: caching choices (`CachingChoices`: Smart Cache, varies, blocked countries, paths never cached, session cookies, browser times) as a pull zone's settings and Edge Rules, read back from a zone, and planned as the Edge Rule calls that bring a zone in line (`EdgeRulePlan`). `SessionCookies` holds frameworks' default session cookies.
 - `RedisTokenBucket`: Bunny's purge limits shared by every process through Redis or Valkey (phpredis or Predis), so workers don't each spend the whole account limit. Falls back to counting in the process if the server stops answering.

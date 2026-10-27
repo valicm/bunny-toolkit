@@ -1,6 +1,6 @@
 {
     "name": "valicm/bunny-toolkit",
-    "description": "bunny.net API client generated from the official OpenAPI specs, with cache purging, CDN-Tag headers and Edge Script deployment.",
+    "description": "Bunny CDN API client generated from the official OpenAPI specs, with cache purging, CDN-Tag headers and Edge Script deployment.",
     "type": "library",
     "license": "MIT",
     "keywords": [
