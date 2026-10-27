@@ -12,6 +12,9 @@ use Valicm\BunnyToolkit\Api\Core\Enum\PatternMatchingTypes;
 use Valicm\BunnyToolkit\Api\Core\Enum\TriggerMatchingTypes;
 use Valicm\BunnyToolkit\Api\Core\Enum\TriggerTypes;
 use Valicm\BunnyToolkit\Api\Core\Resource\PullZone;
+use Valicm\BunnyToolkit\Api\Logging\LoggingApi;
+use Valicm\BunnyToolkit\Api\Logging\Resource\LegacyLogs;
+use Valicm\BunnyToolkit\Api\Logging\Resource\Logs;
 use Valicm\BunnyToolkit\Api\MagicContainers\MagicContainersApi;
 use Valicm\BunnyToolkit\Api\Partner\PartnerApi;
 use Valicm\BunnyToolkit\Api\Partner\Resource\Billing;
@@ -34,6 +37,9 @@ use Valicm\BunnyToolkit\Tests\Support\TestApi;
 #[CoversClass(ManageFiles::class)]
 #[CoversClass(StreamApi::class)]
 #[CoversClass(MagicContainersApi::class)]
+#[CoversClass(LoggingApi::class)]
+#[CoversClass(Logs::class)]
+#[CoversClass(LegacyLogs::class)]
 #[CoversClass(PartnerApi::class)]
 #[CoversClass(Customers::class)]
 #[CoversClass(Billing::class)]
@@ -164,5 +170,26 @@ final class GeneratedApiTest extends TestCase
 
         self::assertSame('%PDF-1.7', (string) $pdf);
         self::assertSame('https://api.bunny.net/partner/customer/user-1/billing/9/pdf', (string) $this->http->requests[0]->getUri());
+    }
+
+    public function testLoggingQueriesAPullZonesLogs(): void
+    {
+        $this->http->respondJson(200, ['data' => []]);
+
+        $this->bunny->logging()->logs()->queryLogs(42, status: '404', limit: 50);
+
+        $request = $this->http->requests[0];
+        self::assertSame('https://logging.bunnycdn.com/v2/pullzones/42/logs?status=404&limit=50', (string) $request->getUri());
+        self::assertSame('secret-key', $request->getHeaderLine('AccessKey'));
+    }
+
+    public function testLoggingDailyLogIsAStream(): void
+    {
+        $this->http->respond(200, "HIT|200|1700000000000|512\n");
+
+        $log = $this->bunny->logging()->legacyLogs()->getDailyLog('10-27-26', 42);
+
+        self::assertStringStartsWith('HIT|200', (string) $log);
+        self::assertSame('https://logging.bunnycdn.com/10-27-26/42.log', (string) $this->http->requests[0]->getUri());
     }
 }

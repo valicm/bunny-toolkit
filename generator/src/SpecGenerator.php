@@ -12,6 +12,7 @@ namespace Valicm\BunnyToolkit\Generator;
  *     source: string,
  *     namespace: string,
  *     title: string,
+ *     baseUrl?: string,
  *     defaultResource?: string,
  *     resourceNames?: array<string, string>,
  *     methodNames?: array<string, string>,
@@ -481,7 +482,7 @@ final class SpecGenerator
 
     private function apiFile(): string
     {
-        $server = Json::str(Json::map($this->spec, 'servers')[0] ?? null, 'url') ?? '';
+        $server = $this->config['baseUrl'] ?? Json::str(Json::map($this->spec, 'servers')[0] ?? null, 'url') ?? '';
         $accessors = [];
         foreach (array_keys($this->resources) as $class) {
             $description = $this->resourceDescriptions[$class] ?? '';

@@ -1795,6 +1795,48 @@
             }
         }
     },
+    "Logging": {
+        "operations": {
+            "GET /v2/pullzones/{pullZoneId}/logs": {
+                "method": "Logs::queryLogs",
+                "params": {
+                    "path:pullZoneId": "int $pullZoneId",
+                    "query:from": "?string $from = null",
+                    "query:to": "?string $to = null",
+                    "query:status": "?string $status = null",
+                    "query:cacheStatus": "?string $cacheStatus = null",
+                    "query:country": "?string $country = null",
+                    "query:edgeLocation": "?string $edgeLocation = null",
+                    "query:remoteIp": "?string $remoteIp = null",
+                    "query:urlContains": "?string $urlContains = null",
+                    "query:userAgentContains": "?string $userAgentContains = null",
+                    "query:refererContains": "?string $refererContains = null",
+                    "query:search": "?string $search = null",
+                    "query:requestId": "?string $requestId = null",
+                    "query:includeOriginShield": "?bool $includeOriginShield = null",
+                    "query:limit": "?int $limit = null",
+                    "query:offset": "?int $offset = null",
+                    "query:order": "?string $order = null"
+                },
+                "returns": "mixed"
+            },
+            "GET /{date}/{pullZoneId}.log": {
+                "method": "LegacyLogs::getDailyLog",
+                "params": {
+                    "path:date": "string $date",
+                    "path:pullZoneId": "int $pullZoneId",
+                    "query:start": "?int $start = null",
+                    "query:end": "?int $end = null",
+                    "query:sort": "?string $sort = null",
+                    "query:status": "?string $status = null",
+                    "query:search": "?string $search = null",
+                    "query:download": "?bool $download = null"
+                },
+                "returns": "StreamInterface"
+            }
+        },
+        "enums": []
+    },
     "MagicContainers": {
         "operations": {
             "DELETE /apps/{appId}": {

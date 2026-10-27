@@ -306,4 +306,14 @@ final class SpecGeneratorTest extends TestCase
 
         (new SpecGenerator(self::spec(), $config, 'App\\Api'))->generate();
     }
+
+    public function testBaseUrlStandsInForMissingServers(): void
+    {
+        $spec = self::spec();
+        unset($spec['servers']);
+
+        $files = (new SpecGenerator($spec, self::CONFIG + ['baseUrl' => 'https://logs.example.com/'], 'App\\Api'))->generate();
+
+        self::assertStringContainsString("public const BASE_URL = 'https://logs.example.com';", $files['TestApi.php']);
+    }
 }

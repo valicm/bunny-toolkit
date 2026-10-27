@@ -9,6 +9,7 @@ declare(strict_types=1);
  *   same URLs bunny.net's own CLI uses, or bunny.net's docs index for specs
  *   the CLI doesn't read).
  * - namespace: sub-namespace under Valicm\BunnyToolkit\Api.
+ * - baseUrl: the API's base URL, where the spec doesn't list servers.
  * - methodNames: "METHOD /path" => method name, for operations whose derived
  *   name is unclear or collides. Generation fails on a collision.
  * - resourceNames: tag => resource class name.
@@ -104,6 +105,23 @@ return [
         'defaultResource' => 'Logs',
         'methodNames' => [
             'GET /{pullZoneId}/{dateTime}' => 'getLogs',
+        ],
+    ],
+    'logging' => [
+        'file' => 'specs/logging.json',
+        'source' => 'https://logging.bunnycdn.com/docs/all/swagger.json',
+        'namespace' => 'Logging',
+        'title' => 'Logging API',
+        // The spec lists no servers.
+        'baseUrl' => 'https://logging.bunnycdn.com',
+        'resourceNames' => ['Logging v1' => 'LegacyLogs', 'Logging v2' => 'Logs'],
+        'methodNames' => [
+            'GET /v2/pullzones/{pullZoneId}/logs' => 'queryLogs',
+            'GET /{date}/{pullZoneId}.log' => 'getDailyLog',
+        ],
+        'responseKinds' => [
+            // A day's raw log lines; the spec declares no body.
+            'GET /{date}/{pullZoneId}.log' => 'stream',
         ],
     ],
     'partner' => [

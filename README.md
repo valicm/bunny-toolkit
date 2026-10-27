@@ -215,6 +215,8 @@ instead:
 - **`methodNames`:** name a new operation, e.g. `'POST /purge' => 'purgeUrl'`.
   Generation fails when two operations in a resource get the same name.
   Operations already in the lock keep their names (see [Versioning](#versioning)).
+- **`baseUrl`:** the API's base URL, for a spec that lists no servers (the
+  Logging API's).
 - **`responseKinds`:** declare a response body the spec leaves out (the
   storage download is one).
 - **`responseSchemas`:** name the component schema of a JSON response the

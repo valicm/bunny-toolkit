@@ -12,6 +12,7 @@ use Psr\Log\NullLogger;
 use Valicm\BunnyToolkit\Api\Core\CoreApi;
 use Valicm\BunnyToolkit\Api\Database\DatabaseApi;
 use Valicm\BunnyToolkit\Api\EdgeScripting\EdgeScriptingApi;
+use Valicm\BunnyToolkit\Api\Logging\LoggingApi;
 use Valicm\BunnyToolkit\Api\MagicContainers\MagicContainersApi;
 use Valicm\BunnyToolkit\Api\OriginErrors\OriginErrorsApi;
 use Valicm\BunnyToolkit\Api\Partner\PartnerApi;
@@ -78,6 +79,14 @@ final class Bunny
     public function database(): DatabaseApi
     {
         return new DatabaseApi($this->client(DatabaseApi::BASE_URL, $this->apiKey));
+    }
+
+    /**
+     * Pull zones' CDN access logs, from logging.bunnycdn.com.
+     */
+    public function logging(): LoggingApi
+    {
+        return new LoggingApi($this->client(LoggingApi::BASE_URL, $this->apiKey));
     }
 
     public function originErrors(): OriginErrorsApi
