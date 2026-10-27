@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- `Caching\ZoneCaching`: caching choices (`CachingChoices`: Smart Cache, varies, blocked countries, paths never cached, session cookies, browser times) as a pull zone's settings and Edge Rules, read back from a zone, and planned as the Edge Rule calls that bring a zone in line (`EdgeRulePlan`). `SessionCookies` holds frameworks' default session cookies.
 - `RedisTokenBucket`: Bunny's purge limits shared by every process through Redis or Valkey (phpredis or Predis), so workers don't each spend the whole account limit. Falls back to counting in the process if the server stops answering.
 - Logging API: `Bunny::logging()` searches a pull zone's CDN access logs (`logs()->queryLogs()`) and downloads a day's raw log (`legacyLogs()->getDailyLog()`, a stream). Generated from `specs/logging.json`; the generator's new `baseUrl` option supplies the host its spec leaves out.
 - Partner Portal API: `Bunny::partner()` creates, invites and lists customers, and reads their pricing, products, contract, billing and audit log, using a partner account's key. Generated from `specs/partner.json`; `@experimental`.

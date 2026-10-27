@@ -193,6 +193,45 @@ Without a `ConcurrentClient`, `concurrency` has no effect and requests go one
 after another. Any other PSR-18 client can implement `Http\ConcurrentClient`
 for the same.
 
+### Caching rules
+
+`Caching\ZoneCaching` turns caching choices into a pull zone's settings and
+Edge Rules, and reads them back, so the zone can be the only record of them.
+It sends nothing itself:
+
+```php
+use Valicm\BunnyToolkit\Caching\CachingChoices;
+use Valicm\BunnyToolkit\Caching\SessionCookies;
+use Valicm\BunnyToolkit\Caching\VaryCache;
+use Valicm\BunnyToolkit\Caching\ZoneCaching;
+
+$caching = new ZoneCaching('mysite: ');
+$choices = new CachingChoices(
+    vary: [VaryCache::Webp],
+    skipPaths: ['/cart/*'],
+    browserPages: 900,
+);
+
+$zone = $bunny->core()->pullZone()->getPullZone(12345);
+$bunny->core()->pullZone()->updatePullZone(12345, $caching->properties($choices));
+$caching->plan($zone, $choices, SessionCookies::DRUPAL)->apply($bunny->core(), 12345);
+
+$caching->read($zone); // CachingChoices, from the zone's settings and rules
+```
+
+The rules: a response the origin marks `private`, `no-cache` or `no-store` is
+never cached; a request with the framework's session cookie, or one named in
+the choices, goes to the origin, except for static files; the paths listed
+are never cached; and browsers keep pages and files for the times chosen,
+never a private response and never a page with a session. Each rule's
+description starts with the prefix given, which is how `plan()` finds it
+again; rules with other descriptions are left alone. They take the order
+indexes 20 to 45.
+
+`plan()` skips rules the zone already has as wanted, updates the rest in
+place, and deletes rules the choices no longer need. `only:` limits it to some
+rules; `rebuild: true` deletes and writes them all again.
+
 ### Edge Script deployment
 
 Keep middleware code in the project's repository and deploy it from CI:
