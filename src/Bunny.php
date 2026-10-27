@@ -107,16 +107,18 @@ final class Bunny
 
     /**
      * @param float $maxWait Seconds each purge call may wait; see Purger.
+     * @param int $concurrency Purge requests sent at once, when the HTTP client is a Http\ConcurrentClient.
      */
     public function purger(
         TagFormat $tagFormat = new HashedTagList(),
         ?RateLimiter $rateLimiter = null,
         float $maxWait = 0.0,
         LoggerInterface $logger = new NullLogger(),
+        int $concurrency = 1,
     ): Purger {
         $rateLimiter ??= $this->rateLimiter ??= new InMemoryTokenBucket($this->clock);
 
-        return new Purger($this->core(), $tagFormat, $rateLimiter, $maxWait, $this->clock, $logger);
+        return new Purger($this->client(CoreApi::BASE_URL, $this->apiKey), $tagFormat, $rateLimiter, $maxWait, $this->clock, $logger, $concurrency);
     }
 
     public function edgeScriptDeployer(): EdgeScriptDeployer

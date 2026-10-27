@@ -25,12 +25,14 @@ enum PurgeType
     case Prefix;
 
     /**
-     * The bucket a URL or CacheTag value draws from.
+     * The bucket a purge URL draws from.
+     *
+     * Not for cache tags: Bunny puts every purge by tag in the Exact bucket,
+     * a wildcard CacheTag included.
      */
     public static function forValue(string $value): self
     {
-        // Bunny treats a URL containing "*" as a prefix purge. Its docs don't
-        // say which bucket a wildcard cache tag uses, so assume the smaller one.
+        // Bunny treats a URL containing "*" as a prefix purge.
         return str_contains($value, '*') ? self::Prefix : self::Exact;
     }
 

@@ -8,12 +8,15 @@ use Nyholm\Psr7\Factory\Psr17Factory;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
+use Psr\Http\Client\ClientExceptionInterface;
+use Psr\Http\Message\ResponseInterface;
 use Valicm\BunnyToolkit\Api\Core\Enum\EdgeRuleActionType;
 use Valicm\BunnyToolkit\Http\ApiClient;
 use Valicm\BunnyToolkit\Http\ApiException;
 use Valicm\BunnyToolkit\Http\RateLimitedException;
 use Valicm\BunnyToolkit\Http\UnexpectedResponseException;
 use Valicm\BunnyToolkit\Tests\Support\FakeClock;
+use Valicm\BunnyToolkit\Tests\Support\FakeConcurrentClient;
 use Valicm\BunnyToolkit\Tests\Support\FakeHttpClient;
 use Valicm\BunnyToolkit\Tests\Support\TestApi;
 
@@ -184,6 +187,47 @@ final class ApiClientTest extends TestCase
         $this->expectExceptionMessage('bunny.net returned HTTP 401.');
 
         $this->api->send('GET', '/pullzone');
+    }
+
+    public function testSendAllReturnsEachOutcomeInItsPlace(): void
+    {
+        $this->http->respond(204)->respondJson(404, ['Message' => 'Not found'])->failWithNetworkError('Connection refused');
+
+        $results = $this->api->sendAll([
+            'ok' => $this->api->createRequest('POST', '/a'),
+            'missing' => $this->api->createRequest('POST', '/b'),
+            'down' => $this->api->createRequest('POST', '/c'),
+        ]);
+
+        self::assertSame(['ok', 'missing', 'down'], array_keys($results));
+        self::assertInstanceOf(ResponseInterface::class, $results['ok']);
+        self::assertInstanceOf(ApiException::class, $results['missing']);
+        self::assertSame('Not found', $results['missing']->getMessage());
+        self::assertInstanceOf(ClientExceptionInterface::class, $results['down']);
+        self::assertCount(3, $this->http->requests, 'A failure did not stop the requests after it.');
+    }
+
+    public function testSendAllUsesAConcurrentClient(): void
+    {
+        $client = new FakeConcurrentClient($this->http);
+        $api = TestApi::client($this->http, httpClient: $client);
+        $this->http->respond(204)->respond(429, '', ['Retry-After' => '3']);
+
+        $results = $api->sendAll([$api->createRequest('POST', '/a'), $api->createRequest('POST', '/b')]);
+
+        self::assertSame([2], $client->batches);
+        self::assertInstanceOf(RateLimitedException::class, $results[1]);
+        self::assertSame(3.0, $results[1]->retryAfter);
+    }
+
+    public function testCreateRequestSendsNothing(): void
+    {
+        $request = $this->api->createRequest('POST', '/apps', ['a' => 1], json: (object) []);
+
+        self::assertSame('https://api.bunny.net/mc/apps?a=1', (string) $request->getUri());
+        self::assertSame('secret-key', $request->getHeaderLine('AccessKey'));
+        self::assertSame('{}', (string) $request->getBody());
+        self::assertSame([], $this->http->requests);
     }
 
     public function testRetryAfterInSeconds(): void

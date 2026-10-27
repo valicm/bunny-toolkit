@@ -134,7 +134,7 @@ the same budget:
 
 | Bucket | Used by | Burst | Refill |
 |---|---|---|---|
-| Exact | Exact URLs, cache tags | 120 | 5 per second |
+| Exact | Exact URLs, cache tags, wildcard ones included | 120 | 5 per second |
 | Prefix | URLs with `*`, full zone purges | 20 | 0.5 per second |
 
 The purger keeps a local token bucket so it waits instead of collecting 429s.
@@ -157,6 +157,24 @@ use Valicm\BunnyToolkit\Purge\RateLimiter\InMemoryTokenBucket;
 $limiter = new InMemoryTokenBucket(exact: new PurgeLimit(burst: 500, refillPerSecond: 20.0));
 $purger = $bunny->purger(new HashedTagList(), $limiter);
 ```
+
+Bunny takes one tag or URL per request, so purging twenty tags is twenty
+round trips. With Guzzle, wrap the client in `GuzzleConcurrentClient` and
+pass `concurrency` to send up to that many at once:
+
+```php
+use GuzzleHttp\Client;
+use Valicm\BunnyToolkit\Http\GuzzleConcurrentClient;
+
+$bunny = new Bunny(getenv('BUNNY_API_KEY'), new GuzzleConcurrentClient(new Client(['timeout' => 5])), $factory, $factory);
+$purger = $bunny->purger(new HashedTagList(), concurrency: 10);
+```
+
+Each request in a batch takes a rate-limit token first, so a batch is only as
+large as the tokens left. What a 429 refuses goes first in the next batch.
+Without a `ConcurrentClient`, `concurrency` has no effect and requests go one
+after another. Any other PSR-18 client can implement `Http\ConcurrentClient`
+for the same.
 
 ### Edge Script deployment
 

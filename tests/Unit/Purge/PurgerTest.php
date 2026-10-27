@@ -6,7 +6,7 @@ namespace Valicm\BunnyToolkit\Tests\Unit\Purge;
 
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
-use Valicm\BunnyToolkit\Api\Core\CoreApi;
+use Psr\Http\Client\ClientInterface;
 use Valicm\BunnyToolkit\CacheTag\HashedTagList;
 use Valicm\BunnyToolkit\CacheTag\SingleTag;
 use Valicm\BunnyToolkit\CacheTag\TagFormat;
@@ -17,6 +17,7 @@ use Valicm\BunnyToolkit\Purge\PurgeResult;
 use Valicm\BunnyToolkit\Purge\PurgeType;
 use Valicm\BunnyToolkit\Purge\RateLimiter\InMemoryTokenBucket;
 use Valicm\BunnyToolkit\Tests\Support\FakeClock;
+use Valicm\BunnyToolkit\Tests\Support\FakeConcurrentClient;
 use Valicm\BunnyToolkit\Tests\Support\FakeHttpClient;
 use Valicm\BunnyToolkit\Tests\Support\TestApi;
 
@@ -166,24 +167,128 @@ final class PurgerTest extends TestCase
         $this->purger(new SingleTag())->purgeTags(42, ['a']);
     }
 
-    public function testWildcardValuesUseThePrefixBucket(): void
+    public function testWildcardUrlsUseThePrefixBucket(): void
     {
-        self::assertSame(PurgeType::Prefix, PurgeType::forValue('* a1b2c3 *'));
         self::assertSame(PurgeType::Prefix, PurgeType::forValue('https://example.com/*'));
-        self::assertSame(PurgeType::Exact, PurgeType::forValue('auction_lot:5:42'));
+        self::assertSame(PurgeType::Exact, PurgeType::forValue('https://example.com/lots/5'));
+    }
+
+    public function testWildcardTagsUseTheExactBucket(): void
+    {
+        $this->http->respond(204)->respond(204);
+        $limiter = new InMemoryTokenBucket($this->clock, exact: new PurgeLimit(burst: 2, refillPerSecond: 1.0), prefix: new PurgeLimit(burst: 1, refillPerSecond: 0.1));
+
+        $result = $this->purger(new HashedTagList(), $limiter)->purgeTags(42, ['node:1', 'node:2']);
+
+        self::assertTrue($result->isComplete(), 'Both tags came out of the Exact bucket, though "* token *" has a wildcard.');
+        self::assertSame(0.0, $limiter->tryConsume(PurgeType::Prefix), 'The Prefix bucket was left alone.');
+    }
+
+    public function testRefusedTagThrowsBeforeAnythingIsSent(): void
+    {
+        try {
+            $this->purger(new SingleTag())->purgeTags(42, ['a', 'b c']);
+            self::fail('A tag SingleTag refuses was purged.');
+        } catch (\InvalidArgumentException) {
+            self::assertSame([], $this->http->requests);
+        }
+    }
+
+    public function testRefusesConcurrencyBelowOne(): void
+    {
+        $this->expectException(\InvalidArgumentException::class);
+
+        $this->purger(concurrency: 0);
+    }
+
+    public function testSendsUpToConcurrencyAtOnce(): void
+    {
+        $client = new FakeConcurrentClient($this->http);
+        $this->http->respond(204)->respond(204)->respond(204)->respond(204)->respond(204);
+
+        $result = $this->purger(new SingleTag(), concurrency: 3, client: $client)->purgeTags(42, ['a', 'b', 'c', 'd', 'e']);
+
+        self::assertSame(['a', 'b', 'c', 'd', 'e'], $result->purged);
+        self::assertSame([3, 2], $client->batches);
+    }
+
+    public function testWithoutAConcurrentClientSendsOneAtATime(): void
+    {
+        $this->http->respond(204)->respond(204);
+
+        $result = $this->purger(new SingleTag(), concurrency: 5)->purgeTags(42, ['a', 'b']);
+
+        self::assertSame(['a', 'b'], $result->purged);
+        self::assertCount(2, $this->http->requests);
+    }
+
+    public function testABatchIsOnlyAsLargeAsTheTokensLeft(): void
+    {
+        $client = new FakeConcurrentClient($this->http);
+        $this->http->respond(204)->respond(204);
+        $limiter = new InMemoryTokenBucket($this->clock, exact: new PurgeLimit(burst: 2, refillPerSecond: 1.0));
+
+        $result = $this->purger(new SingleTag(), $limiter, concurrency: 5, client: $client)->purgeTags(42, ['a', 'b', 'c', 'd']);
+
+        self::assertSame(['a', 'b'], $result->purged);
+        self::assertSame(['c', 'd'], $result->deferred);
+        self::assertSame([2], $client->batches);
+    }
+
+    public function testWhatA429RefusedInABatchIsRetriedFirst(): void
+    {
+        $client = new FakeConcurrentClient($this->http);
+        $this->http->respond(204)->respond(429, '', ['Retry-After' => '1'])->respond(204)->respond(204)->respond(204);
+
+        $result = $this->purger(new SingleTag(), maxWait: 5.0, concurrency: 3, client: $client)->purgeTags(42, ['a', 'b', 'c', 'd']);
+
+        self::assertSame(['a', 'c', 'b', 'd'], $result->purged);
+        // After a 429 one token is ready when Retry-After ends, and the rest
+        // refill from there, so the next two go one at a time.
+        self::assertSame([3, 1, 1], $client->batches);
+        self::assertSame(['CacheTag' => 'b'], FakeHttpClient::jsonBody($this->http->requests[3]), 'The refused tag went first in the next batch.');
+    }
+
+    public function testAServerErrorInABatchDefersItAndWhatWasNotSent(): void
+    {
+        $client = new FakeConcurrentClient($this->http);
+        $this->http->respond(503, 'Service unavailable')->respond(204);
+
+        $result = $this->purger(new SingleTag(), concurrency: 2, client: $client)->purgeTags(42, ['a', 'b', 'c']);
+
+        self::assertSame(['b'], $result->purged);
+        self::assertSame(['a', 'c'], $result->deferred);
+        self::assertSame('Service unavailable', $result->reason);
+    }
+
+    public function testAnErrorRetryingWontFixIsThrownAfterTheBatchIsSent(): void
+    {
+        $client = new FakeConcurrentClient($this->http);
+        $this->http->respondJson(401, ['Message' => 'Unauthorized'])->respond(204);
+
+        try {
+            $this->purger(new SingleTag(), concurrency: 2, client: $client)->purgeTags(42, ['a', 'b']);
+            self::fail('A 401 was not thrown.');
+        } catch (ApiException $e) {
+            self::assertSame('Unauthorized', $e->getMessage());
+            self::assertCount(2, $this->http->requests);
+        }
     }
 
     private function purger(
         TagFormat $format = new HashedTagList(),
         ?InMemoryTokenBucket $limiter = null,
         float $maxWait = 0.0,
+        int $concurrency = 1,
+        ?ClientInterface $client = null,
     ): Purger {
         return new Purger(
-            new CoreApi(TestApi::client($this->http, clock: $this->clock)),
+            TestApi::client($this->http, clock: $this->clock, httpClient: $client),
             $format,
             $limiter ?? new InMemoryTokenBucket($this->clock),
             $maxWait,
             $this->clock,
+            concurrency: $concurrency,
         );
     }
 }

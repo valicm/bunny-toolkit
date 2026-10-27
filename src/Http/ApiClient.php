@@ -7,6 +7,7 @@ namespace Valicm\BunnyToolkit\Http;
 use Psr\Http\Client\ClientExceptionInterface;
 use Psr\Http\Client\ClientInterface;
 use Psr\Http\Message\RequestFactoryInterface;
+use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\StreamFactoryInterface;
 use Psr\Http\Message\StreamInterface;
@@ -139,6 +140,19 @@ final class ApiClient
      */
     public function request(string $method, string $path, array $query = [], array $headers = [], mixed $json = null, StreamInterface|string|null $raw = null): ResponseInterface
     {
+        return $this->check($this->httpClient->sendRequest($this->createRequest($method, $path, $query, $headers, $json, $raw)));
+    }
+
+    /**
+     * Builds a request without sending it, for sendAll().
+     *
+     * @param array<string, mixed> $query Null values are left out; lists repeat the key.
+     * @param array<string, mixed> $headers Null values are left out.
+     * @param mixed $json Body to send as JSON. Pass an object for a JSON object, so an empty one isn't sent as [].
+     * @param StreamInterface|string|null $raw Body to send as-is, as application/octet-stream.
+     */
+    public function createRequest(string $method, string $path, array $query = [], array $headers = [], mixed $json = null, StreamInterface|string|null $raw = null): RequestInterface
+    {
         $url = $this->baseUrl . $path;
         $queryString = self::queryString($query);
         if ($queryString !== '') {
@@ -164,7 +178,53 @@ final class ApiClient
                 ->withBody(is_string($raw) ? $this->streamFactory->createStream($raw) : $raw);
         }
 
-        $response = $this->httpClient->sendRequest($request);
+        return $request;
+    }
+
+    /**
+     * Sends several requests made by createRequest(), at once when the HTTP
+     * client is a ConcurrentClient and one after another otherwise.
+     *
+     * Every request is sent whatever happens to the others; each failure is
+     * returned in its place rather than thrown.
+     *
+     * @param array<array-key, RequestInterface> $requests
+     *
+     * @return array<array-key, ResponseInterface|ApiException|ClientExceptionInterface> In the order given.
+     */
+    public function sendAll(array $requests): array
+    {
+        if ($this->httpClient instanceof ConcurrentClient && count($requests) > 1) {
+            $outcomes = $this->httpClient->sendConcurrently($requests);
+        } else {
+            $outcomes = [];
+            foreach ($requests as $key => $request) {
+                try {
+                    $outcomes[$key] = $this->httpClient->sendRequest($request);
+                } catch (ClientExceptionInterface $e) {
+                    $outcomes[$key] = $e;
+                }
+            }
+        }
+
+        $results = [];
+        foreach (array_keys($requests) as $key) {
+            $outcome = $outcomes[$key] ?? throw new \LogicException(sprintf('The HTTP client returned no outcome for request %s.', $key));
+            try {
+                $results[$key] = $outcome instanceof ResponseInterface ? $this->check($outcome) : $outcome;
+            } catch (ApiException $e) {
+                $results[$key] = $e;
+            }
+        }
+
+        return $results;
+    }
+
+    /**
+     * @throws ApiException When the status isn't 2xx.
+     */
+    private function check(ResponseInterface $response): ResponseInterface
+    {
         $status = $response->getStatusCode();
         if ($status < 200 || $status >= 300) {
             throw $this->toException($response);
