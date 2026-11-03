@@ -11,6 +11,14 @@ namespace Valicm\BunnyToolkit\Api\Partner\Enum;
  */
 enum PartnerCustomerContractCurrency: int
 {
-    case UsDollar = 0;
-    case Euro = 1;
+    case Usd = 0;
+    case Eur = 1;
+    /**
+     * @deprecated Removed from the bunny.net spec; use Usd instead. Kept until the next major version.
+     */
+    public const UsDollar = self::Usd;
+    /**
+     * @deprecated Removed from the bunny.net spec; use Eur instead. Kept until the next major version.
+     */
+    public const Euro = self::Eur;
 }

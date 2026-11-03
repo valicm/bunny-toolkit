@@ -12,5 +12,9 @@ namespace Valicm\BunnyToolkit\Api\Partner\Enum;
 enum PartnerContractBillingType: int
 {
     case PayAsYouGo = 1;
-    case PostPaid = 2;
+    case PostPaidPayAsYouGo = 2;
+    /**
+     * @deprecated Removed from the bunny.net spec; use PostPaidPayAsYouGo instead. Kept until the next major version.
+     */
+    public const PostPaid = self::PostPaidPayAsYouGo;
 }

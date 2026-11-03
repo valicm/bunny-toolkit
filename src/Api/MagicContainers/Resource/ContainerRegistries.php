@@ -297,7 +297,7 @@ final class ContainerRegistries
      *
      * `POST /registries/images/find`
      *
-     * Parses an image reference like "ghcr.io/owner/app:v1" or "owner/app" and checks whether the image tag exists in the selected registries of the user (only those of the reference's host when it has one). Returns every registry that has the image tag with its id, hostname, the image namespace, name, tag and digest.
+     * Parses an image reference like "ghcr.io/owner/app:v1" or "owner/app" and checks whether the image tag exists in the selected registries of the user (only those of the reference's host when it has one). A reference without a tag finds nothing, not even "latest": the image's tags are suggested instead. Returns every registry that has the image tag with its id, hostname, the image namespace, name, tag and digest, and how each searched registry answered: found, not found, unauthorized (its credentials are refused) or unavailable. When none has it, suggests the image's tags from the registries that have the image, and images with a similar name.
      *
      * @param FindContainerImageRequest|null $body
      * @return FindContainerImageResponse

@@ -65,7 +65,7 @@ final class DatabaseV2
      *
      * Create a new Database for a user
      *
-     * @param CreateDatabaseV2Payload $body
+     * @param CreateDatabaseV2Payload $body Request body for `POST /v2/databases`.
      * @return CreateDatabaseV2Response
      *
      * @throws ApiException When Bunny answers with an error status.
@@ -171,7 +171,7 @@ final class DatabaseV2
      *
      * `GET /v2/databases/active_usage`
      *
-     * Get active stats for Databases.
+     * Get active stats for Databases. A database is active while it is deployed on the cluster. An idle database is stopped and is not active until its next request starts it again. Suspended databases are not active.
      *
      * @return ActiveStatsResponse
      *

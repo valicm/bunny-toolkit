@@ -268,6 +268,21 @@ final class StreamVideoLibrary
     }
 
     /**
+     * Reset Webhook Signing Secret
+     *
+     * `POST /videolibrary/{id}/resetWebhookSigningSecret`
+     *
+     * @param int $id The ID of the video library that should have the webhook signing secret reset
+     *
+     * @throws ApiException When Bunny answers with an error status.
+     * @throws ClientExceptionInterface When the request cannot be sent.
+     */
+    public function resetWebhookSigningSecret(int $id): void
+    {
+        $this->client->send('POST', $this->client->path('/videolibrary/{id}/resetWebhookSigningSecret', ['id' => $id]));
+    }
+
+    /**
      * Get Video Library Transcribing Statistics
      *
      * `GET /videolibrary/{id}/transcribing/statistics`
@@ -346,6 +361,21 @@ final class StreamVideoLibrary
     public function deleteLiveWatermark(int $id): void
     {
         $this->client->send('DELETE', $this->client->path('/videolibrary/{id}/live/watermark', ['id' => $id]));
+    }
+
+    /**
+     * Reset Live Auto Create Stream Key
+     *
+     * `POST /videolibrary/{id}/live/resetAutoCreateStreamKey`
+     *
+     * @param int $id The ID of the video library that should have the auto create stream key reset
+     *
+     * @throws ApiException When Bunny answers with an error status.
+     * @throws ClientExceptionInterface When the request cannot be sent.
+     */
+    public function resetLiveAutoCreateStreamKey(int $id): void
+    {
+        $this->client->send('POST', $this->client->path('/videolibrary/{id}/live/resetAutoCreateStreamKey', ['id' => $id]));
     }
 
     /**

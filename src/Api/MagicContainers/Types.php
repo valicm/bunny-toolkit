@@ -20,6 +20,7 @@ namespace Valicm\BunnyToolkit\Api\MagicContainers;
  *     regionSettings: UpdateRegionSettingsRequest,
  *     containerTemplates?: list<ContainerRequest>,
  *     volumes?: list<VolumeRequest>,
+ *     gpu?: GpuConfig,
  * }
  * @phpstan-type AddApplicationResponse array{
  *     id?: string,
@@ -78,10 +79,15 @@ namespace Valicm\BunnyToolkit\Api\MagicContainers;
  *     endpointSuggestions?: list<EndpointRequest>,
  *     environmentVariablesSuggestions?: list<EnvironmentVariableSuggestion>,
  *     volumeSuggestions?: list<VolumeSuggestion>,
+ *     probeSuggestions?: ContainerProbes,
+ *     digest?: string|null,
  *     appName?: string|null,
  *     description?: string|null,
  *     instructions?: string|null,
+ *     documentationPending?: bool,
  *     registryUrl?: string|null,
+ *     sourceUrl?: string|null,
+ *     documentationUrl?: string|null,
  * }
  * @phpstan-type ContainerEndpoint array{
  *     id: string,
@@ -153,6 +159,7 @@ namespace Valicm\BunnyToolkit\Api\MagicContainers;
  * @phpstan-type ContainerRegistryRequest array{
  *     displayName: string,
  *     type?: value-of<\Valicm\BunnyToolkit\Api\MagicContainers\Enum\RegistryType>,
+ *     hostName?: string|null,
  *     passwordCredentials?: Credentials,
  * }
  * @phpstan-type ContainerRequest array{
@@ -265,6 +272,7 @@ namespace Valicm\BunnyToolkit\Api\MagicContainers;
  *     defaultValue?: string|null,
  *     description?: string|null,
  *     required?: bool,
+ *     source?: value-of<\Valicm\BunnyToolkit\Api\MagicContainers\Enum\EnvironmentVariableSuggestionSource>,
  * }
  * @phpstan-type ErrorDetails array{
  *     title?: string,
@@ -274,6 +282,11 @@ namespace Valicm\BunnyToolkit\Api\MagicContainers;
  *     errors?: list<ValidationError>|null,
  *     id?: string|null,
  * }
+ * @phpstan-type FindContainerImageRegistryResult array{
+ *     registryId: string,
+ *     status: value-of<\Valicm\BunnyToolkit\Api\MagicContainers\Enum\FindContainerImageRegistryStatus>,
+ *     message?: string|null,
+ * }
  * @phpstan-type FindContainerImageRequest array{
  *     image: string,
  *     registryIds: list<string>,
@@ -282,6 +295,12 @@ namespace Valicm\BunnyToolkit\Api\MagicContainers;
  *     items?: list<FoundContainerImage>,
  *     meta?: ListMeta,
  *     cursor?: string|null,
+ *     registries?: list<FindContainerImageRegistryResult>,
+ *     suggestions?: FindContainerImageSuggestions,
+ * }
+ * @phpstan-type FindContainerImageSuggestions array{
+ *     sameImageTags?: list<SuggestedContainerImageTags>,
+ *     similarImages?: list<SuggestedContainerImage>,
  * }
  * @phpstan-type FoundContainerImage array{
  *     imageNamespace: string,
@@ -303,6 +322,10 @@ namespace Valicm\BunnyToolkit\Api\MagicContainers;
  *     imageName: string,
  *     imageNamespace: string,
  *     tag: string,
+ * }
+ * @phpstan-type GpuConfig array{
+ *     type: string,
+ *     count?: int,
  * }
  * @phpstan-type GrpcProbe array{
  *     request?: GrpcProbeRequestDetails,
@@ -502,6 +525,7 @@ namespace Valicm\BunnyToolkit\Api\MagicContainers;
  *     regionSettings?: UpdateRegionSettingsRequest,
  *     containerTemplates?: list<ContainerRequest>|null,
  *     volumes?: list<VolumeRequest>|null,
+ *     gpu?: GpuConfig,
  * }
  * @phpstan-type PatchContainerRequest array{
  *     name?: string|null,
@@ -535,6 +559,7 @@ namespace Valicm\BunnyToolkit\Api\MagicContainers;
  *     group?: string,
  *     hasAnycastSupport?: bool,
  *     hasCapacity?: bool,
+ *     gpuTypes?: list<string>,
  * }
  * @phpstan-type RegionSettings2 array{
  *     allowedRegionIds: list<string>,
@@ -578,10 +603,61 @@ namespace Valicm\BunnyToolkit\Api\MagicContainers;
  *     volumesUsageChart?: array<string, float>,
  *     volumesCapacityChart?: array<string, float>,
  * }
+ * @phpstan-type StatisticsCharts array{
+ *     activeRegionsChart?: array<string, int>,
+ *     instancesChart?: array<string, int>,
+ *     instancesSplitChart?: array<string, StatisticsRegionalChart>,
+ *     cpuUsageSplitChart?: array<string, StatisticsRegionalChart>,
+ *     ramUsageSplitChart?: array<string, StatisticsRegionalChart>,
+ *     trafficSplitChart?: array<string, StatisticsRegionalChart>,
+ *     ephemeralStorageSplitUsageChart?: array<string, StatisticsRegionalChart>,
+ *     ephemeralStorageSplitLimitChart?: array<string, StatisticsRegionalChart>,
+ *     volumesSplitUsageChart?: array<string, StatisticsVolumeChart>,
+ *     volumesSplitCapacityChart?: array<string, StatisticsVolumeChart>,
+ *     releases?: list<StatisticsRelease>,
+ * }
+ * @phpstan-type StatisticsRegionalChart array{
+ *     region?: string,
+ *     chart?: array<string, float>,
+ * }
+ * @phpstan-type StatisticsRelease array{
+ *     time?: string,
+ *     region?: string,
+ *     operationType?: string,
+ *     rolledBack?: bool,
+ *     images?: list<StatisticsReleaseImage>,
+ * }
+ * @phpstan-type StatisticsReleaseImage array{
+ *     container?: string,
+ *     image?: string,
+ *     tag?: string,
+ *     digest?: string,
+ * }
+ * @phpstan-type StatisticsVolumeChart array{
+ *     region?: string,
+ *     chart?: array<string, float>,
+ *     pods?: list<StatisticsVolumePod>,
+ * }
+ * @phpstan-type StatisticsVolumePod array{
+ *     podId?: string,
+ *     from?: string,
+ *     to?: string,
+ * }
  * @phpstan-type StickySessionSettings array{
  *     enabled?: bool,
  *     sessionHeaders: list<string>,
  *     cookieName?: string,
+ * }
+ * @phpstan-type SuggestedContainerImage array{
+ *     registryId: string,
+ *     imageNamespace: string,
+ *     imageName: string,
+ * }
+ * @phpstan-type SuggestedContainerImageTags array{
+ *     registryId: string,
+ *     imageNamespace: string,
+ *     imageName: string,
+ *     tags: list<string>,
  * }
  * @phpstan-type TcpSocketProbe array{
  *     request?: TcpSocketProbeRequestDetails,

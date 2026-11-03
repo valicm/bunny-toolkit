@@ -52,7 +52,7 @@ final class Products
      * Enable or disable a product on this partner-customer relationship.
      *
      * @param string $customerUserId
-     * @param value-of<\Valicm\BunnyToolkit\Api\Partner\Enum\PartnerCustomerProductType> $productId
+     * @param value-of<\Valicm\BunnyToolkit\Api\Partner\Enum\PartnerCustomerProductType> $productId 1 = CDN 2 = Database 3 = DNS 4 = Magic Containers 5 = Optimizer 6 = Edge Scripting 7 = Shield 8 = Storage 9 = Stream
      * @param bool|null $enabled
      *
      * @throws ApiException When Bunny answers with an error status.

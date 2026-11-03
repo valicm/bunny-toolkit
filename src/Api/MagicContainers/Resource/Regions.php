@@ -27,8 +27,10 @@ final class Regions
      *
      * `GET /regions`
      *
-     * Lists all available regions where applications can be deployed, including their anycast support and capacity status.
+     * Lists all available regions where applications can be deployed, including their anycast support and capacity status. Optionally filter by GPU type and required GPU count.
      *
+     * @param string|null $gpuType
+     * @param int|null $gpuCount
      * @param string|null $nextCursor
      * @param int|null $limit
      * @return ListRegionsResponse
@@ -36,10 +38,10 @@ final class Regions
      * @throws ApiException When Bunny answers with an error status.
      * @throws ClientExceptionInterface When the request cannot be sent.
      */
-    public function listRegions(?string $nextCursor = null, ?int $limit = null): mixed
+    public function listRegions(?string $nextCursor = null, ?int $limit = null, ?string $gpuType = null, ?int $gpuCount = null): mixed
     {
         /** @var ListRegionsResponse $data */
-        $data = $this->client->json('GET', '/regions', query: ['nextCursor' => $nextCursor, 'limit' => $limit]);
+        $data = $this->client->json('GET', '/regions', query: ['gpuType' => $gpuType, 'gpuCount' => $gpuCount, 'nextCursor' => $nextCursor, 'limit' => $limit]);
 
         return $data;
     }
@@ -49,18 +51,20 @@ final class Regions
      *
      * `GET /regions/optimal`
      *
-     * Returns the optimal base region for deployment based on the user's CDN server token location.
+     * Returns the optimal base region for deployment based on the user's CDN server token location. Optionally filter by GPU type and required GPU count.
      *
      * @param string|null $cdnServerToken
+     * @param string|null $gpuType
+     * @param int|null $gpuCount
      * @return OptimalBaseRegionResponse
      *
      * @throws ApiException When Bunny answers with an error status.
      * @throws ClientExceptionInterface When the request cannot be sent.
      */
-    public function getOptimalBaseRegion(?string $cdnServerToken = null): mixed
+    public function getOptimalBaseRegion(?string $cdnServerToken = null, ?string $gpuType = null, ?int $gpuCount = null): mixed
     {
         /** @var OptimalBaseRegionResponse $data */
-        $data = $this->client->json('GET', '/regions/optimal', query: ['cdnServerToken' => $cdnServerToken]);
+        $data = $this->client->json('GET', '/regions/optimal', query: ['cdnServerToken' => $cdnServerToken, 'gpuType' => $gpuType, 'gpuCount' => $gpuCount]);
 
         return $data;
     }

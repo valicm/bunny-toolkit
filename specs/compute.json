@@ -517,7 +517,7 @@
                         "in": "query",
                         "style": "form",
                         "explode": true,
-                        "description": "Filter by edge script type",
+                        "description": "Filter by edge script type\n\n0 = DNS\n1 = CDN\n2 = Middleware",
                         "schema": {
                             "type": "array",
                             "nullable": true,
@@ -2059,7 +2059,12 @@
                         "format": "date-time"
                     },
                     "ScriptType": {
-                        "$ref": "#/components/schemas/EdgeScriptTypes"
+                        "description": "0 = DNS\n1 = CDN\n2 = Middleware",
+                        "oneOf": [
+                            {
+                                "$ref": "#/components/schemas/EdgeScriptTypes"
+                            }
+                        ]
                     },
                     "CurrentReleaseId": {
                         "type": "integer",
@@ -2300,7 +2305,12 @@
                         "nullable": true
                     },
                     "ScriptType": {
-                        "$ref": "#/components/schemas/EdgeScriptTypes"
+                        "description": "0 = DNS\n1 = CDN\n2 = Middleware",
+                        "oneOf": [
+                            {
+                                "$ref": "#/components/schemas/EdgeScriptTypes"
+                            }
+                        ]
                     }
                 }
             },
@@ -2479,7 +2489,12 @@
                         "nullable": true
                     },
                     "Status": {
-                        "$ref": "#/components/schemas/EdgeScriptReleaseStatus"
+                        "description": "0 = Archived\n1 = Live",
+                        "oneOf": [
+                            {
+                                "$ref": "#/components/schemas/EdgeScriptReleaseStatus"
+                            }
+                        ]
                     },
                     "DateReleased": {
                         "type": "string",
@@ -2551,7 +2566,12 @@
                         "nullable": true
                     },
                     "ScriptType": {
-                        "$ref": "#/components/schemas/EdgeScriptTypes"
+                        "description": "0 = DNS\n1 = CDN\n2 = Middleware",
+                        "oneOf": [
+                            {
+                                "$ref": "#/components/schemas/EdgeScriptTypes"
+                            }
+                        ]
                     },
                     "CreateLinkedPullZone": {
                         "type": "boolean"

@@ -159,7 +159,7 @@ final class ManageVideos
      *
      * `GET /library/{libraryId}/videos/{videoId}/play`
      *
-     * Returns playback URLs and metadata for the video. For libraries with token authentication enabled, token and expires must be a valid signed pair or the request is rejected.
+     * Returns playback URLs and metadata for the video. For libraries with token authentication enabled, token and expires must be a valid signed pair or the request is rejected. If the library also has CDN token authentication enabled, the returned CDN URLs are signed.
      *
      * @param int $libraryId The ID of the video library.
      * @param string $videoId The GUID of the video.

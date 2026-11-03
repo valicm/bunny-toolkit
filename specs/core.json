@@ -98,6 +98,7 @@
                     {
                         "name": "view",
                         "in": "query",
+                        "description": "0 = Full\n1 = Lite",
                         "schema": {
                             "default": 0,
                             "oneOf": [
@@ -191,6 +192,7 @@
                     {
                         "name": "view",
                         "in": "query",
+                        "description": "0 = Full\n1 = Lite",
                         "schema": {
                             "default": 0,
                             "oneOf": [
@@ -518,7 +520,7 @@
                     {
                         "name": "type",
                         "in": "query",
-                        "description": "The type of DNS Record",
+                        "description": "The type of DNS Record\n\n<details>\n<summary>Show all 16 values</summary>\n\n| Value | Name |\n|---|---|\n| `0` | A |\n| `1` | AAAA |\n| `2` | CNAME |\n| `3` | TXT |\n| `4` | MX |\n| `5` | Redirect |\n| `6` | Flatten |\n| `7` | Pull Zone |\n| `8` | SRV |\n| `9` | CAA |\n| `10` | PTR |\n| `11` | Script |\n| `12` | NS |\n| `13` | SVCB |\n| `14` | HTTPS |\n| `15` | TLSA |\n\n</details>",
                         "schema": {
                             "oneOf": [
                                 {
@@ -3956,6 +3958,91 @@
                 ]
             }
         },
+        "/videolibrary/{id}/resetWebhookSigningSecret": {
+            "post": {
+                "tags": [
+                    "Stream Video Library"
+                ],
+                "summary": "Reset Webhook Signing Secret",
+                "operationId": "ResetVideoLibraryWebhookSigningSecretEndpoint_ResetVideoLibraryWebhookSigningSecret",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "description": "The ID of the video library that should have the webhook signing secret reset",
+                        "schema": {
+                            "type": "integer",
+                            "format": "int64"
+                        },
+                        "x-position": 1
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "The webhook signing secret has been successfully changed"
+                    },
+                    "401": {
+                        "description": "The request authorization failed",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ApiErrorData"
+                                }
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "The Video Library is not accessible for the authenticated account",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ApiErrorData"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "The Video Library with the requested ID does not exist",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ApiErrorData"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error"
+                    }
+                },
+                "security": [
+                    {
+                        "AccessKey": [
+                            "User",
+                            "UserApi",
+                            "SubuserAPIStream",
+                            "SubuserStream",
+                            "SubuserManage",
+                            "SubuserAPIManage",
+                            "ScopedApiKey"
+                        ]
+                    },
+                    {
+                        "bearer": [
+                            "User",
+                            "UserApi",
+                            "SubuserAPIStream",
+                            "SubuserStream",
+                            "SubuserManage",
+                            "SubuserAPIManage",
+                            "ScopedApiKey"
+                        ]
+                    }
+                ],
+                "x-hidden": true
+            }
+        },
         "/videolibrary/{id}/transcribing/statistics": {
             "get": {
                 "tags": [
@@ -4265,6 +4352,91 @@
                     },
                     "401": {
                         "description": "The request authorization failed"
+                    },
+                    "500": {
+                        "description": "Internal Server Error"
+                    }
+                },
+                "security": [
+                    {
+                        "AccessKey": [
+                            "User",
+                            "UserApi",
+                            "SubuserAPIStream",
+                            "SubuserStream",
+                            "SubuserManage",
+                            "SubuserAPIManage",
+                            "ScopedApiKey"
+                        ]
+                    },
+                    {
+                        "bearer": [
+                            "User",
+                            "UserApi",
+                            "SubuserAPIStream",
+                            "SubuserStream",
+                            "SubuserManage",
+                            "SubuserAPIManage",
+                            "ScopedApiKey"
+                        ]
+                    }
+                ],
+                "x-hidden": true
+            }
+        },
+        "/videolibrary/{id}/live/resetAutoCreateStreamKey": {
+            "post": {
+                "tags": [
+                    "Stream Video Library"
+                ],
+                "summary": "Reset Live Auto Create Stream Key",
+                "operationId": "ResetLiveAutoCreateStreamKeyEndpoint_ResetLiveAutoCreateStreamKey",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "description": "The ID of the video library that should have the auto create stream key reset",
+                        "schema": {
+                            "type": "integer",
+                            "format": "int64"
+                        },
+                        "x-position": 1
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "The auto create stream key has been successfully changed"
+                    },
+                    "401": {
+                        "description": "The request authorization failed",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ApiErrorData"
+                                }
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "The Video Library is not accessible for the authenticated account",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ApiErrorData"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "The Video Library with the requested ID does not exist",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ApiErrorData"
+                                }
+                            }
+                        }
                     },
                     "500": {
                         "description": "Internal Server Error"
@@ -4694,7 +4866,8 @@
                             "SubuserAPIStatistics",
                             "SubuserStatistics",
                             "SubuserManage",
-                            "SubuserAPIManage"
+                            "SubuserAPIManage",
+                            "ScopedApiKey"
                         ]
                     },
                     {
@@ -4704,7 +4877,8 @@
                             "SubuserAPIStatistics",
                             "SubuserStatistics",
                             "SubuserManage",
-                            "SubuserAPIManage"
+                            "SubuserAPIManage",
+                            "ScopedApiKey"
                         ]
                     }
                 ]
@@ -4784,7 +4958,8 @@
                             "SubuserAPIStatistics",
                             "SubuserStatistics",
                             "SubuserManage",
-                            "SubuserAPIManage"
+                            "SubuserAPIManage",
+                            "ScopedApiKey"
                         ]
                     },
                     {
@@ -4794,7 +4969,8 @@
                             "SubuserAPIStatistics",
                             "SubuserStatistics",
                             "SubuserManage",
-                            "SubuserAPIManage"
+                            "SubuserAPIManage",
+                            "ScopedApiKey"
                         ]
                     }
                 ]
@@ -5386,7 +5562,7 @@
                         "name": "source",
                         "in": "path",
                         "required": true,
-                        "description": "The billing source to estimate pricing for",
+                        "description": "The billing source to estimate pricing for\n\n<details>\n<summary>Show all 74 values</summary>\n\n| Value | Name |\n|---|---|\n| `1101` | CDN Standard Tier - Europe Traffic |\n| `1102` | CDN Standard Tier - North America Traffic |\n| `1103` | CDN Standard Tier - Asia & Oceania Traffic |\n| `1104` | CDN Standard Tier - Middle East & Africa Traffic |\n| `1105` | CDN Standard Tier - South America Traffic |\n| `1106` | CDN Standard Tier - Uncategorized Traffic |\n| `1201` | CDN Standard Tier (Stream) - Europe Traffic |\n| `1202` | CDN Standard Tier (Stream) - North America Traffic |\n| `1203` | CDN Standard Tier (Stream) - Asia & Oceania Traffic |\n| `1204` | CDN Standard Tier (Stream) - Middle East & Africa Traffic |\n| `1205` | CDN Standard Tier (Stream) - South America Traffic |\n| `1206` | CDN Standard Tier (Stream) - Uncategorized Traffic |\n| `1301` | CDN Volume Tier - Europe Traffic |\n| `1302` | CDN Volume Tier - North America Traffic |\n| `1303` | CDN Volume Tier - Asia & Oceania Traffic |\n| `1304` | CDN Volume Tier - Middle East & Africa Traffic |\n| `1305` | CDN Volume Tier - South America Traffic |\n| `1306` | CDN Volume Tier - Uncategorized Traffic |\n| `1401` | CDN Volume Tier (Stream) - Europe Traffic |\n| `1402` | CDN Volume Tier (Stream) - North America Traffic |\n| `1403` | CDN Volume Tier (Stream) - Asia & Oceania Traffic |\n| `1404` | CDN Volume Tier (Stream) - Middle East & Africa Traffic |\n| `1405` | CDN Volume Tier (Stream) - South America Traffic |\n| `1406` | CDN Volume Tier (Stream) - Uncategorized Traffic |\n| `1501` | CDN Standard Tier (Storage) - Europe Traffic |\n| `1502` | CDN Standard Tier (Storage) - North America Traffic |\n| `1503` | CDN Standard Tier (Storage) - Asia & Oceania Traffic |\n| `1504` | CDN Standard Tier (Storage) - Middle East & Africa Traffic |\n| `1505` | CDN Standard Tier (Storage) - South America Traffic |\n| `1506` | CDN Standard Tier (Storage) - Uncategorized Traffic |\n| `1511` | CDN Volume Tier (Storage) - Europe Traffic |\n| `1512` | CDN Volume Tier (Storage) - North America Traffic |\n| `1513` | CDN Volume Tier (Storage) - Asia & Oceania Traffic |\n| `1514` | CDN Volume Tier (Storage) - Middle East & Africa Traffic |\n| `1515` | CDN Volume Tier (Storage) - South America Traffic |\n| `1516` | CDN Volume Tier (Storage) - Uncategorized Traffic |\n| `1630` | CDN WebSockets (Consumption Based) |\n| `1701` | CDN Standard Tier (Magic Containers) - Europe Traffic |\n| `1702` | CDN Standard Tier (Magic Containers) - North America Traffic |\n| `1703` | CDN Standard Tier (Magic Containers) - Asia & Oceania Traffic |\n| `1704` | CDN Standard Tier (Magic Containers) - Middle East & Africa Traffic |\n| `1705` | CDN Standard Tier (Magic Containers) - South America Traffic |\n| `1706` | CDN Standard Tier (Magic Containers) - Uncategorized Traffic |\n| `1711` | CDN Volume Tier (Magic Containers) - Europe Traffic |\n| `1712` | CDN Volume Tier (Magic Containers) - North America Traffic |\n| `1713` | CDN Volume Tier (Magic Containers) - Asia & Oceania Traffic |\n| `1714` | CDN Volume Tier (Magic Containers) - Middle East & Africa Traffic |\n| `1715` | CDN Volume Tier (Magic Containers) - South America Traffic |\n| `1716` | CDN Volume Tier (Magic Containers) - Uncategorized Traffic |\n| `1801` | CDN Standard Tier (Edge Scripting) - Europe Traffic |\n| `1802` | CDN Standard Tier (Edge Scripting) - North America Traffic |\n| `1803` | CDN Standard Tier (Edge Scripting) - Asia & Oceania Traffic |\n| `1804` | CDN Standard Tier (Edge Scripting) - Middle East & Africa Traffic |\n| `1805` | CDN Standard Tier (Edge Scripting) - South America Traffic |\n| `1806` | CDN Standard Tier (Edge Scripting) - Uncategorized Traffic |\n| `1811` | CDN Volume Tier (Edge Scripting) - Europe Traffic |\n| `1812` | CDN Volume Tier (Edge Scripting) - North America Traffic |\n| `1813` | CDN Volume Tier (Edge Scripting) - Asia & Oceania Traffic |\n| `1814` | CDN Volume Tier (Edge Scripting) - Middle East & Africa Traffic |\n| `1815` | CDN Volume Tier (Edge Scripting) - South America Traffic |\n| `1816` | CDN Volume Tier (Edge Scripting) - Uncategorized Traffic |\n| `2100` | Storage Standard Tier |\n| `2200` | Storage SSD Tier |\n| `2300` | Storage Standard Tier (Stream) |\n| `2400` | Storage SSD Tier (Stream) |\n| `4100` | Transcribing |\n| `4200` | Premium Encoding |\n| `4300` | DRM Base |\n| `4400` | DRM License Issued |\n| `4501` | Live Encoding SD |\n| `4502` | Live Encoding HD |\n| `4503` | Live Encoding 4K |\n| `5200` | Edge Scripting CDN Requests |\n| `5300` | Edge Scripting CDN CPU |\n\n</details>",
                         "schema": {
                             "$ref": "#/components/schemas/PricingEstimationSource"
                         },
@@ -5571,7 +5747,8 @@
                             "SubuserAPIPullZones",
                             "SubuserPullZones",
                             "SubuserManage",
-                            "SubuserAPIManage"
+                            "SubuserAPIManage",
+                            "ScopedApiKey"
                         ]
                     },
                     {
@@ -5581,7 +5758,8 @@
                             "SubuserAPIPullZones",
                             "SubuserPullZones",
                             "SubuserManage",
-                            "SubuserAPIManage"
+                            "SubuserAPIManage",
+                            "ScopedApiKey"
                         ]
                     }
                 ]
@@ -5655,7 +5833,8 @@
                             "SubuserAPIPullZones",
                             "SubuserPullZones",
                             "SubuserManage",
-                            "SubuserAPIManage"
+                            "SubuserAPIManage",
+                            "ScopedApiKey"
                         ]
                     },
                     {
@@ -5665,7 +5844,8 @@
                             "SubuserAPIPullZones",
                             "SubuserPullZones",
                             "SubuserManage",
-                            "SubuserAPIManage"
+                            "SubuserAPIManage",
+                            "ScopedApiKey"
                         ]
                     }
                 ]
@@ -5767,7 +5947,8 @@
                             "SubuserAPIPullZones",
                             "SubuserPullZones",
                             "SubuserManage",
-                            "SubuserAPIManage"
+                            "SubuserAPIManage",
+                            "ScopedApiKey"
                         ]
                     },
                     {
@@ -5777,7 +5958,8 @@
                             "SubuserAPIPullZones",
                             "SubuserPullZones",
                             "SubuserManage",
-                            "SubuserAPIManage"
+                            "SubuserAPIManage",
+                            "ScopedApiKey"
                         ]
                     }
                 ]
@@ -5861,7 +6043,8 @@
                             "SubuserAPIPullZones",
                             "SubuserPullZones",
                             "SubuserManage",
-                            "SubuserAPIManage"
+                            "SubuserAPIManage",
+                            "ScopedApiKey"
                         ]
                     },
                     {
@@ -5871,7 +6054,8 @@
                             "SubuserAPIPullZones",
                             "SubuserPullZones",
                             "SubuserManage",
-                            "SubuserAPIManage"
+                            "SubuserAPIManage",
+                            "ScopedApiKey"
                         ]
                     }
                 ]
@@ -5935,7 +6119,8 @@
                             "SubuserAPIPullZones",
                             "SubuserPullZones",
                             "SubuserManage",
-                            "SubuserAPIManage"
+                            "SubuserAPIManage",
+                            "ScopedApiKey"
                         ]
                     },
                     {
@@ -5945,7 +6130,8 @@
                             "SubuserAPIPullZones",
                             "SubuserPullZones",
                             "SubuserManage",
-                            "SubuserAPIManage"
+                            "SubuserAPIManage",
+                            "ScopedApiKey"
                         ]
                     }
                 ]
@@ -6037,7 +6223,8 @@
                             "SubuserAPIPullZones",
                             "SubuserPullZones",
                             "SubuserManage",
-                            "SubuserAPIManage"
+                            "SubuserAPIManage",
+                            "ScopedApiKey"
                         ]
                     },
                     {
@@ -6047,7 +6234,8 @@
                             "SubuserAPIPullZones",
                             "SubuserPullZones",
                             "SubuserManage",
-                            "SubuserAPIManage"
+                            "SubuserAPIManage",
+                            "ScopedApiKey"
                         ]
                     }
                 ]
@@ -6119,7 +6307,8 @@
                             "SubuserAPIPullZones",
                             "SubuserPullZones",
                             "SubuserManage",
-                            "SubuserAPIManage"
+                            "SubuserAPIManage",
+                            "ScopedApiKey"
                         ]
                     },
                     {
@@ -6129,7 +6318,8 @@
                             "SubuserAPIPullZones",
                             "SubuserPullZones",
                             "SubuserManage",
-                            "SubuserAPIManage"
+                            "SubuserAPIManage",
+                            "ScopedApiKey"
                         ]
                     }
                 ]
@@ -6191,7 +6381,8 @@
                             "SubuserAPIPullZones",
                             "SubuserPullZones",
                             "SubuserManage",
-                            "SubuserAPIManage"
+                            "SubuserAPIManage",
+                            "ScopedApiKey"
                         ]
                     },
                     {
@@ -6201,7 +6392,8 @@
                             "SubuserAPIPullZones",
                             "SubuserPullZones",
                             "SubuserManage",
-                            "SubuserAPIManage"
+                            "SubuserAPIManage",
+                            "ScopedApiKey"
                         ]
                     }
                 ]
@@ -6262,7 +6454,8 @@
                             "SubuserAPIPullZones",
                             "SubuserPullZones",
                             "SubuserManage",
-                            "SubuserAPIManage"
+                            "SubuserAPIManage",
+                            "ScopedApiKey"
                         ]
                     },
                     {
@@ -6272,7 +6465,8 @@
                             "SubuserAPIPullZones",
                             "SubuserPullZones",
                             "SubuserManage",
-                            "SubuserAPIManage"
+                            "SubuserAPIManage",
+                            "ScopedApiKey"
                         ]
                     }
                 ]
@@ -6334,7 +6528,8 @@
                             "SubuserAPIPullZones",
                             "SubuserPullZones",
                             "SubuserManage",
-                            "SubuserAPIManage"
+                            "SubuserAPIManage",
+                            "ScopedApiKey"
                         ]
                     },
                     {
@@ -6344,7 +6539,8 @@
                             "SubuserAPIPullZones",
                             "SubuserPullZones",
                             "SubuserManage",
-                            "SubuserAPIManage"
+                            "SubuserAPIManage",
+                            "ScopedApiKey"
                         ]
                     }
                 ]
@@ -6426,7 +6622,8 @@
                             "SubuserAPIPullZones",
                             "SubuserPullZones",
                             "SubuserManage",
-                            "SubuserAPIManage"
+                            "SubuserAPIManage",
+                            "ScopedApiKey"
                         ]
                     },
                     {
@@ -6436,7 +6633,8 @@
                             "SubuserAPIPullZones",
                             "SubuserPullZones",
                             "SubuserManage",
-                            "SubuserAPIManage"
+                            "SubuserAPIManage",
+                            "ScopedApiKey"
                         ]
                     }
                 ]
@@ -6559,7 +6757,8 @@
                             "SubuserAPIPullZones",
                             "SubuserPullZones",
                             "SubuserManage",
-                            "SubuserAPIManage"
+                            "SubuserAPIManage",
+                            "ScopedApiKey"
                         ]
                     },
                     {
@@ -6569,7 +6768,8 @@
                             "SubuserAPIPullZones",
                             "SubuserPullZones",
                             "SubuserManage",
-                            "SubuserAPIManage"
+                            "SubuserAPIManage",
+                            "ScopedApiKey"
                         ]
                     }
                 ]
@@ -6663,7 +6863,8 @@
                             "SubuserAPIPullZones",
                             "SubuserPullZones",
                             "SubuserManage",
-                            "SubuserAPIManage"
+                            "SubuserAPIManage",
+                            "ScopedApiKey"
                         ]
                     },
                     {
@@ -6673,7 +6874,8 @@
                             "SubuserAPIPullZones",
                             "SubuserPullZones",
                             "SubuserManage",
-                            "SubuserAPIManage"
+                            "SubuserAPIManage",
+                            "ScopedApiKey"
                         ]
                     }
                 ]
@@ -6747,7 +6949,8 @@
                             "SubuserAPIPullZones",
                             "SubuserPullZones",
                             "SubuserManage",
-                            "SubuserAPIManage"
+                            "SubuserAPIManage",
+                            "ScopedApiKey"
                         ]
                     },
                     {
@@ -6757,7 +6960,8 @@
                             "SubuserAPIPullZones",
                             "SubuserPullZones",
                             "SubuserManage",
-                            "SubuserAPIManage"
+                            "SubuserAPIManage",
+                            "ScopedApiKey"
                         ]
                     }
                 ]
@@ -6850,7 +7054,8 @@
                             "SubuserAPIPullZones",
                             "SubuserPullZones",
                             "SubuserManage",
-                            "SubuserAPIManage"
+                            "SubuserAPIManage",
+                            "ScopedApiKey"
                         ]
                     },
                     {
@@ -6860,7 +7065,8 @@
                             "SubuserAPIPullZones",
                             "SubuserPullZones",
                             "SubuserManage",
-                            "SubuserAPIManage"
+                            "SubuserAPIManage",
+                            "ScopedApiKey"
                         ]
                     }
                 ]
@@ -7714,7 +7920,7 @@
                         "description": "Determines if the TLS 1 is enabled on the DNS Zone"
                     },
                     "LogAnonymizationType": {
-                        "description": "Sets the log anonymization type for this zone",
+                        "description": "Sets the log anonymization type for this zone\n\n0 = One Digit\n1 = Drop",
                         "nullable": true,
                         "oneOf": [
                             {
@@ -7727,7 +7933,7 @@
                         "description": "Determines if DNSSEC is enabled for this DNS Zone"
                     },
                     "CertificateKeyType": {
-                        "description": "The private key type to use for automatic certificates",
+                        "description": "The private key type to use for automatic certificates\n\n0 = ECDSA\n1 = RSA",
                         "oneOf": [
                             {
                                 "$ref": "#/components/schemas/PrivateKeyType"
@@ -7745,7 +7951,12 @@
                         "format": "int64"
                     },
                     "Type": {
-                        "$ref": "#/components/schemas/DnsRecordTypes"
+                        "description": "<details>\n<summary>Show all 16 values</summary>\n\n| Value | Name |\n|---|---|\n| `0` | A |\n| `1` | AAAA |\n| `2` | CNAME |\n| `3` | TXT |\n| `4` | MX |\n| `5` | Redirect |\n| `6` | Flatten |\n| `7` | Pull Zone |\n| `8` | SRV |\n| `9` | CAA |\n| `10` | PTR |\n| `11` | Script |\n| `12` | NS |\n| `13` | SVCB |\n| `14` | HTTPS |\n| `15` | TLSA |\n\n</details>",
+                        "oneOf": [
+                            {
+                                "$ref": "#/components/schemas/DnsRecordTypes"
+                            }
+                        ]
                     },
                     "Ttl": {
                         "type": "integer",
@@ -7807,10 +8018,20 @@
                         ]
                     },
                     "MonitorStatus": {
-                        "$ref": "#/components/schemas/DnsMonitoringStatus"
+                        "description": "0 = Unknown\n1 = Online\n2 = Offline",
+                        "oneOf": [
+                            {
+                                "$ref": "#/components/schemas/DnsMonitoringStatus"
+                            }
+                        ]
                     },
                     "MonitorType": {
-                        "$ref": "#/components/schemas/DnsMonitoringType"
+                        "description": "0 = None\n1 = Ping\n2 = HTTP\n3 = Monitor",
+                        "oneOf": [
+                            {
+                                "$ref": "#/components/schemas/DnsMonitoringType"
+                            }
+                        ]
                     },
                     "GeolocationLatitude": {
                         "type": "number",
@@ -7832,7 +8053,12 @@
                         "nullable": true
                     },
                     "SmartRoutingType": {
-                        "$ref": "#/components/schemas/DnsSmartRoutingType"
+                        "description": "0 = None\n1 = Latency\n2 = Geolocation",
+                        "oneOf": [
+                            {
+                                "$ref": "#/components/schemas/DnsSmartRoutingType"
+                            }
+                        ]
                     },
                     "Disabled": {
                         "type": "boolean"
@@ -7845,13 +8071,18 @@
                         "type": "boolean"
                     },
                     "AccelerationStatus": {
-                        "$ref": "#/components/schemas/AcceleratedStatus"
+                        "description": "0 = None\n1 = Pending\n2 = Processing\n3 = Completed\n4 = Failed",
+                        "oneOf": [
+                            {
+                                "$ref": "#/components/schemas/AcceleratedStatus"
+                            }
+                        ]
                     }
                 }
             },
             "DnsRecordTypes": {
                 "type": "integer",
-                "description": "0 = A\n1 = AAAA\n2 = CNAME\n3 = TXT\n4 = MX\n5 = Redirect\n6 = Flatten\n7 = PullZone\n8 = SRV\n9 = CAA\n10 = PTR\n11 = Script\n12 = NS\n13 = SVCB\n14 = HTTPS\n15 = TLSA",
+                "description": "0 = A\n1 = AAAA\n2 = CNAME\n3 = TXT\n4 = MX\n5 = Redirect\n6 = Flatten\n7 = Pull Zone\n8 = SRV\n9 = CAA\n10 = PTR\n11 = Script\n12 = NS\n13 = SVCB\n14 = HTTPS\n15 = TLSA",
                 "x-enumNames": [
                     "A",
                     "AAAA",
@@ -7958,7 +8189,7 @@
             },
             "DnsMonitoringType": {
                 "type": "integer",
-                "description": "0 = None\n1 = Ping\n2 = Http\n3 = Monitor",
+                "description": "0 = None\n1 = Ping\n2 = HTTP\n3 = Monitor",
                 "x-enumNames": [
                     "None",
                     "Ping",
@@ -8020,7 +8251,7 @@
             },
             "LogAnonymizationType": {
                 "type": "integer",
-                "description": "0 = OneDigit\n1 = Drop",
+                "description": "0 = One Digit\n1 = Drop",
                 "x-enumNames": [
                     "OneDigit",
                     "Drop"
@@ -8032,7 +8263,7 @@
             },
             "PrivateKeyType": {
                 "type": "integer",
-                "description": "0 = Ecdsa\n1 = Rsa",
+                "description": "0 = ECDSA\n1 = RSA",
                 "x-enumNames": [
                     "Ecdsa",
                     "Rsa"
@@ -8079,7 +8310,7 @@
                         "nullable": true
                     },
                     "LogAnonymizationType": {
-                        "description": "Gets the log anonymization type for this zone",
+                        "description": "Gets the log anonymization type for this zone\n\n0 = One Digit\n1 = Drop",
                         "nullable": true,
                         "oneOf": [
                             {
@@ -8088,7 +8319,7 @@
                         ]
                     },
                     "CertificateKeyType": {
-                        "description": "Sets the certificate private key type for wildcard certificates for this zone",
+                        "description": "Sets the certificate private key type for wildcard certificates for this zone\n\n0 = ECDSA\n1 = RSA",
                         "nullable": true,
                         "oneOf": [
                             {
@@ -8159,6 +8390,7 @@
                 "additionalProperties": false,
                 "properties": {
                     "Type": {
+                        "description": "<details>\n<summary>Show all 16 values</summary>\n\n| Value | Name |\n|---|---|\n| `0` | A |\n| `1` | AAAA |\n| `2` | CNAME |\n| `3` | TXT |\n| `4` | MX |\n| `5` | Redirect |\n| `6` | Flatten |\n| `7` | Pull Zone |\n| `8` | SRV |\n| `9` | CAA |\n| `10` | PTR |\n| `11` | Script |\n| `12` | NS |\n| `13` | SVCB |\n| `14` | HTTPS |\n| `15` | TLSA |\n\n</details>",
                         "nullable": true,
                         "oneOf": [
                             {
@@ -8218,6 +8450,7 @@
                         "nullable": true
                     },
                     "MonitorType": {
+                        "description": "0 = None\n1 = Ping\n2 = HTTP\n3 = Monitor",
                         "nullable": true,
                         "oneOf": [
                             {
@@ -8240,6 +8473,7 @@
                         "nullable": true
                     },
                     "SmartRoutingType": {
+                        "description": "0 = None\n1 = Latency\n2 = Geolocation",
                         "nullable": true,
                         "oneOf": [
                             {
@@ -8273,6 +8507,7 @@
                 "additionalProperties": false,
                 "properties": {
                     "Type": {
+                        "description": "<details>\n<summary>Show all 16 values</summary>\n\n| Value | Name |\n|---|---|\n| `0` | A |\n| `1` | AAAA |\n| `2` | CNAME |\n| `3` | TXT |\n| `4` | MX |\n| `5` | Redirect |\n| `6` | Flatten |\n| `7` | Pull Zone |\n| `8` | SRV |\n| `9` | CAA |\n| `10` | PTR |\n| `11` | Script |\n| `12` | NS |\n| `13` | SVCB |\n| `14` | HTTPS |\n| `15` | TLSA |\n\n</details>",
                         "nullable": true,
                         "oneOf": [
                             {
@@ -8332,6 +8567,7 @@
                         "nullable": true
                     },
                     "MonitorType": {
+                        "description": "0 = None\n1 = Ping\n2 = HTTP\n3 = Monitor",
                         "nullable": true,
                         "oneOf": [
                             {
@@ -8354,6 +8590,7 @@
                         "nullable": true
                     },
                     "SmartRoutingType": {
+                        "description": "0 = None\n1 = Latency\n2 = Geolocation",
                         "nullable": true,
                         "oneOf": [
                             {
@@ -8440,7 +8677,7 @@
             },
             "DnsRecordTypes2": {
                 "type": "integer",
-                "description": "0 = A\n1 = AAAA\n2 = CNAME\n3 = TXT\n4 = MX\n5 = Redirect\n6 = Flatten\n7 = PullZone\n8 = SRV\n9 = CAA\n10 = PTR\n11 = Script\n12 = NS\n13 = SVCB\n14 = HTTPS\n15 = TLSA",
+                "description": "0 = A\n1 = AAAA\n2 = CNAME\n3 = TXT\n4 = MX\n5 = Redirect\n6 = Flatten\n7 = Pull Zone\n8 = SRV\n9 = CAA\n10 = PTR\n11 = Script\n12 = NS\n13 = SVCB\n14 = HTTPS\n15 = TLSA",
                 "x-enumNames": [
                     "A",
                     "AAAA",
@@ -8523,7 +8760,7 @@
                         "format": "int64"
                     },
                     "EdgeScriptExecutionPhase": {
-                        "description": "The phase of the request where the script will be executed",
+                        "description": "The phase of the request where the script will be executed\n\n0 = Cache\n1 = Load Balancer\n2 = Pre-Cache",
                         "oneOf": [
                             {
                                 "$ref": "#/components/schemas/ExecutionPhase"
@@ -8590,7 +8827,7 @@
                         "description": "Determines if the delivery from the Africa region is enabled for this pull zone"
                     },
                     "IpFamilyPolicy": {
-                        "description": "Address-family policy: 0=IPv4Only, 1=DualStack, 2=DualStackPreferIPv6, 3=IPv6Only.",
+                        "description": "Address-family policy: 0=IPv4Only, 1=DualStack, 2=DualStackPreferIPv6, 3=IPv6Only.\n\n0 = IPv4 Only\n1 = Dual Stack\n2 = Dual Stack (Prefer IPv6)\n3 = IPv6 Only",
                         "oneOf": [
                             {
                                 "$ref": "#/components/schemas/IpFamilyPolicy"
@@ -8639,7 +8876,7 @@
                         "nullable": true
                     },
                     "Type": {
-                        "description": "The type of the pull zone",
+                        "description": "The type of the pull zone\n\n0 = Premium\n1 = Volume",
                         "oneOf": [
                             {
                                 "$ref": "#/components/schemas/PullZoneType"
@@ -8832,7 +9069,7 @@
                         "description": "Determines if the TLS 1.1 is enabled on the Pull Zone"
                     },
                     "TlsSecurityLevel": {
-                        "description": "The minimum TLS security level enforced on the Pull Zone",
+                        "description": "The minimum TLS security level enforced on the Pull Zone\n\n0 = Legacy\n1 = Compatible\n2 = Modern Only",
                         "oneOf": [
                             {
                                 "$ref": "#/components/schemas/TlsSecurityLevelType"
@@ -8890,7 +9127,7 @@
                         "nullable": true
                     },
                     "LogForwardingProtocol": {
-                        "description": "Determines the log forwarding protocol type",
+                        "description": "Determines the log forwarding protocol type\n\n0 = UDP\n1 = TCP\n2 = TCP Encrypted\n3 = Datadog",
                         "oneOf": [
                             {
                                 "$ref": "#/components/schemas/PullZoneLogForwarderProtocolType"
@@ -8979,7 +9216,7 @@
                         "description": "Determines if the SEO HTML prerender is enabled"
                     },
                     "OptimizerHtmlToMarkdown": {
-                        "description": "Determines if Markdown automatic generation for AI systems is enabled and which pipeline to use",
+                        "description": "Determines if Markdown automatic generation for AI systems is enabled and which pipeline to use\n\n0 = Off\n1 = Simple\n2 = Prerendered",
                         "oneOf": [
                             {
                                 "$ref": "#/components/schemas/OptimizerHtmlToMarkdownType"
@@ -9012,7 +9249,7 @@
                         "nullable": true
                     },
                     "OptimizerWatermarkPosition": {
-                        "description": "Sets the position of the watermark image",
+                        "description": "Sets the position of the watermark image\n\n0 = Bottom Left\n1 = Bottom Right\n2 = Top Left\n3 = Top Right\n4 = Center\n5 = Center Stretch",
                         "oneOf": [
                             {
                                 "$ref": "#/components/schemas/OptimizerWatermarkPosition"
@@ -9039,7 +9276,7 @@
                         "format": "int64"
                     },
                     "PermaCacheType": {
-                        "description": "Determines Perma-Cache behavior",
+                        "description": "Determines Perma-Cache behavior\n\n0 = Automatic\n1 = Manual",
                         "oneOf": [
                             {
                                 "$ref": "#/components/schemas/PermaCacheType"
@@ -9159,7 +9396,7 @@
                         "description": "If set to true the query string ordering property is enabled."
                     },
                     "LogAnonymizationType": {
-                        "description": "Gets the log anonymization type for this pull zone",
+                        "description": "Gets the log anonymization type for this pull zone\n\n0 = One Digit\n1 = Drop",
                         "oneOf": [
                             {
                                 "$ref": "#/components/schemas/LogAnonymizationType"
@@ -9167,19 +9404,34 @@
                         ]
                     },
                     "LogFormat": {
-                        "$ref": "#/components/schemas/PullZoneLogFormat"
+                        "description": "0 = Plain\n1 = JSON",
+                        "oneOf": [
+                            {
+                                "$ref": "#/components/schemas/PullZoneLogFormat"
+                            }
+                        ]
                     },
                     "LogForwardingFormat": {
-                        "$ref": "#/components/schemas/PullZoneLogFormat"
+                        "description": "0 = Plain\n1 = JSON",
+                        "oneOf": [
+                            {
+                                "$ref": "#/components/schemas/PullZoneLogFormat"
+                            }
+                        ]
                     },
                     "ShieldDDosProtectionType": {
-                        "$ref": "#/components/schemas/ShieldDDosProtectionType"
+                        "description": "0 = Detect Only\n1 = Active Standard\n2 = Active Aggressive",
+                        "oneOf": [
+                            {
+                                "$ref": "#/components/schemas/ShieldDDosProtectionType"
+                            }
+                        ]
                     },
                     "ShieldDDosProtectionEnabled": {
                         "type": "boolean"
                     },
                     "OriginType": {
-                        "description": "The type of the origin for this Pull Zone",
+                        "description": "The type of the origin for this Pull Zone\n\n0 = Origin URL\n1 = DNS Accelerate\n2 = Storage Zone\n3 = Load Balancer\n4 = Edge Script\n5 = Magic Containers\n6 = Push Zone",
                         "oneOf": [
                             {
                                 "$ref": "#/components/schemas/PullZoneOriginType"
@@ -9237,7 +9489,7 @@
                         "description": "Determines if the custom preloader screen is enabled"
                     },
                     "PreloadingScreenTheme": {
-                        "description": "The currently configured preloading screem theme. (0 - Light, 1 - Dark)",
+                        "description": "The currently configured preloading screem theme. (0 - Light, 1 - Dark)\n\n0 = Light\n1 = Dark",
                         "oneOf": [
                             {
                                 "$ref": "#/components/schemas/PreloadingScreenTheme"
@@ -9282,7 +9534,7 @@
                         "description": "Determines if direct access to files will be blocked if not coming from allowed referrers"
                     },
                     "StickySessionType": {
-                        "description": "Whether to use a Sticky Session mechanism for this pull zone",
+                        "description": "Whether to use a Sticky Session mechanism for this pull zone\n\n0 = Off\n1 = On",
                         "oneOf": [
                             {
                                 "$ref": "#/components/schemas/StickySessionType"
@@ -9379,7 +9631,7 @@
                         "nullable": true
                     },
                     "CertificateKeyType": {
-                        "description": "The private key type to use for automatic certificates",
+                        "description": "The private key type to use for automatic certificates\n\n0 = ECDSA\n1 = RSA",
                         "oneOf": [
                             {
                                 "$ref": "#/components/schemas/PrivateKeyType"
@@ -9387,7 +9639,7 @@
                         ]
                     },
                     "CertificateProvisionType": {
-                        "description": "The provisioned certificate type",
+                        "description": "The provisioned certificate type\n\n0 = Unknown\n1 = HTTP-01\n2 = DNS-01\n3 = Custom\n4 = Managed",
                         "oneOf": [
                             {
                                 "$ref": "#/components/schemas/CertificateProvisionType"
@@ -9398,7 +9650,7 @@
             },
             "CertificateProvisionType": {
                 "type": "integer",
-                "description": "0 = Unknown\n1 = Http01\n2 = Dns01\n3 = Custom\n4 = Managed",
+                "description": "0 = Unknown\n1 = HTTP-01\n2 = DNS-01\n3 = Custom\n4 = Managed",
                 "x-enumNames": [
                     "Unknown",
                     "Http01",
@@ -9416,7 +9668,7 @@
             },
             "ExecutionPhase": {
                 "type": "integer",
-                "description": "0 = Cache\n1 = LoadBalancer\n2 = PreCache",
+                "description": "0 = Cache\n1 = Load Balancer\n2 = Pre-Cache",
                 "x-enumNames": [
                     "Cache",
                     "LoadBalancer",
@@ -9430,7 +9682,7 @@
             },
             "IpFamilyPolicy": {
                 "type": "integer",
-                "description": "0 = IPv4Only\n1 = DualStack\n2 = DualStackPreferIPv6\n3 = IPv6Only",
+                "description": "0 = IPv4 Only\n1 = Dual Stack\n2 = Dual Stack (Prefer IPv6)\n3 = IPv6 Only",
                 "x-enumNames": [
                     "IPv4Only",
                     "DualStack",
@@ -9466,7 +9718,7 @@
                         "nullable": true
                     },
                     "ActionType": {
-                        "description": "The action type of the edge rule",
+                        "description": "The action type of the edge rule\n\n<details>\n<summary>Show all 38 values</summary>\n\n| Value | Name |\n|---|---|\n| `0` | Force SSL |\n| `1` | Redirect |\n| `2` | Origin URL |\n| `3` | Override Cache Time |\n| `4` | Block Request |\n| `5` | Set Response Header |\n| `6` | Set Request Header |\n| `7` | Force Download |\n| `8` | Disable Token Authentication |\n| `9` | Enable Token Authentication |\n| `10` | Override Cache Time Public |\n| `11` | Ignore Query String |\n| `12` | Disable Optimizer |\n| `13` | Force Compression |\n| `14` | Set Status Code |\n| `15` | Bypass Perma-Cache |\n| `16` | Override Browser Cache Time |\n| `17` | Origin Storage |\n| `18` | Set Network Rate Limit |\n| `19` | Set Connection Limit |\n| `20` | Set Requests Per Second Limit |\n| `21` | Run Edge Script |\n| `22` | Origin Magic Containers |\n| `23` | Disable WAF |\n| `24` | Retry Origin |\n| `25` | Override Browser Cache Response Header |\n| `26` | Remove Browser Cache Response Header |\n| `27` | Disable Shield Challenge |\n| `28` | Disable Shield |\n| `29` | Disable Shield Bot Detection |\n| `30` | Bypass AWS S3 Authentication |\n| `31` | Disable Shield Access Lists |\n| `32` | Disable Shield Rate Limiting |\n| `33` | Enable Request Coalescing |\n| `34` | Disable Request Coalescing |\n| `35` | Use Load Balancer |\n| `36` | Force Load Balancer Sticky Session Mode |\n| `37` | Strip Cookies (Client to Origin) |\n\n</details>",
                         "oneOf": [
                             {
                                 "$ref": "#/components/schemas/EdgeRuleActionType"
@@ -9503,7 +9755,7 @@
                         }
                     },
                     "TriggerMatchingType": {
-                        "description": "The trigger matching type",
+                        "description": "The trigger matching type\n\n0 = Match Any\n1 = Match All\n2 = Match None",
                         "oneOf": [
                             {
                                 "$ref": "#/components/schemas/TriggerMatchingTypes"
@@ -9532,7 +9784,7 @@
             },
             "EdgeRuleActionType": {
                 "type": "integer",
-                "description": "0 = ForceSSL\n1 = Redirect\n2 = OriginUrl\n3 = OverrideCacheTime\n4 = BlockRequest\n5 = SetResponseHeader\n6 = SetRequestHeader\n7 = ForceDownload\n8 = DisableTokenAuthentication\n9 = EnableTokenAuthentication\n10 = OverrideCacheTimePublic\n11 = IgnoreQueryString\n12 = DisableOptimizer\n13 = ForceCompression\n14 = SetStatusCode\n15 = BypassPermaCache\n16 = OverrideBrowserCacheTime\n17 = OriginStorage\n18 = SetNetworkRateLimit\n19 = SetConnectionLimit\n20 = SetRequestsPerSecondLimit\n21 = RunEdgeScript\n22 = OriginMagicContainers\n23 = DisableWAF\n24 = RetryOrigin\n25 = OverrideBrowserCacheResponseHeader\n26 = RemoveBrowserCacheResponseHeader\n27 = DisableShieldChallenge\n28 = DisableShield\n29 = DisableShieldBotDetection\n30 = BypassAwsS3Authentication\n31 = DisableShieldAccessLists\n32 = DisableShieldRateLimiting\n33 = EnableRequestCoalescing\n34 = DisableRequestCoalescing\n35 = UseLoadBalancer\n36 = ForceLoadBalancerStickySessionMode\n37 = StripCookiesClientToOrigin",
+                "description": "0 = Force SSL\n1 = Redirect\n2 = Origin URL\n3 = Override Cache Time\n4 = Block Request\n5 = Set Response Header\n6 = Set Request Header\n7 = Force Download\n8 = Disable Token Authentication\n9 = Enable Token Authentication\n10 = Override Cache Time Public\n11 = Ignore Query String\n12 = Disable Optimizer\n13 = Force Compression\n14 = Set Status Code\n15 = Bypass Perma-Cache\n16 = Override Browser Cache Time\n17 = Origin Storage\n18 = Set Network Rate Limit\n19 = Set Connection Limit\n20 = Set Requests Per Second Limit\n21 = Run Edge Script\n22 = Origin Magic Containers\n23 = Disable WAF\n24 = Retry Origin\n25 = Override Browser Cache Response Header\n26 = Remove Browser Cache Response Header\n27 = Disable Shield Challenge\n28 = Disable Shield\n29 = Disable Shield Bot Detection\n30 = Bypass AWS S3 Authentication\n31 = Disable Shield Access Lists\n32 = Disable Shield Rate Limiting\n33 = Enable Request Coalescing\n34 = Disable Request Coalescing\n35 = Use Load Balancer\n36 = Force Load Balancer Sticky Session Mode\n37 = Strip Cookies (Client to Origin)",
                 "x-enumNames": [
                     "ForceSSL",
                     "Redirect",
@@ -9619,7 +9871,7 @@
                 "additionalProperties": false,
                 "properties": {
                     "Type": {
-                        "description": "The type of the trigger",
+                        "description": "The type of the trigger\n\n<details>\n<summary>Show all 14 values</summary>\n\n| Value | Name |\n|---|---|\n| `0` | URL |\n| `1` | Request Header |\n| `2` | Response Header |\n| `3` | URL Extension |\n| `4` | Country Code |\n| `5` | Remote IP |\n| `6` | URL Query String |\n| `7` | Random Chance |\n| `8` | Status Code |\n| `9` | Request Method |\n| `10` | Cookie Value |\n| `11` | Country State Code |\n| `12` | Origin Retry Attempt Count |\n| `13` | Origin Connection Error |\n\n</details>",
                         "oneOf": [
                             {
                                 "$ref": "#/components/schemas/TriggerTypes"
@@ -9635,7 +9887,7 @@
                         }
                     },
                     "PatternMatchingType": {
-                        "description": "The type of pattern matching",
+                        "description": "The type of pattern matching\n\n0 = Match Any\n1 = Match All\n2 = Match None",
                         "oneOf": [
                             {
                                 "$ref": "#/components/schemas/PatternMatchingTypes"
@@ -9651,7 +9903,7 @@
             },
             "TriggerTypes": {
                 "type": "integer",
-                "description": "0 = Url\n1 = RequestHeader\n2 = ResponseHeader\n3 = UrlExtension\n4 = CountryCode\n5 = RemoteIP\n6 = UrlQueryString\n7 = RandomChance\n8 = StatusCode\n9 = RequestMethod\n10 = CookieValue\n11 = CountryStateCode\n12 = OriginRetryAttemptCount\n13 = OriginConnectionError",
+                "description": "0 = URL\n1 = Request Header\n2 = Response Header\n3 = URL Extension\n4 = Country Code\n5 = Remote IP\n6 = URL Query String\n7 = Random Chance\n8 = Status Code\n9 = Request Method\n10 = Cookie Value\n11 = Country State Code\n12 = Origin Retry Attempt Count\n13 = Origin Connection Error",
                 "x-enumNames": [
                     "Url",
                     "RequestHeader",
@@ -9687,7 +9939,7 @@
             },
             "PatternMatchingTypes": {
                 "type": "integer",
-                "description": "0 = MatchAny\n1 = MatchAll\n2 = MatchNone",
+                "description": "0 = Match Any\n1 = Match All\n2 = Match None",
                 "x-enumNames": [
                     "MatchAny",
                     "MatchAll",
@@ -9704,7 +9956,12 @@
                 "additionalProperties": false,
                 "properties": {
                     "ActionType": {
-                        "$ref": "#/components/schemas/EdgeRuleActionType"
+                        "description": "<details>\n<summary>Show all 38 values</summary>\n\n| Value | Name |\n|---|---|\n| `0` | Force SSL |\n| `1` | Redirect |\n| `2` | Origin URL |\n| `3` | Override Cache Time |\n| `4` | Block Request |\n| `5` | Set Response Header |\n| `6` | Set Request Header |\n| `7` | Force Download |\n| `8` | Disable Token Authentication |\n| `9` | Enable Token Authentication |\n| `10` | Override Cache Time Public |\n| `11` | Ignore Query String |\n| `12` | Disable Optimizer |\n| `13` | Force Compression |\n| `14` | Set Status Code |\n| `15` | Bypass Perma-Cache |\n| `16` | Override Browser Cache Time |\n| `17` | Origin Storage |\n| `18` | Set Network Rate Limit |\n| `19` | Set Connection Limit |\n| `20` | Set Requests Per Second Limit |\n| `21` | Run Edge Script |\n| `22` | Origin Magic Containers |\n| `23` | Disable WAF |\n| `24` | Retry Origin |\n| `25` | Override Browser Cache Response Header |\n| `26` | Remove Browser Cache Response Header |\n| `27` | Disable Shield Challenge |\n| `28` | Disable Shield |\n| `29` | Disable Shield Bot Detection |\n| `30` | Bypass AWS S3 Authentication |\n| `31` | Disable Shield Access Lists |\n| `32` | Disable Shield Rate Limiting |\n| `33` | Enable Request Coalescing |\n| `34` | Disable Request Coalescing |\n| `35` | Use Load Balancer |\n| `36` | Force Load Balancer Sticky Session Mode |\n| `37` | Strip Cookies (Client to Origin) |\n\n</details>",
+                        "oneOf": [
+                            {
+                                "$ref": "#/components/schemas/EdgeRuleActionType"
+                            }
+                        ]
                     },
                     "ActionParameter1": {
                         "type": "string",
@@ -9722,7 +9979,7 @@
             },
             "TriggerMatchingTypes": {
                 "type": "integer",
-                "description": "0 = MatchAny\n1 = MatchAll\n2 = MatchNone",
+                "description": "0 = Match Any\n1 = Match All\n2 = Match None",
                 "x-enumNames": [
                     "MatchAny",
                     "MatchAll",
@@ -9736,7 +9993,7 @@
             },
             "TlsSecurityLevelType": {
                 "type": "integer",
-                "description": "0 = Legacy\n1 = Compatible\n2 = ModernOnly",
+                "description": "0 = Legacy\n1 = Compatible\n2 = Modern Only",
                 "x-enumNames": [
                     "Legacy",
                     "Compatible",
@@ -9750,7 +10007,7 @@
             },
             "PullZoneLogForwarderProtocolType": {
                 "type": "integer",
-                "description": "0 = UDP\n1 = TCP\n2 = TCPEncrypted\n3 = DataDog",
+                "description": "0 = UDP\n1 = TCP\n2 = TCP Encrypted\n3 = Datadog",
                 "x-enumNames": [
                     "UDP",
                     "TCP",
@@ -9780,7 +10037,7 @@
             },
             "OptimizerWatermarkPosition": {
                 "type": "integer",
-                "description": "0 = BottomLeft\n1 = BottomRight\n2 = TopLeft\n3 = TopRight\n4 = Center\n5 = CenterStretch",
+                "description": "0 = Bottom Left\n1 = Bottom Right\n2 = Top Left\n3 = Top Right\n4 = Center\n5 = Center Stretch",
                 "x-enumNames": [
                     "BottomLeft",
                     "BottomRight",
@@ -9841,7 +10098,7 @@
             },
             "ShieldDDosProtectionType": {
                 "type": "integer",
-                "description": "0 = DetectOnly\n1 = ActiveStandard\n2 = ActiveAggressive",
+                "description": "0 = Detect Only\n1 = Active Standard\n2 = Active Aggressive",
                 "x-enumNames": [
                     "DetectOnly",
                     "ActiveStandard",
@@ -9855,7 +10112,7 @@
             },
             "PullZoneOriginType": {
                 "type": "integer",
-                "description": "0 = OriginUrl\n1 = DnsAccelerate\n2 = StorageZone\n3 = LoadBalancer\n4 = EdgeScript\n5 = MagicContainers\n6 = PushZone",
+                "description": "0 = Origin URL\n1 = DNS Accelerate\n2 = Storage Zone\n3 = Load Balancer\n4 = Edge Script\n5 = Magic Containers\n6 = Push Zone",
                 "x-enumNames": [
                     "OriginUrl",
                     "DnsAccelerate",
@@ -10002,7 +10259,7 @@
                         "nullable": true
                     },
                     "IpFamilyPolicy": {
-                        "description": "Address-family policy: 0=IPv4Only, 1=DualStack (default, best latency and compatibility), 2=DualStackPreferIPv6, 3=IPv6Only.",
+                        "description": "Address-family policy: 0=IPv4Only, 1=DualStack (default, best latency and compatibility), 2=DualStackPreferIPv6, 3=IPv6Only.\n\n0 = IPv4 Only\n1 = Dual Stack\n2 = Dual Stack (Prefer IPv6)\n3 = IPv6 Only",
                         "nullable": true,
                         "oneOf": [
                             {
@@ -10160,7 +10417,7 @@
                         "nullable": true
                     },
                     "PermaCacheType": {
-                        "description": "Determines Perma-Cache behavior",
+                        "description": "Determines Perma-Cache behavior\n\n0 = Automatic\n1 = Manual",
                         "maximum": 1,
                         "minimum": 0,
                         "nullable": true,
@@ -10211,7 +10468,7 @@
                         "nullable": true
                     },
                     "TlsSecurityLevel": {
-                        "description": "The minimum TLS security level enforced on this zone",
+                        "description": "The minimum TLS security level enforced on this zone\n\n0 = Legacy\n1 = Compatible\n2 = Modern Only",
                         "nullable": true,
                         "oneOf": [
                             {
@@ -10251,7 +10508,7 @@
                         "nullable": true
                     },
                     "LogForwardingProtocol": {
-                        "description": "Sets the log forwarding protocol type",
+                        "description": "Sets the log forwarding protocol type\n\n0 = UDP\n1 = TCP\n2 = TCP Encrypted\n3 = Datadog",
                         "nullable": true,
                         "oneOf": [
                             {
@@ -10388,7 +10645,7 @@
                         "nullable": true
                     },
                     "OptimizerHtmlToMarkdown": {
-                        "description": "Determines if Markdown automatic generation for AI systems is enabled and which pipeline to use",
+                        "description": "Determines if Markdown automatic generation for AI systems is enabled and which pipeline to use\n\n0 = Off\n1 = Simple\n2 = Prerendered",
                         "nullable": true,
                         "oneOf": [
                             {
@@ -10427,7 +10684,7 @@
                         "nullable": true
                     },
                     "OptimizerWatermarkPosition": {
-                        "description": "Sets the position of the watermark image",
+                        "description": "Sets the position of the watermark image\n\n0 = Bottom Left\n1 = Bottom Right\n2 = Top Left\n3 = Top Right\n4 = Center\n5 = Center Stretch",
                         "nullable": true,
                         "oneOf": [
                             {
@@ -10481,7 +10738,7 @@
                         "nullable": true
                     },
                     "Type": {
-                        "description": "The type of the pull zone",
+                        "description": "The type of the pull zone\n\n0 = Premium\n1 = Volume",
                         "nullable": true,
                         "oneOf": [
                             {
@@ -10612,7 +10869,7 @@
                         "nullable": true
                     },
                     "LogAnonymizationType": {
-                        "description": "Sets the log anonymization type for this pull zone",
+                        "description": "Sets the log anonymization type for this pull zone\n\n0 = One Digit\n1 = Drop",
                         "nullable": true,
                         "oneOf": [
                             {
@@ -10639,7 +10896,7 @@
                         "nullable": true
                     },
                     "EdgeScriptExecutionPhase": {
-                        "description": "The execution phase of the edge script",
+                        "description": "The execution phase of the edge script\n\n0 = Cache\n1 = Load Balancer\n2 = Pre-Cache",
                         "nullable": true,
                         "oneOf": [
                             {
@@ -10648,7 +10905,7 @@
                         ]
                     },
                     "OriginType": {
-                        "description": "Determine the type of the origin for this Pull Zone",
+                        "description": "Determine the type of the origin for this Pull Zone\n\n0 = Origin URL\n1 = DNS Accelerate\n2 = Storage Zone\n3 = Load Balancer\n4 = Edge Script\n5 = Magic Containers\n6 = Push Zone",
                         "nullable": true,
                         "oneOf": [
                             {
@@ -10665,6 +10922,7 @@
                         "nullable": true
                     },
                     "LogFormat": {
+                        "description": "0 = Plain\n1 = JSON",
                         "nullable": true,
                         "oneOf": [
                             {
@@ -10673,6 +10931,7 @@
                         ]
                     },
                     "LogForwardingFormat": {
+                        "description": "0 = Plain\n1 = JSON",
                         "nullable": true,
                         "oneOf": [
                             {
@@ -10681,6 +10940,7 @@
                         ]
                     },
                     "ShieldDDosProtectionType": {
+                        "description": "0 = Detect Only\n1 = Active Standard\n2 = Active Aggressive",
                         "nullable": true,
                         "oneOf": [
                             {
@@ -10748,7 +11008,7 @@
                         "description": "Determines if the preloading screen is shown on the first load from a user."
                     },
                     "PreloadingScreenTheme": {
-                        "description": "The currently configured preloading screem theme. (0 - Light, 1 - Dark)",
+                        "description": "The currently configured preloading screem theme. (0 - Light, 1 - Dark)\n\n0 = Light\n1 = Dark",
                         "nullable": true,
                         "oneOf": [
                             {
@@ -10778,7 +11038,7 @@
                         }
                     },
                     "StickySessionType": {
-                        "description": "Whether to use a Sticky Session mechanism for this pull zone",
+                        "description": "Whether to use a Sticky Session mechanism for this pull zone\n\n0 = Off\n1 = On",
                         "nullable": true,
                         "oneOf": [
                             {
@@ -10857,7 +11117,12 @@
                         "minLength": 1
                     },
                     "KeyType": {
-                        "$ref": "#/components/schemas/PrivateKeyType"
+                        "description": "0 = ECDSA\n1 = RSA",
+                        "oneOf": [
+                            {
+                                "$ref": "#/components/schemas/PrivateKeyType"
+                            }
+                        ]
                     }
                 }
             },
@@ -10963,7 +11228,7 @@
                         "nullable": true
                     },
                     "IpFamilyPolicy": {
-                        "description": "Address-family policy: 0=IPv4Only, 1=DualStack (default, best latency and compatibility), 2=DualStackPreferIPv6, 3=IPv6Only.",
+                        "description": "Address-family policy: 0=IPv4Only, 1=DualStack (default, best latency and compatibility), 2=DualStackPreferIPv6, 3=IPv6Only.\n\n0 = IPv4 Only\n1 = Dual Stack\n2 = Dual Stack (Prefer IPv6)\n3 = IPv6 Only",
                         "nullable": true,
                         "oneOf": [
                             {
@@ -11121,7 +11386,7 @@
                         "nullable": true
                     },
                     "PermaCacheType": {
-                        "description": "Determines Perma-Cache behavior",
+                        "description": "Determines Perma-Cache behavior\n\n0 = Automatic\n1 = Manual",
                         "maximum": 1,
                         "minimum": 0,
                         "nullable": true,
@@ -11172,7 +11437,7 @@
                         "nullable": true
                     },
                     "TlsSecurityLevel": {
-                        "description": "The minimum TLS security level enforced on this zone",
+                        "description": "The minimum TLS security level enforced on this zone\n\n0 = Legacy\n1 = Compatible\n2 = Modern Only",
                         "nullable": true,
                         "oneOf": [
                             {
@@ -11212,7 +11477,7 @@
                         "nullable": true
                     },
                     "LogForwardingProtocol": {
-                        "description": "Sets the log forwarding protocol type",
+                        "description": "Sets the log forwarding protocol type\n\n0 = UDP\n1 = TCP\n2 = TCP Encrypted\n3 = Datadog",
                         "nullable": true,
                         "oneOf": [
                             {
@@ -11349,7 +11614,7 @@
                         "nullable": true
                     },
                     "OptimizerHtmlToMarkdown": {
-                        "description": "Determines if Markdown automatic generation for AI systems is enabled and which pipeline to use",
+                        "description": "Determines if Markdown automatic generation for AI systems is enabled and which pipeline to use\n\n0 = Off\n1 = Simple\n2 = Prerendered",
                         "nullable": true,
                         "oneOf": [
                             {
@@ -11388,7 +11653,7 @@
                         "nullable": true
                     },
                     "OptimizerWatermarkPosition": {
-                        "description": "Sets the position of the watermark image",
+                        "description": "Sets the position of the watermark image\n\n0 = Bottom Left\n1 = Bottom Right\n2 = Top Left\n3 = Top Right\n4 = Center\n5 = Center Stretch",
                         "nullable": true,
                         "oneOf": [
                             {
@@ -11442,7 +11707,7 @@
                         "nullable": true
                     },
                     "Type": {
-                        "description": "The type of the pull zone",
+                        "description": "The type of the pull zone\n\n0 = Premium\n1 = Volume",
                         "nullable": true,
                         "oneOf": [
                             {
@@ -11573,7 +11838,7 @@
                         "nullable": true
                     },
                     "LogAnonymizationType": {
-                        "description": "Sets the log anonymization type for this pull zone",
+                        "description": "Sets the log anonymization type for this pull zone\n\n0 = One Digit\n1 = Drop",
                         "nullable": true,
                         "oneOf": [
                             {
@@ -11600,7 +11865,7 @@
                         "nullable": true
                     },
                     "EdgeScriptExecutionPhase": {
-                        "description": "The execution phase of the edge script",
+                        "description": "The execution phase of the edge script\n\n0 = Cache\n1 = Load Balancer\n2 = Pre-Cache",
                         "nullable": true,
                         "oneOf": [
                             {
@@ -11609,7 +11874,7 @@
                         ]
                     },
                     "OriginType": {
-                        "description": "Determine the type of the origin for this Pull Zone",
+                        "description": "Determine the type of the origin for this Pull Zone\n\n0 = Origin URL\n1 = DNS Accelerate\n2 = Storage Zone\n3 = Load Balancer\n4 = Edge Script\n5 = Magic Containers\n6 = Push Zone",
                         "nullable": true,
                         "oneOf": [
                             {
@@ -11626,6 +11891,7 @@
                         "nullable": true
                     },
                     "LogFormat": {
+                        "description": "0 = Plain\n1 = JSON",
                         "nullable": true,
                         "oneOf": [
                             {
@@ -11634,6 +11900,7 @@
                         ]
                     },
                     "LogForwardingFormat": {
+                        "description": "0 = Plain\n1 = JSON",
                         "nullable": true,
                         "oneOf": [
                             {
@@ -11642,6 +11909,7 @@
                         ]
                     },
                     "ShieldDDosProtectionType": {
+                        "description": "0 = Detect Only\n1 = Active Standard\n2 = Active Aggressive",
                         "nullable": true,
                         "oneOf": [
                             {
@@ -11709,7 +11977,7 @@
                         "description": "Determines if the preloading screen is shown on the first load from a user."
                     },
                     "PreloadingScreenTheme": {
-                        "description": "The currently configured preloading screem theme. (0 - Light, 1 - Dark)",
+                        "description": "The currently configured preloading screem theme. (0 - Light, 1 - Dark)\n\n0 = Light\n1 = Dark",
                         "nullable": true,
                         "oneOf": [
                             {
@@ -11739,7 +12007,7 @@
                         }
                     },
                     "StickySessionType": {
-                        "description": "Whether to use a Sticky Session mechanism for this pull zone",
+                        "description": "Whether to use a Sticky Session mechanism for this pull zone\n\n0 = Off\n1 = On",
                         "nullable": true,
                         "oneOf": [
                             {
@@ -12148,7 +12416,7 @@
                         "nullable": true
                     },
                     "ZoneTier": {
-                        "description": "Determines the storage zone tier that is storing the data",
+                        "description": "Determines the storage zone tier that is storing the data\n\n0 = Standard\n1 = Edge (SSD)",
                         "oneOf": [
                             {
                                 "$ref": "#/components/schemas/StorageZoneTier"
@@ -12170,7 +12438,7 @@
                         "format": "int32"
                     },
                     "StorageZoneType": {
-                        "description": "The Storage Zone S3 support type",
+                        "description": "The Storage Zone S3 support type\n\n0 = Not Supported\n1 = Supported",
                         "oneOf": [
                             {
                                 "$ref": "#/components/schemas/StorageZoneS3Type"
@@ -12181,7 +12449,7 @@
             },
             "StorageZoneTier": {
                 "type": "integer",
-                "description": "0 = Standard\n1 = Edge",
+                "description": "0 = Standard\n1 = Edge (SSD)",
                 "x-enumNames": [
                     "Standard",
                     "Edge"
@@ -12193,7 +12461,7 @@
             },
             "StorageZoneS3Type": {
                 "type": "integer",
-                "description": "0 = NotSupported\n1 = Supported",
+                "description": "0 = Not Supported\n1 = Supported",
                 "x-enumNames": [
                     "NotSupported",
                     "Supported"
@@ -12231,7 +12499,7 @@
                         }
                     },
                     "ZoneTier": {
-                        "description": "Determines the storage zone tier that will be storing the data",
+                        "description": "Determines the storage zone tier that will be storing the data\n\n0 = Standard\n1 = Edge (SSD)",
                         "oneOf": [
                             {
                                 "$ref": "#/components/schemas/StorageZoneTier"
@@ -12239,7 +12507,7 @@
                         ]
                     },
                     "StorageZoneType": {
-                        "description": "The Storage Zone S3 support type",
+                        "description": "The Storage Zone S3 support type\n\n0 = Not Supported\n1 = Supported",
                         "oneOf": [
                             {
                                 "$ref": "#/components/schemas/StorageZoneS3Type"
@@ -12420,7 +12688,7 @@
                     },
                     "AllowEarlyPlay": {
                         "type": "boolean",
-                        "description": "Determines if the Early-Play feature is enabled",
+                        "description": "Determines if the Early-Play feature is enabled. Always false while EnableDRM is true.",
                         "nullable": true
                     },
                     "PlayerTokenAuthenticationEnabled": {
@@ -12461,10 +12729,10 @@
                     },
                     "EnableDRM": {
                         "type": "boolean",
-                        "description": "Determines if the DRM is enabled"
+                        "description": "Determines if MediaCage DRM is enabled. While true, AllowEarlyPlay and ExposeOriginals are always false."
                     },
                     "DrmVersion": {
-                        "description": "DRM version (basic or enterprise)",
+                        "description": "DRM version (basic or enterprise)\n\n0 = Basic\n1 = Enterprise\n2 = Basic V2",
                         "oneOf": [
                             {
                                 "$ref": "#/components/schemas/DrmVersion"
@@ -12539,7 +12807,7 @@
                         "description": "Determines if content tagging should be enabled for this library."
                     },
                     "PullZoneType": {
-                        "description": "The type of the pull zone attached",
+                        "description": "The type of the pull zone attached\n\n0 = Premium\n1 = Volume",
                         "oneOf": [
                             {
                                 "$ref": "#/components/schemas/PullZoneType"
@@ -12553,7 +12821,7 @@
                     },
                     "Controls": {
                         "type": "string",
-                        "description": "The list of controls on the video player.",
+                        "description": "The comma-separated list of controls displayed in the video player. Possible values: play-large, play, progress, current-time, duration, mute, volume, captions, settings, pip, airplay, fullscreen, rewind, fast-forward, and chromecast. Empty when all player UI controls are removed.",
                         "nullable": true
                     },
                     "PlaybackSpeeds": {
@@ -12625,7 +12893,7 @@
                         "description": "Determines whether JIT encoding should be used for the library. Supported in premium encoding only."
                     },
                     "EncodingTier": {
-                        "description": "Defines encoding tier to be used with video library. premium is a paid tier that offers either JIT encoding or prioritized encoding and extra codec support.",
+                        "description": "Defines encoding tier to be used with video library. premium is a paid tier that offers either JIT encoding or prioritized encoding and extra codec support.\n\n0 = Free\n1 = Premium",
                         "oneOf": [
                             {
                                 "$ref": "#/components/schemas/EncodingTier"
@@ -12689,7 +12957,7 @@
                     },
                     "ExposeOriginals": {
                         "type": "boolean",
-                        "description": "Marks whether original video files should be exposed via CDN."
+                        "description": "Marks whether original video files are exposed via CDN. Always false while EnableDRM is true; original files are not protected by DRM."
                     },
                     "ExposeVideoMetadata": {
                         "type": "boolean",
@@ -12712,7 +12980,7 @@
             },
             "DrmVersion": {
                 "type": "integer",
-                "description": "0 = Basic\n1 = Enterprise\n2 = BasicV2",
+                "description": "0 = Basic\n1 = Enterprise\n2 = Basic V2",
                 "x-enumNames": [
                     "Basic",
                     "Enterprise",
@@ -12772,6 +13040,7 @@
                         "type": "boolean"
                     },
                     "MinClientSecurityLevel": {
+                        "description": "0 = None\n1 = L1\n2 = L2\n3 = L3",
                         "nullable": true,
                         "oneOf": [
                             {
@@ -12862,7 +13131,7 @@
                         "nullable": true
                     },
                     "EncodingTier": {
-                        "description": "(Optional) Defines encoding tier. Premium is a paid tier that offers prioritized encoding and extra codec support.",
+                        "description": "(Optional) Defines encoding tier. Premium is a paid tier that offers prioritized encoding and extra codec support.\n\n0 = Free\n1 = Premium",
                         "nullable": true,
                         "oneOf": [
                             {
@@ -13113,7 +13382,7 @@
                     },
                     "AllowEarlyPlay": {
                         "type": "boolean",
-                        "description": "(Optional) Determines if the Early-Play feature should be enabled. Enabling this will enable Expose Originals.",
+                        "description": "(Optional) Determines if the Early-Play feature should be enabled. Setting it to true also sets ExposeOriginals to true. Cannot be true while EnableDRM is true, and EnableDRM cannot be set to true while this is true, because Early Play serves the original file, which is not protected by DRM.",
                         "nullable": true
                     },
                     "PlayerTokenAuthenticationEnabled": {
@@ -13143,11 +13412,11 @@
                     },
                     "EnableDRM": {
                         "type": "boolean",
-                        "description": "(Optional) Determines if MediaCage DRM should be enabled for this library",
+                        "description": "(Optional) Determines if MediaCage DRM should be enabled for this library. Cannot be set to true while AllowEarlyPlay or ExposeOriginals is true; set them to false first or in the same request, because original files are not protected by DRM.",
                         "nullable": true
                     },
                     "DrmVersion": {
-                        "description": "(Optional) Determines MediaCage DRM version to be used for this library",
+                        "description": "(Optional) Determines MediaCage DRM version to be used for this library\n\n0 = Basic\n1 = Enterprise\n2 = Basic V2",
                         "nullable": true,
                         "oneOf": [
                             {
@@ -13157,7 +13426,7 @@
                     },
                     "Controls": {
                         "type": "string",
-                        "description": "(Optional) The comma separated list of controls that will be displayed in the video player. Possible values: play-large, play, progress, current-time, mute, volume, captions, settings, pip, airplay, fullscreen.",
+                        "description": "(Optional) A comma-separated list of controls to display in the video player. Possible values: play-large, play, progress, current-time, duration, mute, volume, captions, settings, pip, airplay, fullscreen, rewind, fast-forward, and chromecast. Set Controls to 0 to remove all player UI controls.",
                         "nullable": true
                     },
                     "PlaybackSpeeds": {
@@ -13281,7 +13550,7 @@
                         "nullable": true
                     },
                     "EncodingTier": {
-                        "description": "(Optional) Defines encoding tier to be used with video library. premium is a paid tier that offers either JIT encoding or prioritized encoding and extra codec support.",
+                        "description": "(Optional) Defines encoding tier to be used with video library. premium is a paid tier that offers either JIT encoding or prioritized encoding and extra codec support.\n\n0 = Free\n1 = Premium",
                         "nullable": true,
                         "oneOf": [
                             {
@@ -13330,7 +13599,7 @@
                     },
                     "ExposeOriginals": {
                         "type": "boolean",
-                        "description": "(Optional) Marks whether original video files should be exposed via CDN. Originals are not protected by DRM. Enabling Early-Play will enable this.",
+                        "description": "(Optional) Marks whether original video files should be exposed via CDN. Original files are not protected by DRM, so this cannot be true while EnableDRM is true, and EnableDRM cannot be set to true while this is true. Setting AllowEarlyPlay to true sets this to true.",
                         "nullable": true
                     },
                     "ExposeVideoMetadata": {
@@ -13380,7 +13649,7 @@
                         "nullable": true
                     },
                     "MinClientSecurityLevel": {
-                        "description": "(Optional) Minimum Client Security Level (1 being most secure, 3 least secure and is default)",
+                        "description": "(Optional) Minimum Client Security Level (1 being most secure, 3 least secure and is default)\n\n0 = None\n1 = L1\n2 = L2\n3 = L3",
                         "nullable": true,
                         "oneOf": [
                             {
@@ -14021,7 +14290,12 @@
                 "additionalProperties": false,
                 "properties": {
                     "PricingType": {
-                        "$ref": "#/components/schemas/AppliedPricingType"
+                        "description": "0 = List Price\n1 = User Override\n2 = Resource Override",
+                        "oneOf": [
+                            {
+                                "$ref": "#/components/schemas/AppliedPricingType"
+                            }
+                        ]
                     },
                     "PricePerUnit": {
                         "type": "number",
@@ -14047,7 +14321,7 @@
             },
             "AppliedPricingType": {
                 "type": "integer",
-                "description": "0 = ListPrice\n1 = UserOverride\n2 = ResourceOverride",
+                "description": "0 = List Price\n1 = User Override\n2 = Resource Override",
                 "x-enumNames": [
                     "ListPrice",
                     "UserOverride",
@@ -14083,7 +14357,7 @@
             },
             "PricingEstimationSource": {
                 "type": "integer",
-                "description": "1101 = CDN_Standard_Tier_EU_Traffic\n1102 = CDN_Standard_Tier_NA_Traffic\n1103 = CDN_Standard_Tier_APAC_Traffic\n1104 = CDN_Standard_Tier_AF_Traffic\n1105 = CDN_Standard_Tier_SA_Traffic\n1106 = CDN_Standard_Tier_Uncategorized\n1201 = CDN_Standard_Tier_Stream_EU_Traffic\n1202 = CDN_Standard_Tier_Stream_NA_Traffic\n1203 = CDN_Standard_Tier_Stream_APAC_Traffic\n1204 = CDN_Standard_Tier_Stream_AF_Traffic\n1205 = CDN_Standard_Tier_Stream_SA_Traffic\n1206 = CDN_Standard_Tier_Stream_Uncategorized\n1301 = CDN_Volume_Tier_EU_Traffic\n1302 = CDN_Volume_Tier_NA_Traffic\n1303 = CDN_Volume_Tier_APAC_Traffic\n1304 = CDN_Volume_Tier_AF_Traffic\n1305 = CDN_Volume_Tier_SA_Traffic\n1306 = CDN_Volume_Tier_Uncategorized\n1401 = CDN_Volume_Tier_Stream_EU_Traffic\n1402 = CDN_Volume_Tier_Stream_NA_Traffic\n1403 = CDN_Volume_Tier_Stream_APAC_Traffic\n1404 = CDN_Volume_Tier_Stream_AF_Traffic\n1405 = CDN_Volume_Tier_Stream_SA_Traffic\n1406 = CDN_Volume_Tier_Stream_Uncategorized\n1501 = CDN_Standard_Tier_Storage_EU_Traffic\n1502 = CDN_Standard_Tier_Storage_NA_Traffic\n1503 = CDN_Standard_Tier_Storage_APAC_Traffic\n1504 = CDN_Standard_Tier_Storage_AF_Traffic\n1505 = CDN_Standard_Tier_Storage_SA_Traffic\n1506 = CDN_Standard_Tier_Storage_Uncategorized\n1511 = CDN_Volume_Tier_Storage_EU_Traffic\n1512 = CDN_Volume_Tier_Storage_NA_Traffic\n1513 = CDN_Volume_Tier_Storage_APAC_Traffic\n1514 = CDN_Volume_Tier_Storage_AF_Traffic\n1515 = CDN_Volume_Tier_Storage_SA_Traffic\n1516 = CDN_Volume_Tier_Storage_Uncategorized\n1630 = CDN_WebSockets_ConsumptionBased\n1701 = CDN_Standard_Tier_MagicContainers_EU_Traffic\n1702 = CDN_Standard_Tier_MagicContainers_NA_Traffic\n1703 = CDN_Standard_Tier_MagicContainers_APAC_Traffic\n1704 = CDN_Standard_Tier_MagicContainers_AF_Traffic\n1705 = CDN_Standard_Tier_MagicContainers_SA_Traffic\n1706 = CDN_Standard_Tier_MagicContainers_Uncategorized\n1711 = CDN_Volume_Tier_MagicContainers_EU_Traffic\n1712 = CDN_Volume_Tier_MagicContainers_NA_Traffic\n1713 = CDN_Volume_Tier_MagicContainers_APAC_Traffic\n1714 = CDN_Volume_Tier_MagicContainers_AF_Traffic\n1715 = CDN_Volume_Tier_MagicContainers_SA_Traffic\n1716 = CDN_Volume_Tier_MagicContainers_Uncategorized\n1801 = CDN_Standard_Tier_Scripting_EU_Traffic\n1802 = CDN_Standard_Tier_Scripting_NA_Traffic\n1803 = CDN_Standard_Tier_Scripting_APAC_Traffic\n1804 = CDN_Standard_Tier_Scripting_AF_Traffic\n1805 = CDN_Standard_Tier_Scripting_SA_Traffic\n1806 = CDN_Standard_Tier_Scripting_Uncategorized\n1811 = CDN_Volume_Tier_Scripting_EU_Traffic\n1812 = CDN_Volume_Tier_Scripting_NA_Traffic\n1813 = CDN_Volume_Tier_Scripting_APAC_Traffic\n1814 = CDN_Volume_Tier_Scripting_AF_Traffic\n1815 = CDN_Volume_Tier_Scripting_SA_Traffic\n1816 = CDN_Volume_Tier_Scripting_Uncategorized\n2100 = Storage_Standard_Tier\n2200 = Storage_SSD_Tier\n2300 = Storage_Standard_Tier_Stream\n2400 = Storage_SSD_Tier_Stream\n4100 = Transcribing\n4200 = PremiumEncoding\n4300 = DRM_Base\n4400 = DRM_LicenseIssued\n4501 = LiveEncoding_SD\n4502 = LiveEncoding_HD\n4503 = LiveEncoding_4K\n5200 = Scripting_CDN_Requests\n5300 = Scripting_CDN_CPU",
+                "description": "1101 = CDN Standard Tier - Europe Traffic\n1102 = CDN Standard Tier - North America Traffic\n1103 = CDN Standard Tier - Asia & Oceania Traffic\n1104 = CDN Standard Tier - Middle East & Africa Traffic\n1105 = CDN Standard Tier - South America Traffic\n1106 = CDN Standard Tier - Uncategorized Traffic\n1201 = CDN Standard Tier (Stream) - Europe Traffic\n1202 = CDN Standard Tier (Stream) - North America Traffic\n1203 = CDN Standard Tier (Stream) - Asia & Oceania Traffic\n1204 = CDN Standard Tier (Stream) - Middle East & Africa Traffic\n1205 = CDN Standard Tier (Stream) - South America Traffic\n1206 = CDN Standard Tier (Stream) - Uncategorized Traffic\n1301 = CDN Volume Tier - Europe Traffic\n1302 = CDN Volume Tier - North America Traffic\n1303 = CDN Volume Tier - Asia & Oceania Traffic\n1304 = CDN Volume Tier - Middle East & Africa Traffic\n1305 = CDN Volume Tier - South America Traffic\n1306 = CDN Volume Tier - Uncategorized Traffic\n1401 = CDN Volume Tier (Stream) - Europe Traffic\n1402 = CDN Volume Tier (Stream) - North America Traffic\n1403 = CDN Volume Tier (Stream) - Asia & Oceania Traffic\n1404 = CDN Volume Tier (Stream) - Middle East & Africa Traffic\n1405 = CDN Volume Tier (Stream) - South America Traffic\n1406 = CDN Volume Tier (Stream) - Uncategorized Traffic\n1501 = CDN Standard Tier (Storage) - Europe Traffic\n1502 = CDN Standard Tier (Storage) - North America Traffic\n1503 = CDN Standard Tier (Storage) - Asia & Oceania Traffic\n1504 = CDN Standard Tier (Storage) - Middle East & Africa Traffic\n1505 = CDN Standard Tier (Storage) - South America Traffic\n1506 = CDN Standard Tier (Storage) - Uncategorized Traffic\n1511 = CDN Volume Tier (Storage) - Europe Traffic\n1512 = CDN Volume Tier (Storage) - North America Traffic\n1513 = CDN Volume Tier (Storage) - Asia & Oceania Traffic\n1514 = CDN Volume Tier (Storage) - Middle East & Africa Traffic\n1515 = CDN Volume Tier (Storage) - South America Traffic\n1516 = CDN Volume Tier (Storage) - Uncategorized Traffic\n1630 = CDN WebSockets (Consumption Based)\n1701 = CDN Standard Tier (Magic Containers) - Europe Traffic\n1702 = CDN Standard Tier (Magic Containers) - North America Traffic\n1703 = CDN Standard Tier (Magic Containers) - Asia & Oceania Traffic\n1704 = CDN Standard Tier (Magic Containers) - Middle East & Africa Traffic\n1705 = CDN Standard Tier (Magic Containers) - South America Traffic\n1706 = CDN Standard Tier (Magic Containers) - Uncategorized Traffic\n1711 = CDN Volume Tier (Magic Containers) - Europe Traffic\n1712 = CDN Volume Tier (Magic Containers) - North America Traffic\n1713 = CDN Volume Tier (Magic Containers) - Asia & Oceania Traffic\n1714 = CDN Volume Tier (Magic Containers) - Middle East & Africa Traffic\n1715 = CDN Volume Tier (Magic Containers) - South America Traffic\n1716 = CDN Volume Tier (Magic Containers) - Uncategorized Traffic\n1801 = CDN Standard Tier (Edge Scripting) - Europe Traffic\n1802 = CDN Standard Tier (Edge Scripting) - North America Traffic\n1803 = CDN Standard Tier (Edge Scripting) - Asia & Oceania Traffic\n1804 = CDN Standard Tier (Edge Scripting) - Middle East & Africa Traffic\n1805 = CDN Standard Tier (Edge Scripting) - South America Traffic\n1806 = CDN Standard Tier (Edge Scripting) - Uncategorized Traffic\n1811 = CDN Volume Tier (Edge Scripting) - Europe Traffic\n1812 = CDN Volume Tier (Edge Scripting) - North America Traffic\n1813 = CDN Volume Tier (Edge Scripting) - Asia & Oceania Traffic\n1814 = CDN Volume Tier (Edge Scripting) - Middle East & Africa Traffic\n1815 = CDN Volume Tier (Edge Scripting) - South America Traffic\n1816 = CDN Volume Tier (Edge Scripting) - Uncategorized Traffic\n2100 = Storage Standard Tier\n2200 = Storage SSD Tier\n2300 = Storage Standard Tier (Stream)\n2400 = Storage SSD Tier (Stream)\n4100 = Transcribing\n4200 = Premium Encoding\n4300 = DRM Base\n4400 = DRM License Issued\n4501 = Live Encoding SD\n4502 = Live Encoding HD\n4503 = Live Encoding 4K\n5200 = Edge Scripting CDN Requests\n5300 = Edge Scripting CDN CPU",
                 "x-enumNames": [
                     "CDN_Standard_Tier_EU_Traffic",
                     "CDN_Standard_Tier_NA_Traffic",
@@ -14261,7 +14535,7 @@
                         "description": "Whether traffic should route to this origin"
                     },
                     "HealthStatus": {
-                        "description": "Current health status of the origin",
+                        "description": "Current health status of the origin\n\n0 = Healthy\n1 = Degraded",
                         "oneOf": [
                             {
                                 "$ref": "#/components/schemas/HealthStatus"
@@ -14269,7 +14543,7 @@
                         ]
                     },
                     "OriginType": {
-                        "description": "The type of origin to connect to. Magic Container origins must be CDN endpoints; Anycast endpoints are not supported, use a Standard origin for those",
+                        "description": "The type of origin to connect to. Magic Container origins must be CDN endpoints; Anycast endpoints are not supported, use a Standard origin for those\n\n0 = Standard\n1 = Storage Zone\n2 = Edge Script\n3 = Magic Container",
                         "oneOf": [
                             {
                                 "$ref": "#/components/schemas/OriginType"
@@ -14322,7 +14596,7 @@
             },
             "OriginType": {
                 "type": "integer",
-                "description": "0 = Standard\n1 = Storage\n2 = EdgeScript\n3 = MagicContainer",
+                "description": "0 = Standard\n1 = Storage Zone\n2 = Edge Script\n3 = Magic Container",
                 "x-enumNames": [
                     "Standard",
                     "Storage",
@@ -14394,7 +14668,7 @@
                         "nullable": true
                     },
                     "OriginType": {
-                        "description": "The type of origin to connect to. Magic Container origins must be CDN endpoints; Anycast endpoints are not supported, use a Standard origin for those",
+                        "description": "The type of origin to connect to. Magic Container origins must be CDN endpoints; Anycast endpoints are not supported, use a Standard origin for those\n\n0 = Standard\n1 = Storage Zone\n2 = Edge Script\n3 = Magic Container",
                         "nullable": true,
                         "oneOf": [
                             {
@@ -14473,7 +14747,7 @@
                         "format": "byte"
                     },
                     "OriginLoadBalancingMethod": {
-                        "description": "The load balancing method used for selecting origins within the group",
+                        "description": "The load balancing method used for selecting origins within the group\n\n0 = Round Robin\n1 = Weighted Random\n2 = Least Connections\n3 = Latency",
                         "oneOf": [
                             {
                                 "$ref": "#/components/schemas/OriginLoadBalancingMethod"
@@ -14501,7 +14775,7 @@
             },
             "OriginLoadBalancingMethod": {
                 "type": "integer",
-                "description": "0 = RoundRobin\n1 = WeightedRandom\n2 = LeastConnections\n3 = Latency",
+                "description": "0 = Round Robin\n1 = Weighted Random\n2 = Least Connections\n3 = Latency",
                 "x-enumNames": [
                     "RoundRobin",
                     "WeightedRandom",
@@ -14555,7 +14829,7 @@
                         ]
                     },
                     "OriginLoadBalancingMethod": {
-                        "description": "The load balancing method used for selecting origins within the group",
+                        "description": "The load balancing method used for selecting origins within the group\n\n0 = Round Robin\n1 = Weighted Random\n2 = Least Connections\n3 = Latency",
                         "nullable": true,
                         "oneOf": [
                             {
@@ -14604,7 +14878,7 @@
                         "nullable": true
                     },
                     "OriginGroupLoadBalancingMethod": {
-                        "description": "The load balancing method used for selecting origin groups",
+                        "description": "The load balancing method used for selecting origin groups\n\n0 = Weighted Random\n1 = Round Robin\n2 = Geolocation\n3 = Lowest Average Latency",
                         "oneOf": [
                             {
                                 "$ref": "#/components/schemas/OriginGroupLoadBalancingMethod"
@@ -14612,7 +14886,7 @@
                         ]
                     },
                     "StickySessionType": {
-                        "description": "The sticky session type used for persisting client sessions",
+                        "description": "The sticky session type used for persisting client sessions\n\n0 = Off\n1 = Cookie",
                         "oneOf": [
                             {
                                 "$ref": "#/components/schemas/LoadBalancerStickySessionType"
@@ -14631,7 +14905,7 @@
             },
             "OriginGroupLoadBalancingMethod": {
                 "type": "integer",
-                "description": "0 = WeightedRandom\n1 = RoundRobin\n2 = GeoLocation\n3 = LowestAverageLatency",
+                "description": "0 = Weighted Random\n1 = Round Robin\n2 = Geolocation\n3 = Lowest Average Latency",
                 "x-enumNames": [
                     "WeightedRandom",
                     "RoundRobin",
@@ -14667,7 +14941,7 @@
                         "nullable": true
                     },
                     "StickySessionType": {
-                        "description": "The sticky session type to use for persisting client to an origin",
+                        "description": "The sticky session type to use for persisting client to an origin\n\n0 = Off\n1 = Cookie",
                         "nullable": true,
                         "oneOf": [
                             {
@@ -14676,7 +14950,7 @@
                         ]
                     },
                     "OriginGroupLoadBalancingMethod": {
-                        "description": "The load balancing method used for selecting origin groups",
+                        "description": "The load balancing method used for selecting origin groups\n\n0 = Weighted Random\n1 = Round Robin\n2 = Geolocation\n3 = Lowest Average Latency",
                         "nullable": true,
                         "oneOf": [
                             {
@@ -15004,7 +15278,12 @@
                         "nullable": true
                     },
                     "Status": {
-                        "$ref": "#/components/schemas/DnsZoneScanJobStatus"
+                        "description": "0 = Pending\n1 = In Progress\n2 = Completed\n3 = Failed",
+                        "oneOf": [
+                            {
+                                "$ref": "#/components/schemas/DnsZoneScanJobStatus"
+                            }
+                        ]
                     },
                     "CreatedAt": {
                         "type": "string",
@@ -15030,7 +15309,7 @@
             },
             "DnsZoneScanJobStatus": {
                 "type": "integer",
-                "description": "0 = Pending\n1 = InProgress\n2 = Completed\n3 = Failed",
+                "description": "0 = Pending\n1 = In Progress\n2 = Completed\n3 = Failed",
                 "x-enumNames": [
                     "Pending",
                     "InProgress",
@@ -15054,6 +15333,7 @@
                         "nullable": true
                     },
                     "Type": {
+                        "description": "<details>\n<summary>Show all 13 values</summary>\n\n| Value | Name |\n|---|---|\n| `0` | A |\n| `1` | AAAA |\n| `2` | CNAME |\n| `3` | TXT |\n| `4` | MX |\n| `8` | SRV |\n| `9` | CAA |\n| `10` | PTR |\n| `12` | NS |\n| `13` | SVCB |\n| `14` | HTTPS |\n| `15` | TLSA |\n| `16` | SOA |\n\n</details>",
                         "nullable": true,
                         "oneOf": [
                             {
@@ -15092,7 +15372,7 @@
             },
             "DnsZoneDiscoveredRecordType": {
                 "type": "integer",
-                "description": "0 = A\n1 = AAAA\n2 = CNAME\n3 = TXT\n4 = MX\n8 = SRV\n9 = CAA\n10 = PTR\n12 = NS\n13 = Svcb\n14 = HTTPS\n15 = TLSA\n16 = SOA",
+                "description": "0 = A\n1 = AAAA\n2 = CNAME\n3 = TXT\n4 = MX\n8 = SRV\n9 = CAA\n10 = PTR\n12 = NS\n13 = SVCB\n14 = HTTPS\n15 = TLSA\n16 = SOA",
                 "x-enumNames": [
                     "A",
                     "AAAA",
@@ -15215,7 +15495,12 @@
                         "format": "guid"
                     },
                     "Status": {
-                        "$ref": "#/components/schemas/DnsZoneScanJobStatus"
+                        "description": "0 = Pending\n1 = In Progress\n2 = Completed\n3 = Failed",
+                        "oneOf": [
+                            {
+                                "$ref": "#/components/schemas/DnsZoneScanJobStatus"
+                            }
+                        ]
                     }
                 }
             },
@@ -15707,7 +15992,7 @@
                         "format": "date-time"
                     },
                     "Type": {
-                        "description": "The type of the billing record",
+                        "description": "The type of the billing record\n\n0 = PayPal\n1 = Crypto\n2 = Credit Card\n3 = Monthly Usage\n4 = Refund\n5 = Coupon Code\n6 = Bank Transfer\n7 = Affiliate Credits",
                         "oneOf": [
                             {
                                 "$ref": "#/components/schemas/BillingRecordType"
@@ -15732,7 +16017,7 @@
             },
             "BillingRecordType": {
                 "type": "integer",
-                "description": "0 = PayPal\n1 = Crypto\n2 = CreditCard\n3 = MonthlyUsage\n4 = Refund\n5 = CouponCode\n6 = BankTransfer\n7 = AffiliateCredits",
+                "description": "0 = PayPal\n1 = Crypto\n2 = Credit Card\n3 = Monthly Usage\n4 = Refund\n5 = Coupon Code\n6 = Bank Transfer\n7 = Affiliate Credits",
                 "x-enumNames": [
                     "PayPal",
                     "Crypto",
