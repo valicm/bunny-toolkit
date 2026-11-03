@@ -45,7 +45,7 @@ final class DnsZone
      * @param int|null $page
      * @param int|null $perPage
      * @param string|null $search The search term that will be used to filter the results
-     * @param value-of<\Valicm\BunnyToolkit\Api\Core\Enum\DnsViewType>|null $view
+     * @param value-of<\Valicm\BunnyToolkit\Api\Core\Enum\DnsViewType>|null $view 0 = Full 1 = Lite
      * @return PaginationListModelOfDnsZoneModel
      *
      * @throws ApiException When Bunny answers with an error status.
@@ -80,7 +80,7 @@ final class DnsZone
      * `GET /dnszone/{id}`
      *
      * @param int $id The ID of the DNS Zone that will be returned
-     * @param value-of<\Valicm\BunnyToolkit\Api\Core\Enum\DnsViewType>|null $view
+     * @param value-of<\Valicm\BunnyToolkit\Api\Core\Enum\DnsViewType>|null $view 0 = Full 1 = Lite
      * @return DnsZoneModel
      *
      * @throws ApiException When Bunny answers with an error status.
@@ -167,7 +167,7 @@ final class DnsZone
      * @param int $zoneId The ID of the DNS Zone
      * @param int|null $page
      * @param int|null $perPage
-     * @param value-of<\Valicm\BunnyToolkit\Api\Core\Enum\DnsRecordTypes2>|null $type The type of DNS Record
+     * @param value-of<\Valicm\BunnyToolkit\Api\Core\Enum\DnsRecordTypes2>|null $type The type of DNS Record Show all 16 values | Value | Name | |---|---| | `0` | A | | `1` | AAAA | | `2` | CNAME | | `3` | TXT | | `4` | MX | | `5` | Redirect | | `6` | Flatten | | `7` | Pull Zone | | `8` | SRV | | `9` | CAA | | `10` | PTR | | `11` | Script | | `12` | NS | | `13` | SVCB | | `14` | HTTPS | | `15` | TLSA |
      * @param string|null $search
      * @return PaginationListModelOfDnsRecordModel
      *

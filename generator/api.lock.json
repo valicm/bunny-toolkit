@@ -820,6 +820,13 @@
                 },
                 "returns": "void"
             },
+            "POST /videolibrary/{id}/live/resetAutoCreateStreamKey": {
+                "method": "StreamVideoLibrary::resetLiveAutoCreateStreamKey",
+                "params": {
+                    "path:id": "int $id"
+                },
+                "returns": "void"
+            },
             "POST /videolibrary/{id}/removeAllowedReferrer": {
                 "method": "StreamVideoLibrary::removeAllowedReferer",
                 "params": {
@@ -845,6 +852,13 @@
             },
             "POST /videolibrary/{id}/resetReadOnlyApiKey": {
                 "method": "StreamVideoLibrary::resetReadOnlyApiKey",
+                "params": {
+                    "path:id": "int $id"
+                },
+                "returns": "void"
+            },
+            "POST /videolibrary/{id}/resetWebhookSigningSecret": {
+                "method": "StreamVideoLibrary::resetWebhookSigningSecret",
                 "params": {
                     "path:id": "int $id"
                 },
@@ -1952,6 +1966,17 @@
                     "query:granularity": "string $granularity",
                     "query:toDate": "?string $toDate = null"
                 },
+                "returns": "mixed",
+                "deprecated": true
+            },
+            "GET /apps/{appId}/statistics/charts": {
+                "method": "Applications::getApplicationStatisticsCharts",
+                "params": {
+                    "path:appId": "string $appId",
+                    "query:fromDate": "string $fromDate",
+                    "query:granularity": "string $granularity",
+                    "query:toDate": "?string $toDate = null"
+                },
                 "returns": "mixed"
             },
             "GET /apps/{appId}/summary": {
@@ -2002,14 +2027,18 @@
                 "method": "Regions::listRegions",
                 "params": {
                     "query:nextCursor": "?string $nextCursor = null",
-                    "query:limit": "?int $limit = null"
+                    "query:limit": "?int $limit = null",
+                    "query:gpuType": "?string $gpuType = null",
+                    "query:gpuCount": "?int $gpuCount = null"
                 },
                 "returns": "mixed"
             },
             "GET /regions/optimal": {
                 "method": "Regions::getOptimalBaseRegion",
                 "params": {
-                    "query:cdnServerToken": "?string $cdnServerToken = null"
+                    "query:cdnServerToken": "?string $cdnServerToken = null",
+                    "query:gpuType": "?string $gpuType = null",
+                    "query:gpuCount": "?int $gpuCount = null"
                 },
                 "returns": "mixed"
             },
@@ -2279,6 +2308,16 @@
                 "Anycast": "anycast",
                 "PublicIp": "publicIp"
             },
+            "EnvironmentVariableSuggestionSource": {
+                "Image": "image",
+                "Documentation": "documentation"
+            },
+            "FindContainerImageRegistryStatus": {
+                "Found": "found",
+                "NotFound": "notFound",
+                "Unauthorized": "unauthorized",
+                "Unavailable": "unavailable"
+            },
             "Grade": {
                 "CouldBeBetter": "couldBeBetter",
                 "NotBad": "notBad",
@@ -2374,7 +2413,8 @@
             "RegistryType": {
                 "DockerHub": "dockerHub",
                 "GitHub": "gitHub",
-                "BunnyRegistry": "bunnyRegistry"
+                "BunnyRegistry": "bunnyRegistry",
+                "Oci": "oci"
             },
             "RemoveContainerRegistryResponseStatus": {
                 "NotFound": "notFound",
@@ -2682,9 +2722,12 @@
             },
             "PartnerContractBillingType": {
                 "PayAsYouGo": 1,
+                "PostPaidPayAsYouGo": 2,
                 "PostPaid": 2
             },
             "PartnerCustomerContractCurrency": {
+                "Usd": 0,
+                "Eur": 1,
                 "UsDollar": 0,
                 "Euro": 1
             },
@@ -2694,11 +2737,24 @@
                 "Dns": 3,
                 "MagicContainers": 4,
                 "Optimizer": 5,
-                "EdgeScripting": 6,
+                "Scripting": 6,
                 "Shield": 7,
                 "Storage": 8,
-                "Stream": 9
+                "Stream": 9,
+                "EdgeScripting": 6
             }
+        },
+        "deprecatedEnumCases": {
+            "PartnerContractBillingType": [
+                "PostPaid"
+            ],
+            "PartnerCustomerContractCurrency": [
+                "UsDollar",
+                "Euro"
+            ],
+            "PartnerCustomerProductType": [
+                "EdgeScripting"
+            ]
         }
     },
     "Shield": {

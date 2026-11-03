@@ -108,7 +108,7 @@ final class EdgeScript
      *
      * `GET /compute/script`
      *
-     * @param list<value-of<\Valicm\BunnyToolkit\Api\EdgeScripting\Enum\EdgeScriptTypes2>>|null $type Filter by edge script type
+     * @param list<value-of<\Valicm\BunnyToolkit\Api\EdgeScripting\Enum\EdgeScriptTypes2>>|null $type Filter by edge script type 0 = DNS 1 = CDN 2 = Middleware
      * @param int|null $page
      * @param int|null $perPage
      * @param string|null $search The search term that will be used to filter the results

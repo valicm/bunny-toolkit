@@ -9,7 +9,7 @@
             "url": "https://docs.bunny.net",
             "email": "support@bunny.net"
         },
-        "version": "1.6.12"
+        "version": "1.6.18"
     },
     "servers": [
         {
@@ -1172,7 +1172,7 @@
                     "Manage Videos"
                 ],
                 "summary": "Get Video play data",
-                "description": "Returns playback URLs and metadata for the video. For libraries with token authentication enabled, token and expires must be a valid signed pair or the request is rejected.",
+                "description": "Returns playback URLs and metadata for the video. For libraries with token authentication enabled, token and expires must be a valid signed pair or the request is rejected. If the library also has CDN token authentication enabled, the returned CDN URLs are signed.",
                 "operationId": "Video_GetVideoPlayData",
                 "parameters": [
                     {
@@ -3837,6 +3837,14 @@
                         "description": "Marks that captions generation failed",
                         "enum": [
                             11
+                        ]
+                    },
+                    {
+                        "title": "UnsupportedFileType",
+                        "type": "integer",
+                        "description": "Marks that the uploaded or fetched file is not video or audio, for example a photo or a document",
+                        "enum": [
+                            12
                         ]
                     }
                 ]

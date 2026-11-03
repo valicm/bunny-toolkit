@@ -14,4 +14,5 @@ enum RegistryType: string
     case DockerHub = 'dockerHub';
     case GitHub = 'gitHub';
     case BunnyRegistry = 'bunnyRegistry';
+    case Oci = 'oci';
 }

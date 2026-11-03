@@ -16,8 +16,12 @@ enum PartnerCustomerProductType: int
     case Dns = 3;
     case MagicContainers = 4;
     case Optimizer = 5;
-    case EdgeScripting = 6;
+    case Scripting = 6;
     case Shield = 7;
     case Storage = 8;
     case Stream = 9;
+    /**
+     * @deprecated Removed from the bunny.net spec; use Scripting instead. Kept until the next major version.
+     */
+    public const EdgeScripting = self::Scripting;
 }

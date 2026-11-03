@@ -20,6 +20,7 @@ use Valicm\BunnyToolkit\Http\ApiException;
  * @phpstan-import-type Overview from \Valicm\BunnyToolkit\Api\MagicContainers\Types
  * @phpstan-import-type PatchApplicationRequest from \Valicm\BunnyToolkit\Api\MagicContainers\Types
  * @phpstan-import-type Statistics from \Valicm\BunnyToolkit\Api\MagicContainers\Types
+ * @phpstan-import-type StatisticsCharts from \Valicm\BunnyToolkit\Api\MagicContainers\Types
  * @phpstan-import-type UsageSummary from \Valicm\BunnyToolkit\Api\MagicContainers\Types
  */
 final class Applications
@@ -77,11 +78,37 @@ final class Applications
      *
      * @throws ApiException When Bunny answers with an error status.
      * @throws ClientExceptionInterface When the request cannot be sent.
+     *
+     * @deprecated Marked deprecated in the bunny.net spec.
      */
     public function getApplicationStatistics(string $appId, string $fromDate, string $granularity, ?string $toDate = null): mixed
     {
         /** @var Statistics $data */
         $data = $this->client->json('GET', $this->client->path('/apps/{appId}/statistics', ['appId' => $appId]), query: ['fromDate' => $fromDate, 'toDate' => $toDate, 'granularity' => $granularity]);
+
+        return $data;
+    }
+
+    /**
+     * Get Application Statistics Charts
+     *
+     * `GET /apps/{appId}/statistics/charts`
+     *
+     * Retrieves historical charts for an application over a specified time period: CPU, RAM, traffic and ephemeral storage usage and limit per pod with the pod's region, instances in total and per region, active regions, usage and capacity per volume with the volume's region and pods, and the rolling updates of the period per region.
+     *
+     * @param string $appId
+     * @param string $fromDate
+     * @param string|null $toDate
+     * @param value-of<\Valicm\BunnyToolkit\Api\MagicContainers\Enum\DataGranularity> $granularity
+     * @return StatisticsCharts
+     *
+     * @throws ApiException When Bunny answers with an error status.
+     * @throws ClientExceptionInterface When the request cannot be sent.
+     */
+    public function getApplicationStatisticsCharts(string $appId, string $fromDate, string $granularity, ?string $toDate = null): mixed
+    {
+        /** @var StatisticsCharts $data */
+        $data = $this->client->json('GET', $this->client->path('/apps/{appId}/statistics/charts', ['appId' => $appId]), query: ['fromDate' => $fromDate, 'toDate' => $toDate, 'granularity' => $granularity]);
 
         return $data;
     }

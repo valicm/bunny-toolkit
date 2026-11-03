@@ -48,7 +48,7 @@ namespace Valicm\BunnyToolkit\Api\Database;
  *     replicas_regions: list<value-of<\Valicm\BunnyToolkit\Api\Database\Enum\PossibleRegion>>,
  * }
  * @phpstan-type CreateDatabaseV2Response array{
- *     db_id: DatabaseId,
+ *     db_id: DatabaseId2,
  * }
  * @phpstan-type DBLiveStatus array{state: string, metadata: array{main: value-of<\Valicm\BunnyToolkit\Api\Database\Enum\PossibleRegion>, replicas: list<value-of<\Valicm\BunnyToolkit\Api\Database\Enum\PossibleRegion>>}}|array{state: string}
  * @phpstan-type Database2 array{
@@ -89,6 +89,7 @@ namespace Valicm\BunnyToolkit\Api\Database;
  * }
  * @phpstan-type DatabaseGroupId string
  * @phpstan-type DatabaseId string
+ * @phpstan-type DatabaseId2 string
  * @phpstan-type DatabaseV2PageInfo array{
  *     current_page: int,
  *     total_items: int,

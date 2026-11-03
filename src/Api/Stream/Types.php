@@ -58,7 +58,7 @@ namespace Valicm\BunnyToolkit\Api\Stream;
  *     headers?: array<string, string>|null,
  *     title?: string|null,
  * }
- * @phpstan-type IssueCodes 0|1|2|3|4|5|6|7|8|9|10|11
+ * @phpstan-type IssueCodes 0|1|2|3|4|5|6|7|8|9|10|11|12
  * @phpstan-type MetaTagModel array{
  *     property?: string|null,
  *     value?: string|null,
