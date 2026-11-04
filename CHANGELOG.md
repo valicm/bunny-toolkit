@@ -1,5 +1,12 @@
 # Changelog
 
+## 1.0.1 - 2026-11-04
+
+- `CachingChoices::PAGE_TIMES` offers `0` and `60`. At `0` a browser asks every time, while the edge goes on keeping the response.
+- `composer.json` has a `funding` entry pointing at [Vallic Cloud](https://vallic.com/cloud).
+- Bunny's specs updated. New: `StreamVideoLibrary::resetWebhookSigningSecret()` and `resetLiveAutoCreateStreamKey()`, `Applications::getApplicationStatisticsCharts()`, which deprecates `getApplicationStatistics()`, GPU filters on `Regions::listRegions()` and `getOptimalBaseRegion()`, the `oci` registry type, and the `EnvironmentVariableSuggestionSource` and `FindContainerImageRegistryStatus` enums.
+- Four Partner enum cases take Bunny's new names, with the old ones kept as deprecated constants: `PartnerContractBillingType::PostPaid` is now `PostPaidPayAsYouGo`, `PartnerCustomerContractCurrency::UsDollar` and `Euro` are `Usd` and `Eur`, and `PartnerCustomerProductType::EdgeScripting` is `Scripting`.
+
 ## 1.0.0 - 2026-10-27
 
 The first stable release; from here, releases follow the rules in the README's Versioning section.

@@ -43,9 +43,10 @@ final readonly class CachingChoices
      *
      * Short, because Bunny drops the `Vary: Cookie` a page is sent with: a
      * page a visitor saw signed out stays in their browser, signed out, for
-     * this long after they sign in.
+     * this long after they sign in. Zero has a browser ask every time, while
+     * the edge goes on keeping the response, so a purge reaches every visitor.
      */
-    public const PAGE_TIMES = [300, 900, 3600, 86400];
+    public const PAGE_TIMES = [0, 60, 300, 900, 3600, 86400];
 
     /**
      * Browser times for a static file, in seconds.

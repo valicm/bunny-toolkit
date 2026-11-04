@@ -22,6 +22,12 @@
         "issues": "https://github.com/valicm/bunny-toolkit/issues",
         "source": "https://github.com/valicm/bunny-toolkit"
     },
+    "funding": [
+        {
+            "type": "Vallic Cloud",
+            "url": "https://vallic.com/cloud"
+        }
+    ],
     "require": {
         "php": "^8.3",
         "psr/http-client": "^1.0",

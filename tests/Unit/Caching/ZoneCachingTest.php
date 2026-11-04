@@ -91,10 +91,34 @@ final class ZoneCachingTest extends TestCase
 
     public function testBrowserTimesOffTheListAreLeftToTheOrigin(): void
     {
-        $rules = (new ZoneCaching())->rules(new CachingChoices(browserPages: 60, browserFiles: 86400), []);
+        $rules = (new ZoneCaching())->rules(new CachingChoices(browserPages: 120, browserFiles: 86400), []);
 
         self::assertArrayNotHasKey('bunny-toolkit: browser cache time for pages', $rules);
         self::assertSame('86400', $rules['bunny-toolkit: browser cache time for static files']['ActionParameter1'] ?? null);
+    }
+
+    public function testAMinuteIsAPageTime(): void
+    {
+        $rules = (new ZoneCaching())->rules(new CachingChoices(browserPages: 60), []);
+
+        self::assertSame('60', $rules['bunny-toolkit: browser cache time for pages']['ActionParameter1'] ?? null);
+    }
+
+    public function testZeroIsAPageTimeAndNotTheSameAsNone(): void
+    {
+        $caching = new ZoneCaching('Site: ');
+        $rules = $caching->rules(new CachingChoices(browserPages: 0), SessionCookies::DRUPAL);
+
+        self::assertSame('0', $rules['Site: ' . ZoneCaching::BROWSER_PAGES]['ActionParameter1'] ?? null);
+
+        $saved = [];
+        foreach (array_values($rules) as $i => $rule) {
+            $saved[] = ['Guid' => 'g' . $i] + $rule;
+        }
+        self::assertSame(0, $caching->read(['EdgeRules' => $saved])->browserPages);
+
+        self::assertArrayNotHasKey('Site: ' . ZoneCaching::BROWSER_PAGES, $caching->rules(new CachingChoices(), SessionCookies::DRUPAL), 'None leaves it to the origin.');
+        self::assertNull($caching->read(['EdgeRules' => []])->browserPages);
     }
 
     public function testReadsBackWhatItWrites(): void
